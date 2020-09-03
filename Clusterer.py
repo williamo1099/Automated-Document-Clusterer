@@ -17,8 +17,8 @@ class Clusterer:
     def cluster(self, index, corpus):
         proximity_matrix = self.create_proximity_matrix(index, corpus)
         linked = linkage(squareform(proximity_matrix), method='single', metric='cosine')
-        plt.figure(figsize=(10, 7))
+        fig = plt.figure(figsize=(10, 7))
         dendrogram(linked,
                     orientation='right',
                     labels=[doc.get_title() for doc in corpus])
-        plt.show()
+        return fig
