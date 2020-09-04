@@ -13,18 +13,15 @@ def save_index(index):
         with open('index.pickle', 'wb') as handle:
             pickle.dump(index, handle, protocol=pickle.HIGHEST_PROTOCOL)
     else:
-        warning_popup = tk.Tk()
-        warning_popup.wm_title('Saving an index')
-        label = tk.Label(warning_popup, text='There is no index to save!')
-        label.pack(side='top', fill='x', pady=10)
-        ok_button = tk.Button(warning_popup, text='Ok', command=warning_popup.destroy)
-        ok_button.pack()
-        warning_popup.mainloop()
+        show_warning_popup('Saving an index', 'There is no index to be saved!')
 
 def load_index():
-    with open('index.pickle', 'rb') as handle:
-        global index
-        index = pickle.load(handle)
+    try:
+        with open('index.pickle', 'rb') as handle:
+            global index
+            index = pickle.load(handle)
+    except EnvironmentError:
+        show_warning_popup('Loading an index', 'There is no index to be loaded!')
 
 def cluster():
     path = 'Document/'
@@ -58,6 +55,15 @@ def cluster():
         canvas.draw()
         canvas.get_tk_widget().pack()
         
+def show_warning_popup(title, msg):
+    warning_popup = tk.Tk()
+    warning_popup.wm_title(title)
+    label = tk.Label(warning_popup, text=msg)
+    label.pack(side='top', fill='x', pady=10)
+    ok_button = tk.Button(warning_popup, text='Ok', command=warning_popup.destroy)
+    ok_button.pack()
+    warning_popup.mainloop()
+
 index = None
 
 window = tk.Tk()
