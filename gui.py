@@ -2,6 +2,7 @@
 import os
 import pickle
 import tkinter as tk
+from tkinter import filedialog
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from Document import Document
@@ -42,24 +43,28 @@ class gui:
         warning_popup.mainloop()
     
     def save_index(self):
+        index_path = filedialog.asksaveasfilename(defaultextension='.pickle',
+                                                  filetypes=(('pickle file', '*.pickle'),))
         if self.index is not None:
-            with open('index.pickle', 'wb') as handle:
+            with open(index_path, 'wb') as handle:
                 pickle.dump(self.index, handle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
             self.show_warning_popup('Saving an index', 'There is no index to be saved!')
 
     def load_index(self):
+        index_path = filedialog.askopenfilename()
         try:
-            with open('index.pickle', 'rb') as handle:
+            with open(index_path, 'rb') as handle:
                 self.index = pickle.load(handle)
                 self.show_warning_popup('Loading an index', 'An index is successfully loaded!')
         except EnvironmentError:
             self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
     
     def cluster(self):
-        path = 'Document/'
+        folder_path = 'Document/'
+        # folder_path = filedialog.askdirectory()
         doc_titles = []
-        for root, directories, files in os.walk(path):
+        for root, directories, files in os.walk(folder_path):
             for file in files:
                 if '.txt' in file:
                     doc_titles.append(os.path.join(root, file))
@@ -69,7 +74,7 @@ class gui:
             for i in range(0, len(doc_titles)):
                 doc_id = 'doc_' + str(i)
                 doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
-                doc_i = Document(doc_id, os.path.splitext(doc_titles[i])[0].replace(path, ''), doc_content)
+                doc_i = Document(doc_id, os.path.splitext(doc_titles[i])[0].replace(folder_path, ''), doc_content)
                 corpus.append(doc_i)
                 
             # Build an inverted index.
