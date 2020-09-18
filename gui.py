@@ -13,6 +13,7 @@ class gui:
     
     def __init__(self, title, size):
         self.index = None
+        self.ready_status = False
         
         self.window = tk.Tk()
         self.window.title(title)
@@ -46,8 +47,15 @@ class gui:
         index_path = filedialog.asksaveasfilename(defaultextension='.pickle',
                                                   filetypes=(('pickle file', '*.pickle'),))
         if self.index is not None:
+            metadata = {}
+            metadata['folder_path'] = self.folder_path
+            metadata['corpus'] = self.corpus
+            
+            data = {}
+            data['index'] = self.index
+            data['metadata'] = metadata
             with open(index_path, 'wb') as handle:
-                pickle.dump(self.index, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
             self.show_warning_popup('Saving an index', 'There is no index to be saved!')
 
@@ -55,39 +63,51 @@ class gui:
         index_path = filedialog.askopenfilename()
         try:
             with open(index_path, 'rb') as handle:
-                self.index = pickle.load(handle)
+                data = pickle.load(handle)
+                self.index = data['index']
+                
+                metadata = data['metadata']
+                self.folder_path = metadata['folder_path']
+                self.corpus = metadata['corpus']
+                
+                self.ready_status = True
                 self.show_warning_popup('Loading an index', 'An index is successfully loaded!')
         except EnvironmentError:
             self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
     
     def cluster(self):
-        folder_path = 'Document/'
-        # folder_path = filedialog.askdirectory()
-        doc_titles = []
-        for root, directories, files in os.walk(folder_path):
-            for file in files:
-                if '.txt' in file:
-                    doc_titles.append(os.path.join(root, file))
-        
-        if len(doc_titles) > 1:
-            corpus = []
-            for i in range(0, len(doc_titles)):
-                doc_id = 'doc_' + str(i)
-                doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
-                doc_i = Document(doc_id, os.path.splitext(doc_titles[i])[0].replace(folder_path, ''), doc_content)
-                corpus.append(doc_i)
+        print(self.ready_status)
+        if self.ready_status is False:
+            self.folder_path = filedialog.askdirectory()
+            doc_titles = []
+            for root, directories, files in os.walk(self.folder_path):
+                for file in files:
+                    if '.txt' in file:
+                        doc_titles.append(os.path.join(root, file))
+            
+            if len(doc_titles) > 1:
+                self.corpus = []
+                for i in range(0, len(doc_titles)):
+                    doc_id = 'doc_' + str(i)
+                    doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
+                    doc_i = Document(doc_id, os.path.splitext(doc_titles[i])[0].replace(self.folder_path, ''), doc_content)
+                    self.corpus.append(doc_i)
+                    
+                # Build an inverted index.
+                if self.index is None:
+                    indexer = Indexer()
+                    for i in range(0, len(self.corpus)):
+                        indexer.index(self.corpus[i])
+                    self.index = indexer.get_inverted_index(len(self.corpus))
                 
-            # Build an inverted index.
-            if self.index is None:
-                indexer = Indexer()
-                for i in range(0, len(corpus)):
-                    indexer.index(corpus[i])
-                self.index = indexer.get_inverted_index(len(corpus))
-            
-            # Do document clustering.
-            clusterer = Clusterer()
-            fig = clusterer.cluster(self.index, corpus)
-            
-            canvas = FigureCanvasTkAgg(fig, master=self.window)
-            canvas.draw()
-            canvas.get_tk_widget().pack()
+                # Do document clustering.
+                self.draw_canvas()
+        else:
+            self.draw_canvas()
+        
+    def draw_canvas(self):
+        clusterer = Clusterer()
+        fig = clusterer.cluster(self.index, self.corpus)
+        canvas = FigureCanvasTkAgg(fig, master=self.window)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
