@@ -24,7 +24,7 @@ class Document:
         for term in dictionary:
             weight = 0
             if self.get_id() in index[term]:
-                # Using tf-idf weighting.
+                # Pembobotan dengan tf-idf.
                 weight = math.log10(index[term].count(self.get_id()) + 1) * (math.log10((corpus_size + 1) / len(set(index[term]))) / math.log10(2))
             weighting_list.append(weight)
         return weighting_list
@@ -32,5 +32,6 @@ class Document:
     def count_distance(self, other_doc, index, corpus_size):
         weighting_list_i = self.get_weighting_list(index, corpus_size)
         weighting_list_j = other_doc.get_weighting_list(index, corpus_size)
+        # Hitung jarak antar dua Document dengan menggunakan jarak cosine.
         distance = math.acos(np.dot(weighting_list_i, weighting_list_j) / (math.sqrt(np.dot(weighting_list_i, weighting_list_i) * np.dot(weighting_list_j, weighting_list_j))))
         return distance
