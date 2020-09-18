@@ -11,23 +11,24 @@ from Clusterer import Clusterer
 
 class gui:
     
-    def __init__(self, title, size):
-        self.index = None
-        self.ready_status = False
+    def __init__(self):
+        self.index = None # Inverted index.
+        self.ready_status = False # Status yang menunjukkan proses cluster siap dilakukan tanpa melakukan proses indexing.
         
         self.window = tk.Tk()
-        self.window.title(title)
-        self.window.geometry(size)
+        self.window.title('Document Clustering')
+        self.window.geometry('500x500')
         
-        # File menu.
+        # Menu bar.
         menu = tk.Menu(self.window)
         self.window.config(menu=menu)
+        # Menu file.
         file_menu = tk.Menu(menu)
         menu.add_cascade(label='File', menu=file_menu)
         file_menu.add_command(label='Save index', command=self.save_index)
         file_menu.add_command(label='Load index', command=self.load_index)
         
-        # Cluster button.
+        # Button untuk cluster.
         cluster_button = tk.Button(master=self.window, text='Cluster', command=self.cluster)
         cluster_button.pack()
         
@@ -47,8 +48,8 @@ class gui:
         index_path = filedialog.asksaveasfilename(defaultextension='.pickle',
                                                   filetypes=(('pickle file', '*.pickle'),))
         if self.index is not None:
+            # Menyimpan data-data (selain indeks) yang dibutuhkan.
             metadata = {}
-            metadata['folder_path'] = self.folder_path
             metadata['corpus'] = self.corpus
             
             data = {}
@@ -64,23 +65,23 @@ class gui:
         try:
             with open(index_path, 'rb') as handle:
                 data = pickle.load(handle)
+                # Mengambil inverted index yang telah di-load.
                 self.index = data['index']
-                
+                # Mengambil data-data (selain indeks) yang dibutuhkan.
                 metadata = data['metadata']
-                self.folder_path = metadata['folder_path']
                 self.corpus = metadata['corpus']
-                
+                # Menandakan status sebagai True.
                 self.ready_status = True
                 self.show_warning_popup('Loading an index', 'An index is successfully loaded!')
         except EnvironmentError:
             self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
     
     def cluster(self):
-        print(self.ready_status)
+        # Ketika status False, harus dilakukan proses indexing yang digunakan untuk di-cluster.
         if self.ready_status is False:
-            self.folder_path = filedialog.askdirectory()
+            folder_path = filedialog.askdirectory()
             doc_titles = []
-            for root, directories, files in os.walk(self.folder_path):
+            for root, directories, files in os.walk(folder_path):
                 for file in files:
                     if '.txt' in file:
                         doc_titles.append(os.path.join(root, file))
@@ -90,19 +91,20 @@ class gui:
                 for i in range(0, len(doc_titles)):
                     doc_id = 'doc_' + str(i)
                     doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
-                    doc_i = Document(doc_id, os.path.splitext(doc_titles[i])[0].replace(self.folder_path, ''), doc_content)
+                    doc_i = Document(doc_id, os.path.splitext(doc_titles[i])[0].replace(folder_path, ''), doc_content)
                     self.corpus.append(doc_i)
                     
-                # Build an inverted index.
+                # Membangun inverted index berdasarkan dokumen teks dalam corpus.
                 if self.index is None:
                     indexer = Indexer()
                     for i in range(0, len(self.corpus)):
                         indexer.index(self.corpus[i])
                     self.index = indexer.get_inverted_index(len(self.corpus))
                 
-                # Do document clustering.
+                # Melakukan proses clustering dan menggambarkan dendrogram.
                 self.draw_canvas()
         else:
+            # Status True menandakan indeks sudah di-load dan siap untuk melakukan proses clustering.
             self.draw_canvas()
         
     def draw_canvas(self):
