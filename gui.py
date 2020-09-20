@@ -117,6 +117,7 @@ class gui:
         
         # Ketika status True, canvas sudah pernah digambar dan harus dihapus.
         if self.canvas_status is True:
+            self.organize_button.destroy()
             self.canvas.get_tk_widget().destroy()
         else:
             # Menambahkan slider (untuk keperluan cut-off).
@@ -127,15 +128,14 @@ class gui:
                               variable=cut_off,
                               command=lambda e:self.draw_canvas(slider.get()),
                               orient='horizontal')
-            slider.pack()
-            
-            # Menambahkan button organize.
-            organize_button = tk.Button(master=self.window,
-                                        text='Organize',
-                                        command=lambda:self.organize_document(clusterer.get_cluster()))
-            organize_button.pack()
-            
+            slider.pack()            
             self.canvas_status = True
+        
+        # Menambahkan button organize.
+        self.organize_button = tk.Button(master=self.window,
+                                    text='Organize',
+                                    command=lambda:self.organize_document(clusterer.get_cluster()))
+        self.organize_button.pack()
         
         # Menggambar dendrogram.
         self.canvas = FigureCanvasTkAgg(fig, master=self.window)
