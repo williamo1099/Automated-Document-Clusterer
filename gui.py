@@ -122,7 +122,7 @@ class gui:
                               to=clusterer.get_dendrogram_height(),
                               resolution=0.1,
                               variable=cut_off,
-                              command=lambda e:self.draw_canvas(self.slider.get()),
+                              command=lambda e:self.draw_canvas(slider.get()),
                               orient='horizontal')
             slider.pack()
             self.canvas_status = True
