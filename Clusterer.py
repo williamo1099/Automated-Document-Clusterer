@@ -30,3 +30,6 @@ class Clusterer:
         for item in self.dend['dcoord']:
             flat_list += item
         return max(flat_list)
+    
+    def get_cluster(self):
+        return [self.dend['ivl'], self.dend['color_list']]

@@ -77,6 +77,9 @@ class gui:
         except EnvironmentError:
             self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
     
+    def organize_document(self, lst):
+        print(lst)
+    
     def cluster(self):
         # Ketika status False, harus dilakukan proses indexing yang digunakan untuk di-cluster.
         if self.ready_status is False:
@@ -125,6 +128,13 @@ class gui:
                               command=lambda e:self.draw_canvas(slider.get()),
                               orient='horizontal')
             slider.pack()
+            
+            # Menambahkan button organize.
+            organize_button = tk.Button(master=self.window,
+                                        text='Organize',
+                                        command=lambda:self.organize_document(clusterer.get_cluster()))
+            organize_button.pack()
+            
             self.canvas_status = True
         
         # Menggambar dendrogram.
