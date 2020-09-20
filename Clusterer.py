@@ -38,4 +38,5 @@ class Clusterer:
         return self.dendrogram_height
     
     def get_cluster(self):
-        return self.cluster_label
+        # return self.cluster_label
+        return 0

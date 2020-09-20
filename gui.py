@@ -51,6 +51,7 @@ class gui:
         if self.index is not None:
             # Menyimpan data-data (selain indeks) yang dibutuhkan.
             metadata = {}
+            metadata['folder_path'] = self.folder_path
             metadata['corpus'] = self.corpus
             
             data = {}
@@ -70,6 +71,7 @@ class gui:
                 self.index = data['index']
                 # Mengambil data-data (selain indeks) yang dibutuhkan.
                 metadata = data['metadata']
+                self.folder_path = metadata['folder_path']
                 self.corpus = metadata['corpus']
                 # Menandakan status sebagai True.
                 self.ready_status = True
@@ -77,15 +79,24 @@ class gui:
         except EnvironmentError:
             self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
     
-    def organize_document(self, lst):
-        print(lst)
+    def organize_document(self, doc_label):
+        folder = 'organized'
+        organized_folder = os.path.join(self.folder_path, folder)
+        os.mkdir(organized_folder)
+        
+        # doc_label['C1'] = [doc1, doc2, doc3]
+        for label, doc in doc_label.values():
+            ci_folder = os.path.join(organized_folder, label)
+            os.mkdir(ci_folder)
+            for item in doc:
+                # Copy dan move file dokumen teks ke folder ci_folder.
     
     def cluster(self):
         # Ketika status False, harus dilakukan proses indexing yang digunakan untuk di-cluster.
         if self.ready_status is False:
-            folder_path = filedialog.askdirectory()
+            self.folder_path = filedialog.askdirectory()
             doc_titles = []
-            for root, directories, files in os.walk(folder_path):
+            for root, directories, files in os.walk(self.folder_path):
                 for file in files:
                     if '.txt' in file:
                         doc_titles.append(os.path.join(root, file))
@@ -95,7 +106,7 @@ class gui:
                 for i in range(0, len(doc_titles)):
                     doc_id = 'doc_' + str(i)
                     doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
-                    doc_i = Document(doc_id, os.path.splitext(doc_titles[i])[0].replace(folder_path, ''), doc_content)
+                    doc_i = Document(doc_id, os.path.splitext(doc_titles[i])[0].replace(self.folder_path, ''), doc_content)
                     self.corpus.append(doc_i)
                     
                 # Membangun inverted index berdasarkan dokumen teks dalam corpus.
