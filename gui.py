@@ -14,7 +14,7 @@ class gui:
     def __init__(self):
         self.index = None # Inverted index.
         self.ready_status = False # Status yang menunjukkan proses cluster siap dilakukan tanpa melakukan proses indexing.
-        self.canvas_status = False
+        self.canvas_status = False # Status yang menunjukkan canvas sudah tergambar atau belum.
         
         self.window = tk.Tk()
         self.window.title('Document Clustering')
@@ -112,22 +112,22 @@ class gui:
         clusterer = Clusterer()
         fig = clusterer.cluster(self.index, self.corpus, cut_off)
         
+        # Ketika status True, canvas sudah pernah digambar dan harus dihapus.
         if self.canvas_status is True:
             self.canvas.get_tk_widget().destroy()
-            self.slider.destroy()
         else:
+            # Menambahkan slider (untuk keperluan cut-off).
+            slider = tk.Scale(self.window,
+                              from_=0.0,
+                              to=clusterer.get_dendrogram_height(),
+                              resolution=0.1,
+                              variable=cut_off,
+                              command=lambda e:self.draw_canvas(self.slider.get()),
+                              orient='horizontal')
+            slider.pack()
             self.canvas_status = True
-            
+        
+        # Menggambar dendrogram.
         self.canvas = FigureCanvasTkAgg(fig, master=self.window)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack()
-        
-        # Menambahkan slider (untuk keperluan cut-off).
-        self.slider = tk.Scale(self.window,
-                          from_=0.0,
-                          to=clusterer.get_dendrogram_height(),
-                          resolution=0.1,
-                          variable=cut_off,
-                          command=lambda e:self.draw_canvas(self.slider.get()),
-                          orient='horizontal')
-        self.slider.pack()
