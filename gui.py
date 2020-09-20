@@ -120,7 +120,7 @@ class gui:
             slider = tk.Scale(self.window,
                               from_=0.0,
                               to=clusterer.get_dendrogram_height(),
-                              resolution=0.1,
+                              resolution=0.01,
                               variable=cut_off,
                               command=lambda e:self.draw_canvas(slider.get()),
                               orient='horizontal')
