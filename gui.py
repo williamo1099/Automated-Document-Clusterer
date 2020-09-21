@@ -90,6 +90,7 @@ class gui:
             os.mkdir(ci_folder)
             for item in doc:
                 # Copy dan move file dokumen teks ke folder ci_folder.
+                print('')
     
     def cluster(self):
         # Ketika status False, harus dilakukan proses indexing yang digunakan untuk di-cluster.
