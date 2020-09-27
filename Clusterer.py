@@ -1,7 +1,6 @@
 
-from scipy.cluster.hierarchy import fcluster, dendrogram, linkage
+from scipy.cluster.hierarchy import dendrogram, linkage
 import matplotlib.pyplot as plt
-import pandas as pd
 
 class Clusterer:
     
