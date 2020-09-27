@@ -1,22 +1,25 @@
 
-from scipy.spatial.distance import squareform
 from scipy.cluster.hierarchy import fcluster, dendrogram, linkage
 import matplotlib.pyplot as plt
 
 class Clusterer:
     
     def create_proximity_matrix(self, index, corpus):
-        matrix = []
         for doc_i in corpus:
-            distance_list = []
-            for doc_j in corpus:
-                distance_list.append(doc_i.count_distance(doc_j, index, len(corpus)))
-            matrix.append(distance_list)
+            doc_i.set_weighting_list(index, len(corpus))
+            
+        matrix = []
+        for i in range(1, len(corpus)):
+            doc_i = corpus[i]
+            for j in range(0, i):
+                doc_j = corpus[j]
+                distance = doc_i.count_distance(doc_j)
+                matrix.append(distance)
         return matrix
     
     def cluster(self, index, corpus, cut_off=0):
         proximity_matrix = self.create_proximity_matrix(index, corpus)
-        linked = linkage(squareform(proximity_matrix), method='single', metric='cosine')
+        linked = linkage(proximity_matrix, method='single', metric='cosine')
         fig = plt.figure(figsize=(5, 5))
         dend = dendrogram(linked,
                     orientation='right',
