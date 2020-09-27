@@ -1,6 +1,7 @@
 
 from scipy.cluster.hierarchy import fcluster, dendrogram, linkage
 import matplotlib.pyplot as plt
+import pandas as pd
 
 class Clusterer:
     
@@ -27,19 +28,23 @@ class Clusterer:
                     labels=[doc.get_title() for doc in corpus])
         
         # Mendapatkan label cluster dari tiap dokumen teks.
-        # self.cluster_label = fcluster(linked, cut_off, criterion='distance')
-        print(dend)
+        self.cluster_label = {}
+        x_label = plt.gca().get_ymajorticklabels()
+        for item in x_label:
+            if item.get_color() not in self.cluster_label:
+                self.cluster_label[item.get_color()] = []
+            self.cluster_label[item.get_color()].append(item.get_text())
+        
         # Mendapatkan tinggi dari dendrogram.
         dcoord_flat_list = []
         for item in dend['dcoord']:
             dcoord_flat_list += item
         self.dendrogram_height = max(dcoord_flat_list)
-
+        
         return fig
     
     def get_dendrogram_height(self):
         return self.dendrogram_height
     
     def get_cluster(self):
-        # return self.cluster_label
-        return 0
+        return self.cluster_label
