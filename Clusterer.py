@@ -1,8 +1,30 @@
 
-from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.cluster.hierarchy import linkage, dendrogram
 import matplotlib.pyplot as plt
 
 class Clusterer:
+    
+    def set_dendrogram_height(self, dend):
+        dcoord_flat_list = []
+        for item in dend['dcoord']:
+            dcoord_flat_list += item
+        self.dendrogram_height = max(dcoord_flat_list)
+    
+    def get_dendrogram_height(self):
+        return self.dendrogram_height
+    
+    def set_cluster(self, dend):
+        self.cluster_list = {}
+        for c, pi in zip(dend['color_list'], dend['icoord']):
+            for leg in pi[1:3]:
+                i = (leg - 5) / 10
+                if abs(i - int(i)) <= 0:
+                    if c not in self.cluster_list:
+                        self.cluster_list[c] = []
+                    self.cluster_list[c].append(dend['ivl'][int(i)])
+    
+    def get_cluster(self):
+        return self.cluster_list
     
     def create_proximity_matrix(self, index, corpus):
         for doc_i in corpus:
@@ -25,25 +47,10 @@ class Clusterer:
                     orientation='right',
                     color_threshold=cut_off,
                     labels=[doc.get_title() for doc in corpus])
-        
-        # Mendapatkan label cluster dari tiap dokumen teks.
-        self.cluster_label = {}
-        x_label = plt.gca().get_ymajorticklabels()
-        for item in x_label:
-            if item.get_color() not in self.cluster_label:
-                self.cluster_label[item.get_color()] = []
-            self.cluster_label[item.get_color()].append(item.get_text())
-        
+        # Menggambarkan cut-off.        
+        plt.axvline(x=cut_off, linestyle='dashed')
+        # Mendapatkan label cluster dari tiap dokumen teks.  
+        self.set_cluster(dend)
         # Mendapatkan tinggi dari dendrogram.
-        dcoord_flat_list = []
-        for item in dend['dcoord']:
-            dcoord_flat_list += item
-        self.dendrogram_height = max(dcoord_flat_list)
-        
+        self.set_dendrogram_height(dend)
         return fig
-    
-    def get_dendrogram_height(self):
-        return self.dendrogram_height
-    
-    def get_cluster(self):
-        return self.cluster_label
