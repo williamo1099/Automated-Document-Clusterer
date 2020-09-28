@@ -1,5 +1,6 @@
 
 import os
+import shutil
 import pickle
 import tkinter as tk
 from tkinter import filedialog
@@ -82,15 +83,16 @@ class gui:
     def organize_document(self, doc_label):
         folder = 'organized'
         organized_folder = os.path.join(self.folder_path, folder)
-        os.mkdir(organized_folder)
+        if not os.path.exists(organized_folder):
+            os.mkdir(organized_folder)
         
-        # doc_label['C1'] = [doc1, doc2, doc3]
-        for label, doc in doc_label.values():
+        for label, doc in doc_label.items():
             ci_folder = os.path.join(organized_folder, label)
             os.mkdir(ci_folder)
             for item in doc:
                 # Copy dan move file dokumen teks ke folder ci_folder.
-                print('')
+                source = os.path.join(self.folder_path, item + '.txt')
+                shutil.copyfile(source, ci_folder)
     
     def cluster(self):
         # Ketika status False, harus dilakukan proses indexing yang digunakan untuk di-cluster.
@@ -104,10 +106,12 @@ class gui:
             
             if len(doc_titles) > 1:
                 self.corpus = []
+                escaped_folder_path = str(self.folder_path) + '\\' 
                 for i in range(0, len(doc_titles)):
                     doc_id = 'doc_' + str(i)
+                    doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
                     doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
-                    doc_i = Document(doc_id, os.path.splitext(doc_titles[i])[0].replace(self.folder_path, ''), doc_content)
+                    doc_i = Document(doc_id, doc_title, doc_content)
                     self.corpus.append(doc_i)
                     
                 # Membangun inverted index berdasarkan dokumen teks dalam corpus.
