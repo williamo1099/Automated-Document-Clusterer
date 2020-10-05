@@ -28,7 +28,7 @@ class Clusterer:
     
     def create_proximity_matrix(self, index, corpus):
         for doc_i in corpus:
-            doc_i.set_weighting_list(index, len(corpus))
+            doc_i.set_vector(index, len(corpus))
             
         matrix = []
         for i in range(1, len(corpus)):

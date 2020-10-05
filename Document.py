@@ -1,6 +1,5 @@
 
 import math
-import numpy as np
 
 class Document:
     
@@ -18,25 +17,34 @@ class Document:
     def get_content(self):
         return self.content
     
-    def set_weighting_list(self, index, corpus_size):
+    def set_vector(self, index, corpus_size):
         dictionary = list(index.keys())
-        weighting_list = []
+        self.vector = []
         for term in dictionary:
             weight = 0
             if self.get_id() in index[term]:
                 # Pembobotan dengan tf-idf.
                 weight = math.log10(index[term].count(self.get_id()) + 1) * (math.log10((corpus_size + 1) / len(set(index[term]))) / math.log10(2))
-            weighting_list.append(weight)
-        self.weighting_list = weighting_list
+            self.vector.append(weight)
     
-    def get_weighting_list(self):
-        return self.weighting_list
+    def get_vector(self):
+        return self.vector
     
     def count_distance(self, other_doc):
         if other_doc.get_id() == self.doc_id:
             return 0
-        weighting_list_i = self.get_weighting_list()
-        weighting_list_j = other_doc.get_weighting_list()
+        vector_i = self.get_vector()
+        vector_j = other_doc.get_vector()
+        
         # Hitung jarak antar dua Document dengan menggunakan jarak cosine.
-        distance = math.acos(np.dot(weighting_list_i, weighting_list_j) / (math.sqrt(np.dot(weighting_list_i, weighting_list_i) * np.dot(weighting_list_j, weighting_list_j))))
+        def dotProduct(vector_i, vector_j):
+            result = 0
+            for i in range(0, len(vector_i)):
+                result += (vector_i[i] * vector_j[i])
+            return result
+        
+        numerator = dotProduct(vector_i, vector_j)
+        denominator = math.sqrt(dotProduct(vector_i, vector_i) *
+                                dotProduct(vector_j, vector_j))
+        distance = math.acos(numerator/denominator)
         return distance
