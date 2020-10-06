@@ -23,5 +23,9 @@ class Indexer:
         
         for term in dictionary:
             if term not in self.inverted_index:
-                self.inverted_index[term] = []
-            self.inverted_index[term].append(doc_id)
+                self.inverted_index[term] = {}
+            
+            if doc_id not in self.inverted_index[term]:
+                self.inverted_index[term][doc_id] = 1
+            else:
+                self.inverted_index[term][doc_id] += 1

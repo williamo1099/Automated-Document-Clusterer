@@ -18,13 +18,13 @@ class Document:
         return self.content
     
     def set_vector(self, index, corpus_size):
-        dictionary = list(index.keys())
+        dictionary = sorted(list(index.keys()), key=str.lower)
         self.vector = []
         for term in dictionary:
             weight = 0
             if self.get_id() in index[term]:
                 # Pembobotan dengan tf-idf.
-                weight = math.log10(index[term].count(self.get_id()) + 1) * (math.log10((corpus_size + 1) / len(set(index[term]))) / math.log10(2))
+                weight = (math.log10(index[term][self.get_id()] + 1)) * (math.log10((corpus_size) / len(index[term])))
             self.vector.append(weight)
     
     def get_vector(self):
