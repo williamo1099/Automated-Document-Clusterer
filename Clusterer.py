@@ -50,7 +50,6 @@ class Clusterer:
         None.
 
         """
-        self.get_dend
         self.cluster_list = {}
         for c, pi in zip(dend['color_list'], dend['icoord']):
             for leg in pi[1:3]:

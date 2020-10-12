@@ -119,7 +119,7 @@ class gui:
                     indexer = Indexer()
                     for i in range(0, len(self.corpus)):
                         indexer.index(self.corpus[i])
-                    self.index = indexer.get_inverted_index(len(self.corpus))
+                    self.index = indexer.get_inverted_index()
                 
                 # Melakukan proses clustering dan menggambarkan dendrogram.
                 self.draw_canvas(0)
