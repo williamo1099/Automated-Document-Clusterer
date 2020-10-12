@@ -92,7 +92,10 @@ class gui:
             for item in doc:
                 # Copy dan move file dokumen teks ke folder ci_folder.
                 source = os.path.join(self.folder_path, item + '.txt')
-                shutil.copyfile(source, ci_folder)
+                try:
+                    shutil.copyfile(source, ci_folder + '/' + item + '.txt')
+                except:
+                    print('Error copying file.')
     
     def cluster(self):
         # Ketika status False, harus dilakukan proses indexing yang digunakan untuk di-cluster.
