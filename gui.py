@@ -160,3 +160,6 @@ class gui:
         self.canvas = FigureCanvasTkAgg(fig, master=self.window)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack()
+        
+        # Menampilkan nilai CPCC (evaluasi clustering).
+        print(clusterer.get_cophenetcoeff())

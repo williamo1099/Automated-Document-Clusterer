@@ -1,5 +1,5 @@
 
-from scipy.cluster.hierarchy import linkage, dendrogram
+from scipy.cluster.hierarchy import linkage, dendrogram, cophenet
 import matplotlib.pyplot as plt
 
 class Clusterer:
@@ -71,6 +71,37 @@ class Clusterer:
         """
         return self.cluster_list
     
+    def set_cophenet_coeff(self, proximity_matrix, linkage):
+        """
+        Method untuk menghitung nilai koefisien cophenet.
+
+        Parameters
+        ----------
+        proximity_matrix : list
+            Matriks jarak 1D.
+        linkage : numpy.ndarray
+            Hasil pengelompokan dengan algoritma hierarchical clustering.
+
+        Returns
+        -------
+        None.
+
+        """
+        c, d = cophenet(linkage, proximity_matrix)
+        self.cophenet_coeff = c
+    
+    def get_cophenetcoeff(self):
+        """
+        Method untuk mendapatkan nilai koefisien cophenet.
+
+        Returns
+        -------
+        cophenet_coeff : numpy.ndarray
+            Nilai koefisien cophenet.
+
+        """
+        return self.cophenet_coeff
+    
     def create_proximity_matrix(self, index, corpus):
         """
         Method untuk membangun matriks jarak untuk seluruh dokumen teks.
@@ -140,4 +171,6 @@ class Clusterer:
         self.set_cluster(dend)
         # Menyimpan tinggi maksimal dari dendrogram yang dibangun.
         self.set_dendrogram_height(dend)
+        # Menyimpan hasil evaluasi clustering dengan CPCC.
+        self.set_cophenet_coeff(proximity_matrix, linked)
         return fig
