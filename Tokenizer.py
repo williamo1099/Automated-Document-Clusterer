@@ -4,24 +4,15 @@ from nltk.tokenize import word_tokenize
 class Tokenizer:
     
     def tokenize(self, sequence):
-        """
-        Method untuk melakukan tokenisasi terhadap sebuah char sequnce.
-        
-        :param sequence: sebuah char sequence
-        :type sequence: str
-        :return result: daftar token
-        :type result: list
-        """
-        # Melakukan tokenisasi dari sequence yang telah diubah menjadi huruf kecil (case folding).
-        tokens = word_tokenize(sequence.lower())
+        tokens = word_tokenize(sequence.lower()) # Case folding and tokenizing.
         result = []
         for token in tokens:
             if token.isalpha():
                 result.append(token)
             else:
-                # Melakukan proses normalisasi.
-                # Normalisasi dilakukan dengan membuang seluruh tanda baca.
+                # Normalization.
                 normalized = ''.join(char for char in token if char.isalpha())
                 if normalized != '':
                     result.append(normalized)
         return result
+        # return [token for token in tokens if token.isalpha()]
