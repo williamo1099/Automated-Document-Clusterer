@@ -4,7 +4,7 @@ import shutil
 import pickle
 import tkinter as tk
 from tkinter import filedialog
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 from Document import Document
 from Indexer import Indexer
@@ -17,9 +17,9 @@ class gui:
         # Inisialisasi window antarmuka program.
         self.window = tk.Tk()
         self.window.title('Automated Document Clustering')
-        self.window.geometry('500x600')
+        self.window.geometry('600x500')
         self.window.resizable(width=False,
-                              height=False)        
+                              height=False)
         # Membuat menu bar.
         menu = tk.Menu(self.window)
         self.window.config(menu=menu)
@@ -197,6 +197,7 @@ class gui:
         """
         clusterer = Clusterer()
         fig = clusterer.cluster(self.index, self.corpus, cut_off)
+        fig.set_facecolor('#F0F0F0')
         # Melihat apakah canvas sudah pernah digambar atau belum.
         if self.canvas_status is True:
             # Status true menandakan bahwa canvas sudah pernah digambar.
@@ -219,7 +220,8 @@ class gui:
             # Set status canvas jadi True, menandakan canvas sudah digambar.     
             self.canvas_status = True
         # Menggambar dendrogram (visualisasi hasil pengelompokan).
-        self.canvas = FigureCanvasTkAgg(fig, master=self.window)
+        self.canvas = FigureCanvasTkAgg(fig,
+                                        master=self.window)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(pady=2)
         # Menambahkan frame result.

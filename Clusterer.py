@@ -163,7 +163,7 @@ class Clusterer:
         # Melakukan proses hierarchical clustering, dengan metode single-linkage.
         linked = linkage(proximity_matrix, method='single', metric='cosine')
         # Menggambar dendrogram berdasarkan hasil hierarchical clustering.
-        fig = plt.figure(figsize=(5, 5))
+        fig = plt.figure()
         dend = dendrogram(linked,
                     orientation='right',
                     color_threshold=cut_off,
