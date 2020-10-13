@@ -27,8 +27,15 @@ class gui:
         # Menu file.
         file_menu = tk.Menu(menu)
         menu.add_cascade(label='File', menu=file_menu)
+        file_menu.add_command(label='New', command=self.reset)
         file_menu.add_command(label='Save index', command=self.save_index)
         file_menu.add_command(label='Load index', command=self.load_index)
+        
+        self.folder_entry = tk.Entry(self.window, width=65)
+        self.folder_entry.pack()
+        self.folder_entry.configure(state='disabled')
+        select_button = tk.Button(self.window, text='Select folder', command=self.select_folder)
+        select_button.pack()
         
         # Button untuk cluster.
         cluster_button = tk.Button(master=self.window, text='Cluster', command=self.cluster)
@@ -97,38 +104,45 @@ class gui:
                 except:
                     print('Error copying file.')
     
+    def select_folder(self):
+        self.folder_path = filedialog.askdirectory()
+        self.folder_entry.configure(state='normal')
+        self.folder_entry.delete(0, 'end')
+        self.folder_entry.insert(0, self.folder_path)
+        self.folder_entry.configure(state='disabled')
+        
+        doc_titles = []
+        for root, directories, files in os.walk(self.folder_path):
+            for file in files:
+                if '.txt' in file:
+                    doc_titles.append(os.path.join(root, file))
+        
+        if len(doc_titles) > 1:
+            self.corpus = []
+            escaped_folder_path = str(self.folder_path) + '\\' 
+            for i in range(0, len(doc_titles)):
+                doc_id = 'doc_' + str(i)
+                doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
+                doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
+                doc_i = Document(doc_id, doc_title, doc_content)
+                self.corpus.append(doc_i)
+                
+            # Membangun inverted index berdasarkan dokumen teks dalam corpus.
+            if self.index is None:
+                indexer = Indexer()
+                for i in range(0, len(self.corpus)):
+                    indexer.index(self.corpus[i])
+                self.index = indexer.get_inverted_index()
+
+            self.ready_status = True
+    
     def cluster(self):
         # Ketika status False, harus dilakukan proses indexing yang digunakan untuk di-cluster.
-        if self.ready_status is False:
-            self.folder_path = filedialog.askdirectory()
-            doc_titles = []
-            for root, directories, files in os.walk(self.folder_path):
-                for file in files:
-                    if '.txt' in file:
-                        doc_titles.append(os.path.join(root, file))
-            
-            if len(doc_titles) > 1:
-                self.corpus = []
-                escaped_folder_path = str(self.folder_path) + '\\' 
-                for i in range(0, len(doc_titles)):
-                    doc_id = 'doc_' + str(i)
-                    doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
-                    doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
-                    doc_i = Document(doc_id, doc_title, doc_content)
-                    self.corpus.append(doc_i)
-                    
-                # Membangun inverted index berdasarkan dokumen teks dalam corpus.
-                if self.index is None:
-                    indexer = Indexer()
-                    for i in range(0, len(self.corpus)):
-                        indexer.index(self.corpus[i])
-                    self.index = indexer.get_inverted_index()
-                
-                # Melakukan proses clustering dan menggambarkan dendrogram.
-                self.draw_canvas(0)
-        else:
+        if self.ready_status is True:
             # Status True menandakan indeks sudah di-load dan siap untuk melakukan proses clustering.
             self.draw_canvas(0)
+        else:
+            self.show_warning_popup('Clustering process', 'There are no documents to be indexed.')
         
     def draw_canvas(self, cut_off=0):
         clusterer = Clusterer()
@@ -140,14 +154,14 @@ class gui:
             self.canvas.get_tk_widget().destroy()
         else:
             # Menambahkan slider (untuk keperluan cut-off).
-            slider = tk.Scale(self.window,
+            self.slider = tk.Scale(self.window,
                               from_=0.0,
                               to=clusterer.get_dendrogram_height(),
                               resolution=0.01,
                               variable=cut_off,
-                              command=lambda e:self.draw_canvas(slider.get()),
+                              command=lambda e:self.draw_canvas(self.slider.get()),
                               orient='horizontal')
-            slider.pack()            
+            self.slider.pack()            
             self.canvas_status = True
         
         # Menambahkan button organize.
@@ -163,3 +177,13 @@ class gui:
         
         # Menampilkan nilai CPCC (evaluasi clustering).
         print(clusterer.get_cophenetcoeff())
+    
+    def reset(self):
+        self.folder_entry.configure(state='normal')
+        self.folder_entry.delete(0, 'end')
+        self.folder_entry.configure(state='disabled')
+        
+        if self.canvas_status is True:
+            self.organize_button.destroy()
+            self.canvas.get_tk_widget().destroy()
+            self.slider.destroy()
