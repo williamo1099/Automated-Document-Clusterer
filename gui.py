@@ -14,7 +14,6 @@ class gui:
     
     def __init__(self):
         self.reset_variable()
-        
         # Inisialisasi window antarmuka program.
         self.window = tk.Tk()
         self.window.title('Automated Document Clustering')
@@ -39,13 +38,17 @@ class gui:
         self.folder_entry = tk.Entry(self.window,
                                      width=65)
         self.folder_entry.pack(in_=search_frame,
-                               side='left')
+                               side='left',
+                               padx=2,
+                               pady=2)
         self.folder_entry.configure(state='disabled')
         select_button = tk.Button(self.window,
                                   text='Select folder',
                                   command=self.select_folder)
         select_button.pack(in_=search_frame,
-                           side='right')
+                           side='right',
+                           padx=2,
+                           pady=2)
         # Membuat button untuk melakukan proses clustering.
         cluster_button = tk.Button(master=self.window,
                                    text='Cluster',
@@ -112,6 +115,7 @@ class gui:
         None.
 
         """
+        self.reset_program()
         # Mengambil path folder dan mengisi entry folder path.
         self.folder_path = filedialog.askdirectory()
         self.reset_folder_entry(self.folder_path)
@@ -207,27 +211,36 @@ class gui:
                               variable=cut_off,
                               command=lambda e:self.draw_canvas(self.slider.get()),
                               orient='horizontal')
-            self.slider.pack()
+            self.slider.pack(pady=5)
             # Menampilkan cophenet coefficient (sebagai evaluasi hasil pengelompokan).
-            evaluation = tk.Label(master=self.window,
+            self.evaluation = tk.Label(master=self.window,
                                 text='Cophenet coefficient : ' + str(clusterer.get_cophenetcoeff()))
-            evaluation.pack()
+            self.evaluation.pack(pady=2)
             # Set status canvas jadi True, menandakan canvas sudah digambar.     
             self.canvas_status = True
-        # Menambahkan button organize.
-        self.organize_button = tk.Button(master=self.window,
-                                    text='Organize',
-                                    command=lambda:self.organize_document(clusterer.get_cluster()))
-        self.organize_button.pack()
         # Menggambar dendrogram (visualisasi hasil pengelompokan).
         self.canvas = FigureCanvasTkAgg(fig, master=self.window)
         self.canvas.draw()
-        self.canvas.get_tk_widget().pack()
+        self.canvas.get_tk_widget().pack(pady=2)
+        # Menambahkan frame result.
+        self.result_frame = tk.Frame(self.window)
+        self.result_frame.pack(side='top')
+        # Menambahkan button organize.
+        organize_button = tk.Button(master=self.window,
+                                         text='Organize documents',
+                                         command=lambda:self.organize_document(clusterer.get_cluster()))
+        organize_button.pack(in_=self.result_frame,
+                             side='left',
+                             padx=5,
+                             pady=5)
         # Menambahkan button untuk download dendrogram.
-        self.download_button = tk.Button(master=self.window,
+        download_button = tk.Button(master=self.window,
                                     text='Download plot',
                                     command=lambda:self.save_plot(fig))
-        self.download_button.pack()
+        download_button.pack(in_=self.result_frame,
+                             side='right',
+                             padx=5,
+                             pady=5)
     
     def reset_canvas(self):
         """
@@ -239,8 +252,8 @@ class gui:
         None.
 
         """
-        self.organize_button.destroy()
-        self.download_button.destroy()
+        self.result_frame.destroy()
+        self.evaluation.destroy()
         self.canvas.get_tk_widget().destroy()
     
     def show_warning_popup(self, title, msg):
