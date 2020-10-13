@@ -13,9 +13,7 @@ from Clusterer import Clusterer
 class gui:
     
     def __init__(self):
-        self.index = None # Inverted index.
-        self.ready_status = False # Status yang menunjukkan proses cluster siap dilakukan tanpa melakukan proses indexing.
-        self.canvas_status = False # Status yang menunjukkan canvas sudah tergambar atau belum.
+        self.reset_variable()
         
         self.window = tk.Tk()
         self.window.title('Document Clustering')
@@ -27,23 +25,29 @@ class gui:
         # Menu file.
         file_menu = tk.Menu(menu)
         menu.add_cascade(label='File', menu=file_menu)
-        file_menu.add_command(label='New', command=self.reset)
+        file_menu.add_command(label='New', command=self.reset_program)
         file_menu.add_command(label='Save index', command=self.save_index)
         file_menu.add_command(label='Load index', command=self.load_index)
         
+        # Membuat frame untuk proses pengambilan dokumen teks.
+        search_frame = tk.Frame(self.window)
+        search_frame.pack(side='top')
         self.folder_entry = tk.Entry(self.window, width=65)
-        self.folder_entry.pack()
+        self.folder_entry.pack(in_=search_frame, side='left')
         self.folder_entry.configure(state='disabled')
         select_button = tk.Button(self.window, text='Select folder', command=self.select_folder)
-        select_button.pack()
+        select_button.pack(in_=search_frame, side='right')
         
-        # Button untuk cluster.
+        # Membuat frame untuk proses cluster.
+        cluster_frame = tk.Frame(self.window)
+        cluster_frame.pack(side='top')
         cluster_button = tk.Button(master=self.window, text='Cluster', command=self.cluster)
-        cluster_button.pack()
+        cluster_button.pack(in_=cluster_frame)
         
     def start(self):
         """
-        Method untuk memulai tampilan antarmuka.
+        Method untuk memulai menjalankan program.
+        Tampilan antarmuka program akan ditampilkan.
 
         Returns
         -------
@@ -51,52 +55,65 @@ class gui:
 
         """
         self.window.mainloop()
-        
-    def show_warning_popup(self, title, msg):
+    
+    def reset_program(self):
         """
-        Method untuk menampilkan popup warning.
-
-        Parameters
-        ----------
-        title : str
-            Judul dari popup warning.
-        msg : str
-            Isi dari popup warning.
+        Method untuk melakukan reset keseluruhan program.
+        Dengan reset, kondisi program akan menjadi seperti kondisi awal program.
 
         Returns
         -------
         None.
 
         """
-        warning_popup = tk.Tk()
-        warning_popup.wm_title(title)
-        label = tk.Label(warning_popup, text=msg)
-        label.pack(side='top', fill='x', pady=10)
-        ok_button = tk.Button(warning_popup, text='Ok', command=warning_popup.destroy)
-        ok_button.pack()
-        warning_popup.mainloop()
-        
+        # Melihat apakah canvas sudah pernah digambar atau belum.
+        if self.canvas_status is True:
+            # Status True menandakan canvas sudah pernah digambar.
+            self.reset_canvas()
+            self.slider.destroy()
+        # Menghapus seluruh isi variable yang ada.
+        self.reset_variable()
+        # Menghapus isi dari entry folder path.
+        self.reset_folder_entry()
+
+    def reset_variable(self):
+        """
+        Method untuk melakukan reset terhadap seluruh variable status yang telah disimpan.
+        Variable folder_path menyimpan path folder berisi dokumen teks yang dikelompokkan.
+        Variable index menyimpan inverted index yang telah dibangun.
+        Variable ready_status menandakan apakah dendrogram siap untuk digambarkan dalam canvas.
+        Variable canvas_status menandakan apakah dnedrogram telah tergambar dalam canvas.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.folder_path = ''
+        self.index = None
+        self.ready_status = False
+        self.canvas_status = False
+    
     def select_folder(self):
         """
-        Method untuk memilih folder yang berisi dokumen teks untuk di-cluster.
+        Method untuk memilih path dari folder dokumen teks.
+        Jika jumlah dokumen teks > 1, inverted index akan dibangun.
 
         Returns
         -------
         None.
 
         """
+        # Mengambil path folder dan mengisi entry folder path.
         self.folder_path = filedialog.askdirectory()
-        self.folder_entry.configure(state='normal')
-        self.folder_entry.delete(0, 'end')
-        self.folder_entry.insert(0, self.folder_path)
-        self.folder_entry.configure(state='disabled')
-        
+        self.reset_folder_entry(self.folder_path)
+        # Mengambil seluruh dokumen teks yang ada (dalam format .txt).
         doc_titles = []
         for root, directories, files in os.walk(self.folder_path):
             for file in files:
                 if '.txt' in file:
                     doc_titles.append(os.path.join(root, file))
-        
+        # Mengecek jumlah dokumen teks yang ada.
         if len(doc_titles) > 1:
             self.corpus = []
             escaped_folder_path = str(self.folder_path) + '\\' 
@@ -106,16 +123,127 @@ class gui:
                 doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
                 doc_i = Document(doc_id, doc_title, doc_content)
                 self.corpus.append(doc_i)
-                
-            # Membangun inverted index berdasarkan dokumen teks dalam corpus.
+            # Membangun inverted index.
             if self.index is None:
                 indexer = Indexer()
                 for i in range(0, len(self.corpus)):
                     indexer.index(self.corpus[i])
                 self.index = indexer.get_inverted_index()
-
+            # Set ready_status menjadi True, menandakan proses clustering siap untuk dilakukan.
             self.ready_status = True
+
+    def reset_folder_entry(self, new_path=''):
+        self.folder_entry.configure(state='normal')
+        self.folder_entry.delete(0, 'end')
+        self.folder_entry.insert(0, new_path)
+        self.folder_entry.configure(state='disabled')
+        
+    def cluster(self):
+        """
+        Method untuk mempersiapkan proses clustering.
+        Persiapan dilakukan dengan mengecek apakah dokumen teks tersedia untuk dikelompokkan.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Melihat apakah proses clustering siap dilakukan.
+        if self.ready_status is True:
+            # Status True menandakan bahwa clustering siap dilakukan.
+            self.draw_canvas(0)
+        else:
+            self.show_warning_popup('Clustering process', 'There are no documents to be indexed.') 
+
+    def draw_canvas(self, cut_off=0):
+        """
+        Method untuk menggambarkan plot dalam canvas.
+        Jika canvas sudah pernah digambar sebelumnya, isi canvas akan dihapus dahulu.
+
+        Parameters
+        ----------
+        cut_off : float, optional
+            Ketinggian titik cut-off. Nilai default adalah 0.
+
+        Returns
+        -------
+        None.
+
+        """
+        clusterer = Clusterer()
+        fig = clusterer.cluster(self.index, self.corpus, cut_off)
+        # Melihat apakah canvas sudah pernah digambar atau belum.
+        if self.canvas_status is True:
+            # Status true menandakan bahwa canvas sudah pernah digambar.
+            self.reset_canvas()
+        else:
+            # Status false menandakan bahwa canvas belum pernah digambar.
+            # Menambahkan slider untuk mengatur ketinggian titik cut-off.
+            self.slider = tk.Scale(self.window,
+                              from_=0.0,
+                              to=clusterer.get_dendrogram_height(),
+                              resolution=0.01,
+                              variable=cut_off,
+                              command=lambda e:self.draw_canvas(self.slider.get()),
+                              orient='horizontal')
+            self.slider.pack()       
+            # Set status canvas jadi True, menandakan canvas sudah digambar.     
+            self.canvas_status = True
+        # Menambahkan button organize.
+        self.organize_button = tk.Button(master=self.window,
+                                    text='Organize',
+                                    command=lambda:self.organize_document(clusterer.get_cluster()))
+        self.organize_button.pack()
+        # Menggambar dendrogram (visualisasi hasil pengelompokan).
+        self.canvas = FigureCanvasTkAgg(fig, master=self.window)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack()
+        # Menampilkan nilai CPCC (evaluasi hasil pengelompokan).
+        print(clusterer.get_cophenetcoeff())
     
+    def reset_canvas(self):
+        """
+        Method untuk menghapus canvas yang telah digambarkan sebelumnya.
+        Button organize dan plot dalam canvas akan dihapus.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.organize_button.destroy()
+        self.canvas.get_tk_widget().destroy()
+    
+    def show_warning_popup(self, title, msg):
+        """
+        Method untuk menampilkan sebuah pop-up warning.
+
+        Parameters
+        ----------
+        title : string
+            Judul dari pop-up warning.
+        msg : string
+            Isi pesan dari pop-up warning.
+
+        Returns
+        -------
+        None.
+
+        """
+        warning_popup = tk.Tk()
+        warning_popup.wm_title(title)
+        label = tk.Label(warning_popup,
+                         text=msg)
+        label.pack(side='top',
+                   fill='x',
+                   pady=10)
+        ok_button = tk.Button(warning_popup,
+                              text='Ok',
+                              command=warning_popup.destroy)
+        ok_button.pack()
+        # Menampilkan pop-up warning.
+        warning_popup.mainloop()
+        
     def save_index(self):
         """
         Method untuk menyimpan inverted index yang telah dibangun.
@@ -126,158 +254,82 @@ class gui:
         None.
 
         """
+        # Mengambil path untuk menyimpan file index.
         index_path = filedialog.asksaveasfilename(defaultextension='.pickle',
                                                   filetypes=(('pickle file', '*.pickle'),))
+        # Melihat apakah index kosong atau tidak.
         if self.index is not None:
-            # Menyimpan data-data (selain indeks) yang dibutuhkan.
+            # Menyimpan metadata.
             metadata = {}
             metadata['folder_path'] = self.folder_path
             metadata['corpus'] = self.corpus
-            
+            # Menyimpan keseluruhan data.
             data = {}
             data['index'] = self.index
             data['metadata'] = metadata
             with open(index_path, 'wb') as handle:
                 pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
+            # Menandakan bahwa tidak ada index yang disimpan.
             self.show_warning_popup('Saving an index', 'There is no index to be saved!')
 
     def load_index(self):
         """
-        Method untuk me-load inverted index.
+        Method untuk memuat inverted index yang telah disimpan sebelumnya.
+        File yang diterima adalah file pickle (sesuai dengan penyimpanan).
 
         Returns
         -------
         None.
 
         """
+        # Mengambil file path untuk index.
         index_path = filedialog.askopenfilename()
         try:
             with open(index_path, 'rb') as handle:
                 data = pickle.load(handle)
-                # Mengambil inverted index yang telah di-load.
+                # Mengambil data inverted index.
                 self.index = data['index']
-                # Mengambil data-data (selain indeks) yang dibutuhkan.
+                # Mengambil metadata yang tersimpan.
                 metadata = data['metadata']
                 self.folder_path = metadata['folder_path']
                 self.corpus = metadata['corpus']
-                # Menandakan status sebagai True.
+                # Menandakan status ready menjadi True, menandakan proses clustering siap dilakukan.
                 self.ready_status = True
+                # Menampilkan pop-up warning yang memberi tahu bahwa index berhasil dimuat.
                 self.show_warning_popup('Loading an index', 'An index is successfully loaded!')
         except EnvironmentError:
+            # Tidak ada file index yang dimuat.
             self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
     
     def organize_document(self, doc_label):
         """
-        Method untuk memasukkan dokumen-dokumen teks ke dalam masing-masing folder cluster.
+        Method untuk mengelompokkan seluruh dokumen teks.
+        Pengelompokan dilakukan dengan memasukkan setiap dokumen ke dalam folder cluster masing-masing.
+        Hasil pengelompokan disimpan dalam satu folder organized.
 
         Parameters
         ----------
-        doc_label : dict
-            Daftar cluster dan isi masing-masing dokumen teks.
+        doc_label : dictionary
+            Daftar cluster dan isi dokumen teks di dalam cluster.
+            Contohnya adalah {cluster1 : [doc1, doc2], cluster2 : [doc3]}
 
         Returns
         -------
         None.
 
         """
+        # Membuat sebuah folder bernama organized.
         folder = 'organized'
         organized_folder = os.path.join(self.folder_path, folder)
         if not os.path.exists(organized_folder):
             os.mkdir(organized_folder)
-        
+        # Mengelompokkan dokumen teks ke dalam folder cluster darinya.
         for label, doc in doc_label.items():
+            # Membuat folder cluster.
             ci_folder = os.path.join(organized_folder, label)
             os.mkdir(ci_folder)
             for item in doc:
-                # Copy dan move file dokumen teks ke folder ci_folder.
+                # Menyalin dan memindahkan dokumen teks ke folder cluster.
                 source = os.path.join(self.folder_path, item + '.txt')
-                try:
-                    shutil.copyfile(source, ci_folder + '/' + item + '.txt')
-                except:
-                    print('Error copying file.')
-    
-    def cluster(self):
-        """
-        Method untuk melakukan proses clustering.
-
-        Returns
-        -------
-        None.
-
-        """
-        # Ketika status False, harus dilakukan proses indexing yang digunakan untuk di-cluster.
-        if self.ready_status is True:
-            # Status True menandakan indeks sudah di-load dan siap untuk melakukan proses clustering.
-            self.draw_canvas(0)
-        else:
-            self.show_warning_popup('Clustering process', 'There are no documents to be indexed.')
-        
-    def draw_canvas(self, cut_off=0):
-        """
-        Method untuk menggambarkan dendrogram dalam canvas.
-
-        Parameters
-        ----------
-        cut_off : float, optional
-            Ketinggian cut-off (pemotong dari dendrogram). The default is 0.
-
-        Returns
-        -------
-        None.
-
-        """
-        clusterer = Clusterer()
-        fig = clusterer.cluster(self.index, self.corpus, cut_off)
-        
-        # Ketika status True, canvas sudah pernah digambar dan harus dihapus.
-        if self.canvas_status is True:
-            self.organize_button.destroy()
-            self.canvas.get_tk_widget().destroy()
-        else:
-            # Menambahkan slider (untuk keperluan cut-off).
-            self.slider = tk.Scale(self.window,
-                              from_=0.0,
-                              to=clusterer.get_dendrogram_height(),
-                              resolution=0.01,
-                              variable=cut_off,
-                              command=lambda e:self.draw_canvas(self.slider.get()),
-                              orient='horizontal')
-            self.slider.pack()            
-            self.canvas_status = True
-        
-        # Menambahkan button organize.
-        self.organize_button = tk.Button(master=self.window,
-                                    text='Organize',
-                                    command=lambda:self.organize_document(clusterer.get_cluster()))
-        self.organize_button.pack()
-        
-        # Menggambar dendrogram.
-        self.canvas = FigureCanvasTkAgg(fig, master=self.window)
-        self.canvas.draw()
-        self.canvas.get_tk_widget().pack()
-        
-        # Menampilkan nilai CPCC (evaluasi clustering).
-        print(clusterer.get_cophenetcoeff())
-    
-    def reset(self):
-        """
-        Method untuk reset keseluruhan kondisi awal program.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.index = None
-        self.ready_status = False
-        self.canvas_status = False
-        self.folder_path = ''
-        self.folder_entry.configure(state='normal')
-        self.folder_entry.delete(0, 'end')
-        self.folder_entry.configure(state='disabled')
-        
-        if self.canvas_status is True:
-            self.organize_button.destroy()
-            self.canvas.get_tk_widget().destroy()
-            self.slider.destroy()
+                shutil.copyfile(source, ci_folder + '/' + item + '.txt')
