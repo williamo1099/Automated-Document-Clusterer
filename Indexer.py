@@ -13,8 +13,8 @@ class Indexer:
 
         Returns
         -------
-        inverted_index
-            Inverted index yang menyimpan pemetaan term ke lokasi term tersebut berada..
+        inverted_index : dictionary
+            Inverted index yang menyimpan pemetaan term ke lokasi term tersebut berada.
 
         """
         return self.inverted_index
@@ -22,33 +22,35 @@ class Indexer:
     def preprocess(self, document):
         """
         Method untuk mengambil daftar term dari dokumen teks.
-        Proses yang dilakukan adalah tokenizing dan linguistic preprocessing.
+        Proses yang dilakukan adalah proses tokenisasi dan pre-pemrosesan linguistik.
 
         Parameters
         ----------
-        document : Document.Document
+        document : Document
             Dokumen teks.
 
         Returns
         -------
         dictionary : list
-            Daftar term dalam dokumen teks.
+            Daftar term yang ada dalam dokumen teks.
 
         """
+        # Melakukan proses tokenisasi.
         tokenizer = Tokenizer()
-        preprocesser = LinguisticPreprocesser()
         token_list = tokenizer.tokenize(document.get_content())
+        # Melakukan pre-pemrosesan linguistik (stop words removal, stemming).
+        preprocesser = LinguisticPreprocesser()
         dictionary = preprocesser.preprocess(token_list)
         return dictionary
     
     def index(self, document):
         """
         Method untuk membangun inverted index.
-        Pembangunan inverted index dilakukan untuk dokumen teks satu per satu.
+        Pembangunan inverted index dilakukan untuk sebuah dokumen teks (satu per satu).
 
         Parameters
         ----------
-        document : Document.Document
+        document : Document
             Dokumen teks.
 
         Returns
@@ -56,14 +58,21 @@ class Indexer:
         None.
 
         """
+        # Mendapatkan daftar term dari dokumen teks.
         dictionary = self.preprocess(document)
+        # Mengambil id dari dokumen teks.
         doc_id = document.get_id()
-        
         for term in dictionary:
+            # Melihat apakah term ada dalam inverted index.
             if term not in self.inverted_index:
+                # Jika term belum ada, dibuat key baru dalam index.
+                # Sebuah key berisi dictionary kosong, untuk menyimpan dokumen teks dan frekuensinya.
+                # Contohnya, {doc1 : 1, doc2 : 3}.
                 self.inverted_index[term] = {}
-            
+            # Melihat apakah sebuah dokumen teks sudah tercatat dalam daftar posting index.
             if doc_id not in self.inverted_index[term]:
+                # Jika belum ada, init frekuensinya 1.
                 self.inverted_index[term][doc_id] = 1
             else:
+                # Jika sudah ada, frekuensinya ditambah sebesar 1.
                 self.inverted_index[term][doc_id] += 1

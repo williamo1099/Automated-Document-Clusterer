@@ -11,10 +11,11 @@ class Document:
     def get_id(self):
         """
         Method untuk mendapatkan id dari dokumen teks.
+        Id dokumen teks digunakan sebagai pembeda dokumen teks.
 
         Returns
         -------
-        doc_id : str
+        doc_id : string
             Id dari dokumen teks.
 
         """
@@ -26,7 +27,7 @@ class Document:
 
         Returns
         -------
-        title : str
+        title : string
             Judul dari dokumen teks.
 
         """
@@ -38,7 +39,7 @@ class Document:
 
         Returns
         -------
-        content : str
+        content : string
             Isi dari dokumen teks.
 
         """
@@ -47,6 +48,7 @@ class Document:
     def get_vector(self):
         """
         Method untuk mendapatkan vektor sebagai representasi dokumen teks.
+        Vektor yang digunakan berisi bobot tf-idf dari masing-masing term yang ada.
 
         Returns
         -------
@@ -58,27 +60,30 @@ class Document:
     
     def set_vector(self, index, corpus_size):
         """
-        Method untuk membangun vektor sebagai representasi dokumen teks.
-        Vektor yang digunakan berisi bobot tf-idf dari setiap term yang ada. Jika tidak ada, bobot bernilai 0.
+        Method untuk menghitung vektor yang digunakan sebagai representasi dokumen teks.
+        Proses yang dilakukan adalah menghitung bobot untuk masing-masing term.
+        Jika term tidak ada dalam dokumen teks, bobotnya adalah 0.
 
         Parameters
         ----------
-        index : dict
-            Inverted index yang menyimpan pemetaan term ke lokasi term tersebut berada.
+        index : dictionary
+            Inverted index yang telah dibangun.
         corpus_size : int
-            Jumlah seluruh dokumen teks yang ada dalam corpus.
+            Jumlah seluruh dokumen teks yang ada.
 
         Returns
         -------
         None.
 
         """
+        # Mengambil setiap term yang ada dalam index, diurutkan menaik menurut alphabet.
         dictionary = sorted(list(index.keys()), key=str.lower)
         self.vector = []
         for term in dictionary:
             weight = 0
+            # Mengecek apakah term ada dalam dokumen teks, jika tidak bobot bernilai 0.
             if self.get_id() in index[term]:
-                # Pembobotan term dengan bobot tf-idf.
+                # Menghitung bobot term dengan menggunakan bobot tf-idf.
                 weight = (math.log10(index[term][self.get_id()] + 1)) * (math.log10((corpus_size) / len(index[term])))
             self.vector.append(weight)
     
@@ -101,12 +106,10 @@ class Document:
         # Jika other_doc yang dibandingkan adalah dokumen teks ini sendiri.
         if other_doc.get_id() == self.doc_id:
             return 0
-        
-        # Mengambil vektor dari masing-masing dokumen teks.
+        # Mengambil vektor dari kedua dokumen teks.
         vector_i = self.get_vector()
         vector_j = other_doc.get_vector()
         
-        # Fungsi nested dotProduct (untuk menghitung hasil kali dua vektor).
         def dotProduct(vector_i, vector_j):
             """
             Method untuk menghitung hasil kali titik (dot product) antara dua vektor.
@@ -129,7 +132,7 @@ class Document:
                 result += (vector_i[i] * vector_j[i])
             return result
         
-        # Menghitung jarak antara dua vektor dengan menggunakan jarak cosine.
+        # Menghitung besar sudut antara kedua vektor tersebut dengan jarak cosine.
         numerator = dotProduct(vector_i, vector_j)
         denominator = math.sqrt(dotProduct(vector_i, vector_i) *
                                 dotProduct(vector_j, vector_j))

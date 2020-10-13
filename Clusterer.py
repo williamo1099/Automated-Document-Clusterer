@@ -10,17 +10,19 @@ class Clusterer:
 
         Parameters
         ----------
-        dend : dict
-            Dendrogram sebagai visualisasi hasil pengelompokan.
+        dend : dictionary
+            Dendrogram visualisasi hasil pengelompokan.
 
         Returns
         -------
         None.
 
         """
+        # Mengambil seluruh nilai dalam dcoord (menjadi flat array).
         dcoord_flat_list = []
         for item in dend['dcoord']:
             dcoord_flat_list += item
+        # Mengambil nilai maksimal dari dcoord_flat_list.
         self.dendrogram_height = max(dcoord_flat_list)
     
     def get_dendrogram_height(self):
@@ -29,7 +31,7 @@ class Clusterer:
 
         Returns
         -------
-        dendrogram_height : float64
+        dendrogram_height : float
             Tinggi maksimal dari dendrogram.
 
         """
@@ -37,13 +39,14 @@ class Clusterer:
     
     def set_cluster(self, dend):
         """
-        Method untuk mengelompokkan dokumen-dokumen teks yang ada.
-        Proses pengelompokan dokumen teks dilakukan berdasarkan warna (berdasarkan titik cut-off).
+        Method untuk mengelompokkan dokumen teks yang ada berdasarkan dendrogram.
+        Pengelompokan dilakukan berdasarkan warna (berdasarkan ketinggian titik cut-off).
+        Sumber : http://www.nxn.se/valent/extract-cluster-elements-by-color-in-python.
 
         Parameters
         ----------
-        dend : dict
-            Dendrogram sebagai visualisasi hasil pengelompokan.
+        dend : dictionary
+            Dendrogram visualisasi hasil pengelompokan.
 
         Returns
         -------
@@ -61,12 +64,13 @@ class Clusterer:
     
     def get_cluster(self):
         """
-        Method untuk mendapatkan pengelompokan dokumen-dokumen teks.
+        Method untuk mendapatkan pengelompokan dokumen teks.
 
         Returns
         -------
-        cluster_list : dict
+        cluster_list : dictionary
             Daftar cluster beserta dokumen teks anggotanya.
+            Contohnya adalah {cluster1 : [doc1, doc2], cluster2 : [doc3]}.
 
         """
         return self.cluster_list
@@ -74,13 +78,14 @@ class Clusterer:
     def set_cophenet_coeff(self, proximity_matrix, linkage):
         """
         Method untuk menghitung nilai koefisien cophenet.
+        Nilai koefisien cophenet digunakan sebagai evaluasi hasil pengelompokan.
 
         Parameters
         ----------
         proximity_matrix : list
             Matriks jarak 1D.
-        linkage : numpy.ndarray
-            Hasil pengelompokan dengan algoritma hierarchical clustering.
+        linkage : array
+            Pengelompokan dengan algoritma hierarchical clustering.
 
         Returns
         -------
@@ -96,8 +101,8 @@ class Clusterer:
 
         Returns
         -------
-        cophenet_coeff : numpy.ndarray
-            Nilai koefisien cophenet.
+        cophenet_coeff : float
+            Nilai koefisien cophenet sebagai evaluasi hasil pengelompokan.
 
         """
         return self.cophenet_coeff
@@ -105,12 +110,12 @@ class Clusterer:
     def create_proximity_matrix(self, index, corpus):
         """
         Method untuk membangun matriks jarak untuk seluruh dokumen teks.
-        Matriks jarak yang dibangun adalah matriks 1D salah satu sisi dari matriks jarak yang sesungguhnya.
+        Matriks jarak yang dikembalikan adalah matriks jarak 1D (condensed proximity matrix).
 
         Parameters
         ----------
-        index : dict
-            Inverted index yang menyimpan pemetaan term ke lokasi term tersebut berada.
+        index : dictionary
+            Inverted index.
         corpus : list
             Daftar seluruh dokumen teks.
 
@@ -120,11 +125,10 @@ class Clusterer:
             Matriks jarak 1D.
 
         """
-        # Untuk setiap dokumen teks yang ada, hitung vektor sebagai representasinya.
+        # Menghitung representasi vektor masing-masing dokumen teks yang ada.
         for doc_i in corpus:
             doc_i.set_vector(index, len(corpus))
-            
-        # Berdasarkan vektor tersebut, akan dihitung jarak antar dokumen teks yang ada.
+        # Menghitung matriks jarak berdasarkan representasi vektor.
         matrix = []
         for i in range(1, len(corpus)):
             doc_i = corpus[i]
@@ -137,35 +141,34 @@ class Clusterer:
     def cluster(self, index, corpus, cut_off=0):
         """
         Method untuk melakukan proses hierarchical clustering.
-        Proses hierarchical clusteirng dilakukan berdasarkan matriks jarak yang telah dibangun.
+        Proses dilakukan berdasarkan matriks jarak 1D.
 
         Parameters
         ----------
-        index : dict
-            Inverted index yang menyimpan pemetaan term ke lokasi term tersebut berada.
+        index : dictionary
+            Inverted index.
         corpus : list
             Daftar seluruh dokumen teks.
         cut_off : float, optional
-            Ketinggian titik cut-off. The default is 0.
+            Ketinggian titik cut-off. Nilai default adalah 0.0.
 
         Returns
         -------
-        fig : matplotlib.figure.Figure
-            Dendrogram sebagai visualisasi hasil pengelompokan.
+        fig : figure
+            Dendrogram visualisasi hasil pengelompokan.
 
         """
+        # Menghitung matriks jarak 1D.
         proximity_matrix = self.create_proximity_matrix(index, corpus)
-        # Melakukan proses hierarchical clustering.
-        # Metode yang digunakan adalah single-linkage.
+        # Melakukan proses hierarchical clustering, dengan metode single-linkage.
         linked = linkage(proximity_matrix, method='single', metric='cosine')
-        
-        # Menggambarkan dendrogram berdasarkan hasil hierarchical clustering.
+        # Menggambar dendrogram berdasarkan hasil hierarchical clustering.
         fig = plt.figure(figsize=(5, 5))
         dend = dendrogram(linked,
                     orientation='right',
                     color_threshold=cut_off,
                     labels=[doc.get_title() for doc in corpus])
-        # Menggambarkan garis pemotong (cut-off).       
+        # Menggambarkan garis pemotong (cut-off).
         plt.axvline(x=cut_off, linestyle='dashed')
         # Menyimpan daftar cluster beserta anggota-anggotanya.
         self.set_cluster(dend)

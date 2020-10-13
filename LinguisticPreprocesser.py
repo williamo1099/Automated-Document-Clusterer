@@ -1,14 +1,13 @@
 
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
-from nltk.stem import WordNetLemmatizer 
 
 class LinguisticPreprocesser:
     
     def remove_stopwords(self, token_list):
         """
         Method untuk membuang token yang merupakan stop words.
-        Daftar stop words adalah stop words dalam bahasa Inggris yang didapatkan dari nltk.corpus.stopwords.
+        Daftar stop words adalah stop words dalam bahasa Inggris.
 
         Parameters
         ----------
@@ -23,9 +22,10 @@ class LinguisticPreprocesser:
         """
         stop_list = stopwords.words('english')
         result = []
-        for tokens in token_list:
-            if tokens not in stop_list:
-                result.append(tokens)
+        for token in token_list:
+            # Melihat apakah token termasuk sebuah stop words.
+            if token not in stop_list:
+                result.append(token)
         return result
     
     def stem(self, token_list):
@@ -46,14 +46,15 @@ class LinguisticPreprocesser:
         """
         stemmer = PorterStemmer()
         result = []
-        for tokens in token_list:
-            result.append(stemmer.stem(tokens))
+        for token in token_list:
+            # Melakukan proses stemming terhadap token.
+            stemmed = stemmer.stem(token)
+            result.append(stemmed)
         return result
     
     def preprocess(self, token_list):
         """
-        Method untuk melakukan proses linguistic preprocessing secara keseluruhan.
-        Linguistic preprocessing yang dilakukan adalah proses pembuangan stop words dan stemming.
+        Method untuk melakukan keseluruhan pre-pemrosesan linguistik.
 
         Parameters
         ----------
@@ -63,7 +64,7 @@ class LinguisticPreprocesser:
         Returns
         -------
         result : list
-            Daftar term yang didapatkan.
+            Daftar term.
 
         """
         return self.stem(self.remove_stopwords(token_list))

@@ -5,28 +5,29 @@ class Tokenizer:
     
     def tokenize(self, sequence):
         """
-        Method untuk melakukan tokenisasi terhadap sebuah char sequence.
+        Method untuk melakukan tokenisasi terhadap char sequence.
+        Char sequence adalah serangkaian kata-kata dalam sebuah dokumen teks.
 
         Parameters
         ----------
-        sequence : str
-            Sebuah char sequence.
+        sequence : string
+            Sebuah char sequence dari dokumen teks.
 
         Returns
         -------
         result : list
-            Daftar tokne.
+            Daftar token.
 
         """
         # Melakukan tokenisasi dari sequence yang telah diubah menjadi huruf kecil (case folding).
         tokens = word_tokenize(sequence.lower())
         result = []
         for token in tokens:
+            # Melihat apakah dalam token terdapat sebuah tanda baca.
             if token.isalpha():
                 result.append(token)
             else:
-                # Melakukan proses normalisasi.
-                # Normalisasi dilakukan dengan membuang seluruh tanda baca.
+                # Jika ada tanda baca, seluruh tanda baca yang ada akan dibuang.
                 normalized = ''.join(char for char in token if char.isalpha())
                 if normalized != '':
                     result.append(normalized)

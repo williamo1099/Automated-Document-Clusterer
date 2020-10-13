@@ -325,7 +325,7 @@ class gui:
         ----------
         doc_label : dictionary
             Daftar cluster dan isi dokumen teks di dalam cluster.
-            Contohnya adalah {cluster1 : [doc1, doc2], cluster2 : [doc3]}
+            Contohnya adalah {cluster1 : [doc1, doc2], cluster2 : [doc3]}.
 
         Returns
         -------
