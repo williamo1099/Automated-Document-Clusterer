@@ -42,9 +42,32 @@ class gui:
         cluster_button.pack()
         
     def start(self):
+        """
+        Method untuk memulai tampilan antarmuka.
+
+        Returns
+        -------
+        None.
+
+        """
         self.window.mainloop()
         
     def show_warning_popup(self, title, msg):
+        """
+        Method untuk menampilkan popup warning.
+
+        Parameters
+        ----------
+        title : str
+            Judul dari popup warning.
+        msg : str
+            Isi dari popup warning.
+
+        Returns
+        -------
+        None.
+
+        """
         warning_popup = tk.Tk()
         warning_popup.wm_title(title)
         label = tk.Label(warning_popup, text=msg)
@@ -52,59 +75,16 @@ class gui:
         ok_button = tk.Button(warning_popup, text='Ok', command=warning_popup.destroy)
         ok_button.pack()
         warning_popup.mainloop()
-    
-    def save_index(self):
-        index_path = filedialog.asksaveasfilename(defaultextension='.pickle',
-                                                  filetypes=(('pickle file', '*.pickle'),))
-        if self.index is not None:
-            # Menyimpan data-data (selain indeks) yang dibutuhkan.
-            metadata = {}
-            metadata['folder_path'] = self.folder_path
-            metadata['corpus'] = self.corpus
-            
-            data = {}
-            data['index'] = self.index
-            data['metadata'] = metadata
-            with open(index_path, 'wb') as handle:
-                pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        else:
-            self.show_warning_popup('Saving an index', 'There is no index to be saved!')
-
-    def load_index(self):
-        index_path = filedialog.askopenfilename()
-        try:
-            with open(index_path, 'rb') as handle:
-                data = pickle.load(handle)
-                # Mengambil inverted index yang telah di-load.
-                self.index = data['index']
-                # Mengambil data-data (selain indeks) yang dibutuhkan.
-                metadata = data['metadata']
-                self.folder_path = metadata['folder_path']
-                self.corpus = metadata['corpus']
-                # Menandakan status sebagai True.
-                self.ready_status = True
-                self.show_warning_popup('Loading an index', 'An index is successfully loaded!')
-        except EnvironmentError:
-            self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
-    
-    def organize_document(self, doc_label):
-        folder = 'organized'
-        organized_folder = os.path.join(self.folder_path, folder)
-        if not os.path.exists(organized_folder):
-            os.mkdir(organized_folder)
         
-        for label, doc in doc_label.items():
-            ci_folder = os.path.join(organized_folder, label)
-            os.mkdir(ci_folder)
-            for item in doc:
-                # Copy dan move file dokumen teks ke folder ci_folder.
-                source = os.path.join(self.folder_path, item + '.txt')
-                try:
-                    shutil.copyfile(source, ci_folder + '/' + item + '.txt')
-                except:
-                    print('Error copying file.')
-    
     def select_folder(self):
+        """
+        Method untuk memilih folder yang berisi dokumen teks untuk di-cluster.
+
+        Returns
+        -------
+        None.
+
+        """
         self.folder_path = filedialog.askdirectory()
         self.folder_entry.configure(state='normal')
         self.folder_entry.delete(0, 'end')
@@ -136,7 +116,96 @@ class gui:
 
             self.ready_status = True
     
+    def save_index(self):
+        """
+        Method untuk menyimpan inverted index yang telah dibangun.
+        Inverted index disimpan dalam pickle.
+
+        Returns
+        -------
+        None.
+
+        """
+        index_path = filedialog.asksaveasfilename(defaultextension='.pickle',
+                                                  filetypes=(('pickle file', '*.pickle'),))
+        if self.index is not None:
+            # Menyimpan data-data (selain indeks) yang dibutuhkan.
+            metadata = {}
+            metadata['folder_path'] = self.folder_path
+            metadata['corpus'] = self.corpus
+            
+            data = {}
+            data['index'] = self.index
+            data['metadata'] = metadata
+            with open(index_path, 'wb') as handle:
+                pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        else:
+            self.show_warning_popup('Saving an index', 'There is no index to be saved!')
+
+    def load_index(self):
+        """
+        Method untuk me-load inverted index.
+
+        Returns
+        -------
+        None.
+
+        """
+        index_path = filedialog.askopenfilename()
+        try:
+            with open(index_path, 'rb') as handle:
+                data = pickle.load(handle)
+                # Mengambil inverted index yang telah di-load.
+                self.index = data['index']
+                # Mengambil data-data (selain indeks) yang dibutuhkan.
+                metadata = data['metadata']
+                self.folder_path = metadata['folder_path']
+                self.corpus = metadata['corpus']
+                # Menandakan status sebagai True.
+                self.ready_status = True
+                self.show_warning_popup('Loading an index', 'An index is successfully loaded!')
+        except EnvironmentError:
+            self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
+    
+    def organize_document(self, doc_label):
+        """
+        Method untuk memasukkan dokumen-dokumen teks ke dalam masing-masing folder cluster.
+
+        Parameters
+        ----------
+        doc_label : dict
+            Daftar cluster dan isi masing-masing dokumen teks.
+
+        Returns
+        -------
+        None.
+
+        """
+        folder = 'organized'
+        organized_folder = os.path.join(self.folder_path, folder)
+        if not os.path.exists(organized_folder):
+            os.mkdir(organized_folder)
+        
+        for label, doc in doc_label.items():
+            ci_folder = os.path.join(organized_folder, label)
+            os.mkdir(ci_folder)
+            for item in doc:
+                # Copy dan move file dokumen teks ke folder ci_folder.
+                source = os.path.join(self.folder_path, item + '.txt')
+                try:
+                    shutil.copyfile(source, ci_folder + '/' + item + '.txt')
+                except:
+                    print('Error copying file.')
+    
     def cluster(self):
+        """
+        Method untuk melakukan proses clustering.
+
+        Returns
+        -------
+        None.
+
+        """
         # Ketika status False, harus dilakukan proses indexing yang digunakan untuk di-cluster.
         if self.ready_status is True:
             # Status True menandakan indeks sudah di-load dan siap untuk melakukan proses clustering.
@@ -145,6 +214,19 @@ class gui:
             self.show_warning_popup('Clustering process', 'There are no documents to be indexed.')
         
     def draw_canvas(self, cut_off=0):
+        """
+        Method untuk menggambarkan dendrogram dalam canvas.
+
+        Parameters
+        ----------
+        cut_off : float, optional
+            Ketinggian cut-off (pemotong dari dendrogram). The default is 0.
+
+        Returns
+        -------
+        None.
+
+        """
         clusterer = Clusterer()
         fig = clusterer.cluster(self.index, self.corpus, cut_off)
         
@@ -179,6 +261,18 @@ class gui:
         print(clusterer.get_cophenetcoeff())
     
     def reset(self):
+        """
+        Method untuk reset keseluruhan kondisi awal program.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.index = None
+        self.ready_status = False
+        self.canvas_status = False
+        self.folder_path = ''
         self.folder_entry.configure(state='normal')
         self.folder_entry.delete(0, 'end')
         self.folder_entry.configure(state='disabled')
