@@ -215,7 +215,7 @@ class gui:
             self.slider.pack(pady=5)
             # Menampilkan cophenet coefficient (sebagai evaluasi hasil pengelompokan).
             self.evaluation = tk.Label(master=self.window,
-                                text='Cophenet coefficient : ' + str(clusterer.get_cophenetcoeff()))
+                                text='Cophenet coefficient : ' + "{:.3f}".format(clusterer.get_cophenetcoeff()))
             self.evaluation.pack(pady=2)
             # Set status canvas jadi True, menandakan canvas sudah digambar.     
             self.canvas_status = True
