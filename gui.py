@@ -133,19 +133,6 @@ class gui:
             self.ready_status = True
 
     def reset_folder_entry(self, new_path=''):
-        """
-        Method untuk melakukan reset terhadap isi entry folder path.
-
-        Parameters
-        ----------
-        new_path : string, optional
-            Path folder yang baru. Nilai default adalah ''.
-
-        Returns
-        -------
-        None.
-
-        """
         self.folder_entry.configure(state='normal')
         self.folder_entry.delete(0, 'end')
         self.folder_entry.insert(0, new_path)
