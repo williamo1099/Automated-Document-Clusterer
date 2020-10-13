@@ -15,34 +15,42 @@ class gui:
     def __init__(self):
         self.reset_variable()
         
+        # Inisialisasi window antarmuka program.
         self.window = tk.Tk()
-        self.window.title('Document Clustering')
-        self.window.geometry('500x500')
-        
-        # Menu bar.
+        self.window.title('Automated Document Clustering')
+        self.window.geometry('500x600')
+        self.window.resizable(width=False,
+                              height=False)        
+        # Membuat menu bar.
         menu = tk.Menu(self.window)
         self.window.config(menu=menu)
-        # Menu file.
+        # Menambahkan menu file pada menu bar.
         file_menu = tk.Menu(menu)
         menu.add_cascade(label='File', menu=file_menu)
-        file_menu.add_command(label='New', command=self.reset_program)
-        file_menu.add_command(label='Save index', command=self.save_index)
-        file_menu.add_command(label='Load index', command=self.load_index)
-        
-        # Membuat frame untuk proses pengambilan dokumen teks.
+        file_menu.add_command(label='New file',
+                              command=self.reset_program)
+        file_menu.add_command(label='Save index',
+                              command=self.save_index)
+        file_menu.add_command(label='Load index',
+                              command=self.load_index)
+        # Membuat frame untuk proses pengambilan path folder dokumen teks.
         search_frame = tk.Frame(self.window)
         search_frame.pack(side='top')
-        self.folder_entry = tk.Entry(self.window, width=65)
-        self.folder_entry.pack(in_=search_frame, side='left')
+        self.folder_entry = tk.Entry(self.window,
+                                     width=65)
+        self.folder_entry.pack(in_=search_frame,
+                               side='left')
         self.folder_entry.configure(state='disabled')
-        select_button = tk.Button(self.window, text='Select folder', command=self.select_folder)
-        select_button.pack(in_=search_frame, side='right')
-        
-        # Membuat frame untuk proses cluster.
-        cluster_frame = tk.Frame(self.window)
-        cluster_frame.pack(side='top')
-        cluster_button = tk.Button(master=self.window, text='Cluster', command=self.cluster)
-        cluster_button.pack(in_=cluster_frame)
+        select_button = tk.Button(self.window,
+                                  text='Select folder',
+                                  command=self.select_folder)
+        select_button.pack(in_=search_frame,
+                           side='right')
+        # Membuat button untuk melakukan proses clustering.
+        cluster_button = tk.Button(master=self.window,
+                                   text='Cluster',
+                                   command=self.cluster)
+        cluster_button.pack()
         
     def start(self):
         """
@@ -199,7 +207,11 @@ class gui:
                               variable=cut_off,
                               command=lambda e:self.draw_canvas(self.slider.get()),
                               orient='horizontal')
-            self.slider.pack()       
+            self.slider.pack()
+            # Menampilkan cophenet coefficient (sebagai evaluasi hasil pengelompokan).
+            evaluation = tk.Label(master=self.window,
+                                text='Cophenet coefficient : ' + str(clusterer.get_cophenetcoeff()))
+            evaluation.pack()
             # Set status canvas jadi True, menandakan canvas sudah digambar.     
             self.canvas_status = True
         # Menambahkan button organize.
@@ -211,13 +223,16 @@ class gui:
         self.canvas = FigureCanvasTkAgg(fig, master=self.window)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack()
-        # Menampilkan nilai CPCC (evaluasi hasil pengelompokan).
-        print(clusterer.get_cophenetcoeff())
+        # Menambahkan button untuk download dendrogram.
+        self.download_button = tk.Button(master=self.window,
+                                    text='Download plot',
+                                    command=lambda:self.save_plot(fig))
+        self.download_button.pack()
     
     def reset_canvas(self):
         """
         Method untuk menghapus canvas yang telah digambarkan sebelumnya.
-        Button organize dan plot dalam canvas akan dihapus.
+        Button organize, plot dan button download dalam canvas akan dihapus.
 
         Returns
         -------
@@ -225,6 +240,7 @@ class gui:
 
         """
         self.organize_button.destroy()
+        self.download_button.destroy()
         self.canvas.get_tk_widget().destroy()
     
     def show_warning_popup(self, title, msg):
@@ -315,6 +331,25 @@ class gui:
             # Tidak ada file index yang dimuat.
             self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
     
+    def save_plot(self, figure):
+        """
+        Method untuk menyimpan plot yang telah digambar.
+
+        Parameters
+        ----------
+        figure : figure
+            Gambar dendrogram.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Mengambil path untuk menyimpan file figure.
+        figure_path = filedialog.asksaveasfilename(defaultextension='.png',
+                                                  filetypes=(('PNG Image', '*.png'),))
+        figure.savefig(figure_path)
+
     def organize_document(self, doc_label):
         """
         Method untuk mengelompokkan seluruh dokumen teks.
