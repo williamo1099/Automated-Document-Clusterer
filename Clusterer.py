@@ -170,6 +170,8 @@ class Clusterer:
                     labels=[doc.get_title() for doc in corpus])
         # Menggambarkan garis pemotong (cut-off).
         plt.axvline(x=cut_off, linestyle='dashed')
+        # Mengatur agar plot tidak terpotong.
+        plt.tight_layout()
         # Menyimpan daftar cluster beserta anggota-anggotanya.
         self.set_cluster(dend)
         # Menyimpan tinggi maksimal dari dendrogram yang dibangun.
