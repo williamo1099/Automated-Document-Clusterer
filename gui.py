@@ -24,11 +24,12 @@ class gui:
                               height=False)
         
         # Membuat menu bar.
-        menu = tk.Menu(self.window)
+        menu = tk.Menu(master=self.window)
         self.window.config(menu=menu)
         # Menambahkan menu file pada menu bar.
         file_menu = tk.Menu(menu)
-        menu.add_cascade(label='File', menu=file_menu)
+        menu.add_cascade(label='File',
+                         menu=file_menu)
         file_menu.add_command(label='New file',
                               command=self.reset_program)
         file_menu.add_command(label='Save index',
@@ -37,10 +38,10 @@ class gui:
                               command=self.load_index)
         
         # Membuat frame untuk proses pengambilan path folder dokumen teks.
-        search_frame = tk.Frame(self.window)
+        search_frame = tk.Frame(master=self.window)
         search_frame.pack(side='top')
         # Membuat entry untuk folder (menampilkan nama path folder).
-        self.folder_entry = tk.Entry(self.window,
+        self.folder_entry = tk.Entry(master=self.window,
                                      width=65)
         self.folder_entry.pack(in_=search_frame,
                                side='left',
@@ -48,7 +49,7 @@ class gui:
                                pady=2)
         self.folder_entry.configure(state='disabled')
         # Membuat button select untuk memilih folder.
-        select_button = tk.Button(self.window,
+        select_button = tk.Button(master=self.window,
                                   text='Select folder',
                                   command=self.select_folder)
         select_button.pack(in_=search_frame,
@@ -57,12 +58,15 @@ class gui:
                            pady=2)
         
         # Membuat frame untuk proses clustering.
-        cluster_frame = tk.Frame(self.window)
+        cluster_frame = tk.Frame(master=self.window)
         cluster_frame.pack(side='top')
         # Membuat combobox untuk memilih metode clustering.
-        method_combobox = ttk.Combobox(self.window,
-                                   values=['single', 'complete', 'average'])
-        method_combobox.pack(in_=cluster_frame,
+        self.method_combobox = ttk.Combobox(master=self.window,
+                                   values=['single-linkage',
+                                           'complete-linkage',
+                                           'average-linkage'])
+        self.method_combobox.current(0)
+        self.method_combobox.pack(in_=cluster_frame,
                            side='left',
                            padx=2,
                            pady=2)
@@ -113,7 +117,8 @@ class gui:
         Variable folder_path menyimpan path folder berisi dokumen teks yang dikelompokkan.
         Variable index menyimpan inverted index yang telah dibangun.
         Variable ready_status menandakan apakah dendrogram siap untuk digambarkan dalam canvas.
-        Variable canvas_status menandakan apakah dnedrogram telah tergambar dalam canvas.
+        Variable canvas_status menandakan apakah dendrogram telah tergambar dalam canvas.
+        Variable selected_method menandakan method apa yang ingin digunakan.
 
         Returns
         -------
@@ -124,6 +129,7 @@ class gui:
         self.index = None
         self.ready_status = False
         self.canvas_status = False
+        self.selected_method = None
     
     def select_folder(self):
         """
@@ -193,6 +199,7 @@ class gui:
         None.
 
         """
+        print(self.method_combobox.current())
         # Melihat apakah proses clustering siap dilakukan.
         if self.ready_status is True:
             # Status True menandakan bahwa clustering siap dilakukan.
