@@ -3,6 +3,7 @@ import os
 import shutil
 import pickle
 import tkinter as tk
+from tkinter import ttk
 from tkinter import filedialog
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
@@ -14,12 +15,14 @@ class gui:
     
     def __init__(self):
         self.reset_variable()
+        
         # Inisialisasi window antarmuka program.
         self.window = tk.Tk()
         self.window.title('Automated Document Clustering')
         self.window.geometry('600x500')
         self.window.resizable(width=False,
                               height=False)
+        
         # Membuat menu bar.
         menu = tk.Menu(self.window)
         self.window.config(menu=menu)
@@ -32,9 +35,11 @@ class gui:
                               command=self.save_index)
         file_menu.add_command(label='Load index',
                               command=self.load_index)
+        
         # Membuat frame untuk proses pengambilan path folder dokumen teks.
         search_frame = tk.Frame(self.window)
         search_frame.pack(side='top')
+        # Membuat entry untuk folder (menampilkan nama path folder).
         self.folder_entry = tk.Entry(self.window,
                                      width=65)
         self.folder_entry.pack(in_=search_frame,
@@ -42,6 +47,7 @@ class gui:
                                padx=2,
                                pady=2)
         self.folder_entry.configure(state='disabled')
+        # Membuat button select untuk memilih folder.
         select_button = tk.Button(self.window,
                                   text='Select folder',
                                   command=self.select_folder)
@@ -49,11 +55,25 @@ class gui:
                            side='right',
                            padx=2,
                            pady=2)
-        # Membuat button untuk melakukan proses clustering.
+        
+        # Membuat frame untuk proses clustering.
+        cluster_frame = tk.Frame(self.window)
+        cluster_frame.pack(side='top')
+        # Membuat combobox untuk memilih metode clustering.
+        method_combobox = ttk.Combobox(self.window,
+                                   values=['single', 'complete', 'average'])
+        method_combobox.pack(in_=cluster_frame,
+                           side='left',
+                           padx=2,
+                           pady=2)
+        # Membuat button cluster untuk melakukan clustering.
         cluster_button = tk.Button(master=self.window,
                                    text='Cluster',
                                    command=self.cluster)
-        cluster_button.pack()
+        cluster_button.pack(in_=cluster_frame,
+                            side='right',
+                            padx=2,
+                            pady=2)
         
     def start(self):
         """
