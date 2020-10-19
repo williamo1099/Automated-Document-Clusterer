@@ -138,7 +138,7 @@ class Clusterer:
                 matrix.append(distance)
         return matrix
     
-    def cluster(self, index, corpus, cut_off=0):
+    def cluster(self, index, corpus, method, cut_off=0):
         """
         Method untuk melakukan proses hierarchical clustering.
         Proses dilakukan berdasarkan matriks jarak 1D.
@@ -149,6 +149,8 @@ class Clusterer:
             Inverted index.
         corpus : list
             Daftar seluruh dokumen teks.
+        method : string
+            Nama metode yang akan digunakan (single, complete, average).
         cut_off : float, optional
             Ketinggian titik cut-off. Nilai default adalah 0.0.
 
@@ -161,7 +163,7 @@ class Clusterer:
         # Menghitung matriks jarak 1D.
         proximity_matrix = self.create_proximity_matrix(index, corpus)
         # Melakukan proses hierarchical clustering, dengan metode single-linkage.
-        linked = linkage(proximity_matrix, method='single', metric='cosine')
+        linked = linkage(proximity_matrix, method=method, metric='cosine')
         # Menggambar dendrogram berdasarkan hasil hierarchical clustering.
         fig = plt.figure()
         dend = dendrogram(linked,

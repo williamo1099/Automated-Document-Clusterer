@@ -5,7 +5,7 @@ import pickle
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from Document import Document
 from Indexer import Indexer
@@ -61,10 +61,9 @@ class gui:
         cluster_frame = tk.Frame(master=self.window)
         cluster_frame.pack(side='top')
         # Membuat combobox untuk memilih metode clustering.
+        self.method_list = ['single', 'complete', 'average']
         self.method_combobox = ttk.Combobox(master=self.window,
-                                   values=['single-linkage',
-                                           'complete-linkage',
-                                           'average-linkage'])
+                                   values=self.method_list)
         self.method_combobox.current(0)
         self.method_combobox.pack(in_=cluster_frame,
                            side='left',
@@ -199,7 +198,6 @@ class gui:
         None.
 
         """
-        print(self.method_combobox.current())
         # Melihat apakah proses clustering siap dilakukan.
         if self.ready_status is True:
             # Status True menandakan bahwa clustering siap dilakukan.
@@ -223,7 +221,7 @@ class gui:
 
         """
         clusterer = Clusterer()
-        fig = clusterer.cluster(self.index, self.corpus, cut_off)
+        fig = clusterer.cluster(self.index, self.corpus, self.method_list[self.method_combobox.current()], cut_off)
         fig.set_facecolor('#F0F0F0')
         # Melihat apakah canvas sudah pernah digambar atau belum.
         if self.canvas_status is True:
