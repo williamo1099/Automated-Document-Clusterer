@@ -163,7 +163,7 @@ class Clusterer:
         # Menghitung matriks jarak 1D.
         proximity_matrix = self.create_proximity_matrix(index, corpus)
         # Melakukan proses hierarchical clustering, dengan metode single-linkage.
-        linked = linkage(proximity_matrix, method=method, metric='cosine')
+        linked = linkage(proximity_matrix, method=method)
         # Menggambar dendrogram berdasarkan hasil hierarchical clustering.
         fig = plt.figure()
         dend = dendrogram(linked,
