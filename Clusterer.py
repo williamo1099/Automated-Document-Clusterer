@@ -130,9 +130,9 @@ class Clusterer:
             doc_i.set_vector(index, len(corpus))
         # Menghitung matriks jarak berdasarkan representasi vektor.
         matrix = []
-        for i in range(1, len(corpus)):
+        for i in range(0, len(corpus)):
             doc_i = corpus[i]
-            for j in range(0, i):
+            for j in range(i + 1, len(corpus)):
                 doc_j = corpus[j]
                 distance = doc_i.count_distance(doc_j)
                 matrix.append(distance)
@@ -163,7 +163,10 @@ class Clusterer:
         # Menghitung matriks jarak 1D.
         proximity_matrix = self.create_proximity_matrix(index, corpus)
         # Melakukan proses hierarchical clustering, dengan metode single-linkage.
-        linked = linkage(proximity_matrix, method=method)
+        linked = linkage(proximity_matrix,
+                         method=method,
+                         optimal_ordering=True)
+        print(linked)
         # Menggambar dendrogram berdasarkan hasil hierarchical clustering.
         fig = plt.figure()
         dend = dendrogram(linked,
