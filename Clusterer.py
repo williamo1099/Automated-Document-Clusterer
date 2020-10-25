@@ -166,7 +166,6 @@ class Clusterer:
         linked = linkage(proximity_matrix,
                          method=method,
                          optimal_ordering=True)
-        print(linked)
         # Menggambar dendrogram berdasarkan hasil hierarchical clustering.
         fig = plt.figure()
         dend = dendrogram(linked,
