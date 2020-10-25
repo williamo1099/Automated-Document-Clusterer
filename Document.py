@@ -80,17 +80,15 @@ class Document:
         dictionary = sorted(list(index.keys()), key=str.lower)
         self.vector = []
         for term in dictionary:
-            # Mengecek apakah term ada dalam dokumen teks, untuk menghitung nilai tf.
+            weight = 0
+            # Mengecek apakah term ada dalam dokumen teks, jika tidak ada maka bobotnya 0.
             if self.get_id() in index[term]:
                 # Menghitung nilai tf ketika term ada.
                 tf = math.log10(index[term][self.get_id()] + 1)
-            else:
-                # Menghitung nilai tf ketika term tidak ada.
-                tf = math.log10(1)
-            # Menghitung nilai idf.
-            idf = math.log10((corpus_size) / len(index[term]))
-            # Menghitung bobot term dengan pembobotan tf-idf.
-            weight = tf * idf
+                # Menghitung nilai idf.
+                idf = math.log10((corpus_size) / len(index[term]))
+                # Menghitung bobot term dengan pembobotan tf-idf.
+                weight = tf * idf
             self.vector.append(weight)
     
     def count_distance(self, other_doc):
