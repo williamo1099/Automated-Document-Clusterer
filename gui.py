@@ -157,7 +157,7 @@ class gui:
             for i in range(0, len(doc_titles)):
                 doc_id = 'doc_' + str(i)
                 doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
-                doc_content = open(doc_titles[i], 'r').read().replace('\n', '')
+                doc_content = open(doc_titles[i], 'r', encoding='utf-8').read().replace('\n', '')
                 doc_i = Document(doc_id, doc_title, doc_content)
                 self.corpus.append(doc_i)
             # Membangun inverted index.
@@ -238,12 +238,12 @@ class gui:
                               command=lambda e:self.draw_canvas(self.slider.get()),
                               orient='horizontal')
             self.slider.pack(pady=5)
-            # Menampilkan cophenet coefficient (sebagai evaluasi hasil pengelompokan).
-            self.evaluation = tk.Label(master=self.window,
-                                text='Cophenet coefficient : ' + "{:.3f}".format(clusterer.get_cophenetcoeff()))
-            self.evaluation.pack(pady=2)
             # Set status canvas jadi True, menandakan canvas sudah digambar.     
             self.canvas_status = True
+        # Menampilkan cophenet coefficient (sebagai evaluasi hasil pengelompokan).
+        self.evaluation = tk.Label(master=self.window,
+                            text='Cophenet coefficient : ' + "{:.3f}".format(clusterer.get_cophenetcoeff()))
+        self.evaluation.pack(pady=2)
         # Menggambar dendrogram (visualisasi hasil pengelompokan).
         self.canvas = FigureCanvasTkAgg(fig,
                                         master=self.window)
