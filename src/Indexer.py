@@ -9,12 +9,14 @@ class Indexer:
         
     def get_inverted_index(self):
         """
-        Method untuk mendapatkan inverted index yang telah dibangun.
+        Method untuk mendapatkan nilai atribut inverted_index, yang merupakan indeks yang telah dibangun.
+        Inverted index menyimpan pemetaan term ke lokasi term tersebut berada.
 
         Returns
         -------
         inverted_index : dictionary
-            Inverted index yang menyimpan pemetaan term ke lokasi term tersebut berada.
+            Inverted index.
+            Ditulis sebagai {term1: {doc1: freq, doc2: freq}, term2: {doc1: freq}}.
 
         """
         return self.inverted_index
@@ -45,8 +47,9 @@ class Indexer:
     
     def index(self, document):
         """
-        Method untuk membangun inverted index.
+        Method untuk membangun inverted index dan menyimpannya sebagai nilai atribut inverted_index.
         Pembangunan inverted index dilakukan untuk sebuah dokumen teks (satu per satu).
+        Inverted index yang dibangun ditulis sebagai {term1: {doc1: freq, doc2: freq}, term2: {doc1: freq}}.
 
         Parameters
         ----------

@@ -10,7 +10,8 @@ class Document:
     
     def get_id(self):
         """
-        Method untuk mendapatkan id dari dokumen teks.
+        Method untuk mendapatkan nilai atribut doc_id.
+        Atribut doc_id menyimpan id dari dokumen teks.
 
         Returns
         -------
@@ -22,7 +23,8 @@ class Document:
     
     def get_title(self):
         """
-        Method untuk mendapatkan judul dari dokumen teks.
+        Method untuk mendapatkan nilai atribut title.
+        Atribut title menyimpan judul dari dokumen teks.
 
         Returns
         -------
@@ -34,7 +36,8 @@ class Document:
     
     def get_content(self):
         """
-        Method untuk mendapatkan isi dari dokumen teks.
+        Method untuk mendapatkan nilai atribut content.
+        Atribut content menyimpan isi dari dokumen teks.
 
         Returns
         -------
@@ -46,8 +49,9 @@ class Document:
     
     def set_content_to_empty(self):
         """
-        Method untuk mengosongkan isi dari dokumen teks.
-        Digunakan untuk mengurangi biaya penyimpanan.
+        Method untuk mengosongkan nilai atribut content.
+        Dapat digunakan ketika index sudah disimpan (menandakan term-term yang ada sudah tersimpan).
+        Dilakukan untuk menghemat biaya penyimpanan index karena daftar dokumen teks (beserta nilai atributnya ikut disimpan sebagai metadata).
         
         Returns
         -------
@@ -58,7 +62,7 @@ class Document:
     
     def get_vector(self):
         """
-        Method untuk mendapatkan vektor sebagai representasi dokumen teks.
+        Method untuk mendapatkan nilai atribut vector yang merupakan representasi dari dokumen teks.
         Vektor yang digunakan berisi bobot tf-idf dari masing-masing term yang ada.
 
         Returns
@@ -71,7 +75,7 @@ class Document:
     
     def set_vector(self, index, corpus_size):
         """
-        Method untuk menghitung vektor yang digunakan sebagai representasi dokumen teks.
+        Method untuk menghitung vektor yang digunakan sebagai representasi dokumen teks dan disimpan sebagai nilai atribut vector.
         Proses yang dilakukan adalah menghitung bobot untuk masing-masing term.
         Jika term tidak ada dalam dokumen teks, bobotnya adalah 0.
 

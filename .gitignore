@@ -1,5 +1,4 @@
-__pycache__/
-Document/
-Index/
-run_test.py
 .DS_Store
+__pycache__/
+# test files
+Test/

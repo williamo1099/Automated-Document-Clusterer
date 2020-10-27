@@ -5,8 +5,8 @@ class Tokenizer:
     
     def tokenize(self, sequence):
         """
-        Method untuk melakukan tokenisasi terhadap char sequence.
-        Char sequence adalah serangkaian kata-kata dalam sebuah dokumen teks.
+        Method untuk melakukan tokenisasi terhadap char sequence dari sebuah dokumen teks.
+        Pre-pemrosesan linguistik juga dilakukan setelah mendapatkan term (yaitu case folding dan normalisasi).
 
         Parameters
         ----------

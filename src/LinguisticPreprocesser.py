@@ -7,7 +7,7 @@ class LinguisticPreprocesser:
     def remove_stopwords(self, token_list):
         """
         Method untuk membuang token yang merupakan stop words.
-        Daftar stop words adalah stop words dalam bahasa Inggris.
+        Daftar stop words adalah stop words spesifik untuk bahasa Inggris.
 
         Parameters
         ----------
@@ -55,6 +55,7 @@ class LinguisticPreprocesser:
     def preprocess(self, token_list):
         """
         Method untuk melakukan keseluruhan pre-pemrosesan linguistik.
+        Keseluruhan pre-pemrosesan linguistik dilakukan berdasarkan method lain dalam kelas LinguisticPreprocesser.
 
         Parameters
         ----------
