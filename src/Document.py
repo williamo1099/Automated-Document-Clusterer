@@ -11,7 +11,6 @@ class Document:
     def get_id(self):
         """
         Method untuk mendapatkan id dari dokumen teks.
-        Id dokumen teks digunakan sebagai pembeda dokumen teks.
 
         Returns
         -------
@@ -45,6 +44,18 @@ class Document:
         """
         return self.content
     
+    def set_content_to_empty(self):
+        """
+        Method untuk mengosongkan isi dari dokumen teks.
+        Digunakan untuk mengurangi biaya penyimpanan.
+        
+        Returns
+        -------
+        None.
+
+        """
+        self.content = ''
+    
     def get_vector(self):
         """
         Method untuk mendapatkan vektor sebagai representasi dokumen teks.
@@ -67,7 +78,7 @@ class Document:
         Parameters
         ----------
         index : dictionary
-            Inverted index yang telah dibangun.
+            Inverted index.
         corpus_size : int
             Jumlah seluruh dokumen teks yang ada.
 
@@ -98,12 +109,12 @@ class Document:
 
         Parameters
         ----------
-        other_doc : Document.Document
-            Dokumen teks lain yang akan diukur jaraknya.
+        other_doc : Document
+            Dokumen teks lain yang diukur jaraknya.
 
         Returns
         -------
-        float
+        distance : float
             Jarak dengan other_doc.
 
         """
