@@ -362,6 +362,7 @@ class gui:
                 # Mengambil metadata yang tersimpan.
                 metadata = data['metadata']
                 self.folder_path = metadata['folder_path']
+                self.reset_folder_entry(self.folder_path)
                 self.corpus = metadata['corpus']
                 # Menandakan status ready menjadi True, menandakan proses clustering siap dilakukan.
                 self.ready_status = True
