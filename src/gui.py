@@ -36,10 +36,17 @@ class gui:
                               command=self.save_index)
         file_menu.add_command(label='Load index',
                               command=self.load_index)
+        # Menambahkan menu help pada menu bar.
+        help_menu = tk.Menu(menu)
+        menu.add_cascade(label='Help',
+                         menu=help_menu)
+        help_menu.add_command(label='Tutorial')
+        help_menu.add_command(label='Documentation')
         
         # Membuat frame untuk proses pengambilan path folder dokumen teks.
         search_frame = tk.Frame(master=self.window)
-        search_frame.pack(side='top')
+        search_frame.pack(side='top',
+                          fill='x')
         # Membuat entry untuk folder (menampilkan nama path folder).
         self.folder_entry = tk.Entry(master=self.window,
                                      width=65)
