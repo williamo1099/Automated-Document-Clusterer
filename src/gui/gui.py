@@ -245,77 +245,75 @@ class gui:
         # Melihat apakah proses clustering siap dilakukan.
         if self.ready_status is True:
             # Status True menandakan bahwa clustering siap dilakukan.
-    
-            def draw_canvas(cut_off=0):
-                """
-                Method untuk menggambarkan plot dalam canvas.
-                Jika canvas sudah pernah digambar sebelumnya, isi canvas akan dihapus dahulu.
-        
-                Parameters
-                ----------
-                cut_off : float, optional
-                    Ketinggian titik cut-off. Nilai default adalah 0.
-        
-                Returns
-                -------
-                None.
-        
-                """
-                clusterer = Clusterer()
-                fig = clusterer.cluster(self.index, self.corpus, self.method_list[self.method_combobox.current()], cut_off)
-                fig.set_facecolor('#F0F0F0')
-                # Melihat apakah canvas sudah pernah digambar atau belum.
-                if self.canvas_status is True:
-                    # Status true menandakan bahwa canvas sudah pernah digambar.
-                    self.reset_canvas()
-                else:
-                    # Status false menandakan bahwa canvas belum pernah digambar.
-                    # Menambahkan slider untuk mengatur ketinggian titik cut-off.
-                    self.slider = tk.Scale(self.window,
-                                      from_=0.0,
-                                      to=clusterer.get_dendrogram_height(),
-                                      resolution=0.01,
-                                      variable=cut_off,
-                                      command=lambda e:self.draw_canvas(self.slider.get()),
-                                      orient='horizontal')
-                    self.slider.pack(pady=5)
-                    # Set status canvas jadi True, menandakan canvas sudah digambar.     
-                    self.canvas_status = True
-                # Menampilkan cophenet coefficient (sebagai evaluasi hasil pengelompokan).
-                self.evaluation = tk.Label(master=self.window,
-                                    text='Cophenet coefficient : ' + "{:.3f}".format(clusterer.get_cophenetcoeff()))
-                self.evaluation.pack(pady=2)
-                # Menggambar dendrogram (visualisasi hasil pengelompokan).
-                self.canvas = FigureCanvasTkAgg(fig,
-                                                master=self.window)
-                self.canvas.draw()
-                self.canvas.get_tk_widget().pack(pady=2)
-                # Menambahkan frame result.
-                self.result_frame = tk.Frame(self.window)
-                self.result_frame.pack(side='top')
-                # Menambahkan button organize.
-                organize_button = tk.Button(master=self.window,
-                                                 text='Organize documents',
-                                                 command=lambda:self.organize_document(clusterer.get_cluster()))
-                organize_button.pack(in_=self.result_frame,
-                                     side='left',
-                                     padx=5,
-                                     pady=5)
-                # Menambahkan button untuk download dendrogram.
-                download_button = tk.Button(master=self.window,
-                                            text='Download plot',
-                                            command=lambda:self.save_plot(fig))
-                download_button.pack(in_=self.result_frame,
-                                     side='right',
-                                     padx=5,
-                                     pady=5)
-            
-            # Menggambarkan dendrogram.
-            draw_canvas(0)
+            self.draw_canvas(0)
         else:
             popup = WarningPopup('Clustering process',
                                  'There are no documents to be indexed.')
             popup.show_popup()
+
+    def draw_canvas(self, cut_off=0):
+        """
+        Method untuk menggambarkan plot dalam canvas.
+        Jika canvas sudah pernah digambar sebelumnya, isi canvas akan dihapus dahulu.
+
+        Parameters
+        ----------
+        cut_off : float, optional
+            Ketinggian titik cut-off. Nilai default adalah 0.
+
+        Returns
+        -------
+        None.
+
+        """
+        clusterer = Clusterer()
+        fig = clusterer.cluster(self.index, self.corpus, self.method_list[self.method_combobox.current()], cut_off)
+        fig.set_facecolor('#F0F0F0')
+        # Melihat apakah canvas sudah pernah digambar atau belum.
+        if self.canvas_status is True:
+            # Status true menandakan bahwa canvas sudah pernah digambar.
+            self.reset_canvas()
+        else:
+            # Status false menandakan bahwa canvas belum pernah digambar.
+            # Menambahkan slider untuk mengatur ketinggian titik cut-off.
+            self.slider = tk.Scale(self.window,
+                              from_=0.0,
+                              to=clusterer.get_dendrogram_height(),
+                              resolution=0.01,
+                              variable=cut_off,
+                              command=lambda e:self.draw_canvas(self.slider.get()),
+                              orient='horizontal')
+            self.slider.pack(pady=5)
+            # Set status canvas jadi True, menandakan canvas sudah digambar.     
+            self.canvas_status = True
+        # Menampilkan cophenet coefficient (sebagai evaluasi hasil pengelompokan).
+        self.evaluation = tk.Label(master=self.window,
+                            text='Cophenet coefficient : ' + "{:.3f}".format(clusterer.get_cophenetcoeff()))
+        self.evaluation.pack(pady=2)
+        # Menggambar dendrogram (visualisasi hasil pengelompokan).
+        self.canvas = FigureCanvasTkAgg(fig,
+                                        master=self.window)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(pady=2)
+        # Menambahkan frame result.
+        self.result_frame = tk.Frame(self.window)
+        self.result_frame.pack(side='top')
+        # Menambahkan button organize.
+        organize_button = tk.Button(master=self.window,
+                                         text='Organize documents',
+                                         command=lambda:self.organize_document(clusterer.get_cluster()))
+        organize_button.pack(in_=self.result_frame,
+                             side='left',
+                             padx=5,
+                             pady=5)
+        # Menambahkan button untuk download dendrogram.
+        download_button = tk.Button(master=self.window,
+                                    text='Download plot',
+                                    command=lambda:self.save_plot(fig))
+        download_button.pack(in_=self.result_frame,
+                             side='right',
+                             padx=5,
+                             pady=5)
     
     def reset_canvas(self):
         """
