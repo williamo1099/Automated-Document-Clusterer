@@ -117,9 +117,10 @@ class gui:
             # Mengecek jumlah dokumen teks yang ada.
             if len(doc_titles) > 1:
                 self.corpus = []
+                escaped_folder_path = str(self.folder_path) + '/'
                 for i in range(0, len(doc_titles)):
                     doc_id = 'doc_' + str(i)
-                    doc_title = os.path.splitext(doc_titles[i])[0].replace(str(self.folder_path), '')
+                    doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
                     doc_content = open(doc_titles[i], 'r', encoding='utf-8').read().replace('\n', '')
                     doc_i = Document(doc_id, doc_title, doc_content)
                     self.corpus.append(doc_i)
@@ -149,6 +150,7 @@ class gui:
                            side='right',
                            padx=2,
                            pady=2)
+        ToolTip(self.select_button, 'Select folder path containing the documents')
         
     def create_cluster_frame(self):
         """
@@ -179,6 +181,7 @@ class gui:
                             side='right',
                             padx=2,
                             pady=2)
+        ToolTip(self.cluster_button, 'Start clustering all documents')
     
     def start(self):
         """
@@ -291,25 +294,28 @@ class gui:
         self.canvas.draw()
         self.canvas.callbacks.connect('button_press_event', on_click)
         self.canvas.get_tk_widget().pack(pady=2)
+        
         # Menambahkan frame result.
         self.result_frame = tk.Frame(self.window)
         self.result_frame.pack(side='top')
         # Menambahkan button organize.
-        organize_button = tk.Button(master=self.window,
+        self.organize_button = tk.Button(master=self.window,
                                          text='Organize documents',
                                          command=lambda:self.organize_document(clusterer.get_cluster()))
-        organize_button.pack(in_=self.result_frame,
+        self.organize_button.pack(in_=self.result_frame,
                              side='left',
                              padx=5,
                              pady=5)
+        ToolTip(self.organize_button, 'Organize document files based on the dendrogram')
         # Menambahkan button untuk download dendrogram.
-        download_button = tk.Button(master=self.window,
+        self.download_button = tk.Button(master=self.window,
                                     text='Download plot',
                                     command=lambda:self.save_plot(fig))
-        download_button.pack(in_=self.result_frame,
+        self.download_button.pack(in_=self.result_frame,
                              side='right',
                              padx=5,
                              pady=5)
+        ToolTip(self.download_button, 'Download the plot')
     
     def reset_canvas(self):
         """
