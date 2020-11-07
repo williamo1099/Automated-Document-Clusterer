@@ -11,6 +11,8 @@ from retrieval.Document import Document
 from retrieval.Indexer import Indexer
 from clustering.Clusterer import Clusterer
 
+from gui.WarningPopup import WarningPopup
+
 class gui:
     
     def __init__(self):
@@ -210,7 +212,9 @@ class gui:
             # Status True menandakan bahwa clustering siap dilakukan.
             self.draw_canvas(0)
         else:
-            self.show_warning_popup('Clustering process', 'There are no documents to be indexed.') 
+            popup = WarningPopup('Clustering process',
+                                 'There are no documents to be indexed.')
+            popup.show_popup()
 
     def draw_canvas(self, cut_off=0):
         """
@@ -289,36 +293,6 @@ class gui:
         self.result_frame.destroy()
         self.evaluation.destroy()
         self.canvas.get_tk_widget().destroy()
-    
-    def show_warning_popup(self, title, msg):
-        """
-        Method untuk menampilkan sebuah pop-up warning.
-
-        Parameters
-        ----------
-        title : string
-            Judul dari pop-up warning.
-        msg : string
-            Isi pesan dari pop-up warning.
-
-        Returns
-        -------
-        None.
-
-        """
-        warning_popup = tk.Tk()
-        warning_popup.wm_title(title)
-        label = tk.Label(warning_popup,
-                         text=msg)
-        label.pack(side='top',
-                   fill='x',
-                   pady=10)
-        ok_button = tk.Button(warning_popup,
-                              text='Ok',
-                              command=warning_popup.destroy)
-        ok_button.pack()
-        # Menampilkan pop-up warning.
-        warning_popup.mainloop()
         
     def save_index(self):
         """
@@ -347,7 +321,9 @@ class gui:
                 pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
             # Menandakan bahwa tidak ada index yang disimpan.
-            self.show_warning_popup('Saving an index', 'There is no index to be saved!')
+            popup = WarningPopup('Saving an index',
+                                 'There is no index to be saved!')
+            popup.show_popup()
 
     def load_index(self):
         """
@@ -374,10 +350,14 @@ class gui:
                 # Menandakan status ready menjadi True, menandakan proses clustering siap dilakukan.
                 self.ready_status = True
                 # Menampilkan pop-up warning yang memberi tahu bahwa index berhasil dimuat.
-                self.show_warning_popup('Loading an index', 'An index is successfully loaded!')
+                popup = WarningPopup('Loading an index',
+                                 'An index is successfully loaded!')
+                popup.show_popup()
         except EnvironmentError:
             # Tidak ada file index yang dimuat.
-            self.show_warning_popup('Loading an index', 'There is no index to be loaded!')
+            popup = WarningPopup('Loading an index',
+                                 'There is no index to be loaded!')
+            popup.show_popup()
     
     def save_plot(self, figure):
         """
