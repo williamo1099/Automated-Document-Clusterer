@@ -12,6 +12,7 @@ from retrieval.Indexer import Indexer
 from clustering.Clusterer import Clusterer
 
 from gui.WarningPopup import WarningPopup
+from gui.ToolTip import ToolTip
 
 class gui:
     
