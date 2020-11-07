@@ -7,9 +7,9 @@ from tkinter import ttk
 from tkinter import filedialog
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from Document import Document
-from Indexer import Indexer
-from Clusterer import Clusterer
+from retrieval.Document import Document
+from retrieval.Indexer import Indexer
+from clustering.Clusterer import Clusterer
 
 class gui:
     
@@ -49,7 +49,7 @@ class gui:
                           fill='x')
         # Membuat entry untuk folder (menampilkan nama path folder).
         self.folder_entry = tk.Entry(master=self.window,
-                                     width=65)
+                                     width=50)
         self.folder_entry.pack(in_=search_frame,
                                side='left',
                                padx=2,
@@ -160,7 +160,7 @@ class gui:
         # Mengecek jumlah dokumen teks yang ada.
         if len(doc_titles) > 1:
             self.corpus = []
-            escaped_folder_path = str(self.folder_path) + '\\' 
+            escaped_folder_path = str(self.folder_path) + '\\'
             for i in range(0, len(doc_titles)):
                 doc_id = 'doc_' + str(i)
                 doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')

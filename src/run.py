@@ -1,5 +1,5 @@
 
-from gui import gui
+from gui.gui import gui
 
 gui = gui()
 gui.start()

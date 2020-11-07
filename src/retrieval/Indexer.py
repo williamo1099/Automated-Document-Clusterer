@@ -1,6 +1,6 @@
 
-from Tokenizer import Tokenizer
-from LinguisticPreprocesser import LinguisticPreprocesser
+from retrieval.Tokenizer import Tokenizer
+from retrieval.LinguisticPreprocesser import LinguisticPreprocesser
 
 class Indexer:
     
