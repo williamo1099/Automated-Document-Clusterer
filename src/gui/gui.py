@@ -116,10 +116,9 @@ class gui:
             # Mengecek jumlah dokumen teks yang ada.
             if len(doc_titles) > 1:
                 self.corpus = []
-                escaped_folder_path = str(self.folder_path) + '\\'
                 for i in range(0, len(doc_titles)):
                     doc_id = 'doc_' + str(i)
-                    doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
+                    doc_title = os.path.splitext(doc_titles[i])[0].replace(str(self.folder_path), '')
                     doc_content = open(doc_titles[i], 'r', encoding='utf-8').read().replace('\n', '')
                     doc_i = Document(doc_id, doc_title, doc_content)
                     self.corpus.append(doc_i)
@@ -206,7 +205,6 @@ class gui:
         if self.canvas_status is True:
             # Status True menandakan canvas sudah pernah digambar.
             self.reset_canvas()
-            self.slider.destroy()
         
         # Menghapus seluruh isi variable yang ada.
         self.init_variable()
@@ -274,26 +272,23 @@ class gui:
             # Status true menandakan bahwa canvas sudah pernah digambar.
             self.reset_canvas()
         else:
-            # Status false menandakan bahwa canvas belum pernah digambar.
-            # Menambahkan slider untuk mengatur ketinggian titik cut-off.
-            self.slider = tk.Scale(self.window,
-                              from_=0.0,
-                              to=clusterer.get_dendrogram_height(),
-                              resolution=0.01,
-                              variable=cut_off,
-                              command=lambda e:self.draw_canvas(self.slider.get()),
-                              orient='horizontal')
-            self.slider.pack(pady=5)
             # Set status canvas jadi True, menandakan canvas sudah digambar.     
             self.canvas_status = True
         # Menampilkan cophenet coefficient (sebagai evaluasi hasil pengelompokan).
         self.evaluation = tk.Label(master=self.window,
                             text='Cophenet coefficient : ' + "{:.3f}".format(clusterer.get_cophenetcoeff()))
         self.evaluation.pack(pady=2)
+        
+        def on_click(event):
+            if event.inaxes is not None:
+                cut_off = event.xdata
+                self.draw_canvas(cut_off)
+        
         # Menggambar dendrogram (visualisasi hasil pengelompokan).
         self.canvas = FigureCanvasTkAgg(fig,
                                         master=self.window)
         self.canvas.draw()
+        self.canvas.callbacks.connect('button_press_event', on_click)
         self.canvas.get_tk_widget().pack(pady=2)
         # Menambahkan frame result.
         self.result_frame = tk.Frame(self.window)
