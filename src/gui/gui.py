@@ -73,12 +73,33 @@ class gui:
         file_menu.add_command(label='Load index',
                               command=self.load_index)
         
+        def show_tutorial_dialog():
+            popup = WarningPopup('Tutorial',
+                                 'Hello! Welcome to DocumentClusterer!\n' +
+                                 'With this application, you can easily organize all your documents based on information contained in them.\n' +
+                                 'The first step you have to do is provide the documents to be clustered,\n' +
+                                 'and select the folder containing all the documents by clicking Select button!\n' +
+                                 'After that, you can simply click the Cluster button to do the clustering, and\n' +
+                                 'after you get the dendrogram, you can simply click the Organize button to organize all the\n' +
+                                 'documents in the folder.\n' +
+                                 'You can also save the index that has been created before by clicking Save index in File menu,\n' +
+                                 'and you can load the index you have saved before by clicking Load index in File menu.')
+            popup.show_popup()
+        
+        def show_documentation_dialog():
+            popup = WarningPopup('Documentation',
+                                 'For the complete documentation, you can check it on\n' +
+                                 'the Github page.')
+            popup.show_popup()
+        
         # Menambahkan menu help pada menu bar.
         help_menu = tk.Menu(menu)
         menu.add_cascade(label='Help',
                          menu=help_menu)
-        help_menu.add_command(label='Tutorial')
-        help_menu.add_command(label='Documentation')
+        help_menu.add_command(label='Tutorial',
+                              command=show_tutorial_dialog)
+        help_menu.add_command(label='Documentation',
+                              command=show_documentation_dialog)
     
     def create_search_frame(self):
         """
@@ -293,6 +314,7 @@ class gui:
                                         master=self.window)
         self.canvas.draw()
         self.canvas.callbacks.connect('button_press_event', on_click)
+        # self.canvas.callbacks.connect('scroll_event', on_scroll)
         self.canvas.get_tk_widget().pack(pady=2)
         
         # Menambahkan frame result.

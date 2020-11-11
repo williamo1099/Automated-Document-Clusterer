@@ -22,7 +22,8 @@ class WarningPopup:
                          text=self.warning_message)
         label.pack(side='top',
                    fill='x',
-                   pady=10)
+                   pady=10,
+                   padx=5)
         ok_button = tk.Button(warning_popup,
                               text='Ok',
                               command=warning_popup.destroy)
