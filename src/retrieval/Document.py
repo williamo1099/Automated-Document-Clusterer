@@ -155,5 +155,5 @@ class Document:
         numerator = dotProduct(vector_i, vector_j)
         denominator = math.sqrt(dotProduct(vector_i, vector_i) *
                                 dotProduct(vector_j, vector_j))
-        distance = math.acos(numerator/denominator)
+        distance = 1 - numerator/denominator
         return distance

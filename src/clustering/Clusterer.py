@@ -168,11 +168,12 @@ class Clusterer:
                          method=method,
                          optimal_ordering=True)
         # Menggambar dendrogram berdasarkan hasil hierarchical clustering.
-        fig = plt.figure()
+        fig = plt.figure(figsize=(10, 5))
         dend = dendrogram(linked,
                     orientation='right',
                     color_threshold=cut_off,
                     labels=[doc.get_title() for doc in corpus])
+        print(dend)
         # Menggambarkan garis pemotong (cut-off).
         plt.axvline(x=cut_off, linestyle='dashed')
         # Mengatur agar plot tidak terpotong.

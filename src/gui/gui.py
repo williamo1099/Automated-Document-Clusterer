@@ -23,7 +23,7 @@ class gui:
         # Inisialisasi window antarmuka program.
         self.window = tk.Tk()
         self.window.title('Automated Document Clustering')
-        self.window.geometry('600x500')
+        self.window.geometry('750x600')
         self.window.resizable(width=False,
                               height=False)
         
@@ -291,7 +291,7 @@ class gui:
         """
         clusterer = Clusterer()
         fig = clusterer.cluster(self.index, self.corpus, self.method_list[self.method_combobox.current()], cut_off)
-        fig.set_facecolor('#F0F0F0')
+        fig.set_facecolor('#ececec')
         # Melihat apakah canvas sudah pernah digambar atau belum.
         if self.canvas_status is True:
             # Status true menandakan bahwa canvas sudah pernah digambar.
