@@ -1,4 +1,6 @@
 
+from scipy.spatial.distance import cosine
+
 import math
 
 class Document:
@@ -128,32 +130,4 @@ class Document:
         # Mengambil vektor dari kedua dokumen teks.
         vector_i = self.get_vector()
         vector_j = other_doc.get_vector()
-        
-        def dotProduct(vector_i, vector_j):
-            """
-            Method untuk menghitung hasil kali titik (dot product) antara dua vektor.
-
-            Parameters
-            ----------
-            vector_i : list
-                Vektor pertama.
-            vector_j : list
-                Vektor kedua.
-
-            Returns
-            -------
-            result : float
-                Hasil kali titik antara vector_i dan vector_j.
-
-            """
-            result = 0
-            for i in range(0, len(vector_i)):
-                result += (vector_i[i] * vector_j[i])
-            return result
-        
-        # Menghitung besar sudut antara kedua vektor tersebut dengan jarak cosine.
-        numerator = dotProduct(vector_i, vector_j)
-        denominator = math.sqrt(dotProduct(vector_i, vector_i) *
-                                dotProduct(vector_j, vector_j))
-        distance = 1 - numerator/denominator
-        return distance
+        return cosine(vector_i, vector_j)
