@@ -173,7 +173,6 @@ class Clusterer:
                     orientation='right',
                     color_threshold=cut_off,
                     labels=[doc.get_title() for doc in corpus])
-        print(dend)
         # Menggambarkan garis pemotong (cut-off).
         plt.axvline(x=cut_off, linestyle='dashed')
         # Mengatur agar plot tidak terpotong.
