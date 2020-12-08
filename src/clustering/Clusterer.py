@@ -1,8 +1,7 @@
 
 from clustering.Dendrogram import Dendrogram
 
-from scipy.cluster.hierarchy import linkage, dendrogram, cophenet
-import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import linkage, cophenet
 
 class Clusterer:
     
@@ -12,7 +11,7 @@ class Clusterer:
     
     def get_cluster(self):
         """
-        Get a list of objects of each clusters.
+        Get a list of objects of each clusters obtained.
 
         Returns
         -------
@@ -25,7 +24,7 @@ class Clusterer:
     
     def get_cophenetic_coeff(self):
         """
-        Count the cophenetic coefficient correlation (CPCC) for the result get.
+        Count the cophenetic coefficient correlation (CPCC) for the result obtained.
         The CPCC value can be used for an internal evaluation of the clusters.
 
         Returns
@@ -34,7 +33,7 @@ class Clusterer:
             The copehenetic coefficient correlation (CPCC).
 
         """
-        c, d = cophenet(self.linked, self.distance_matrix)
+        c, d = cophenet(self.linkage, self.distance_matrix)
         return c
     
     def set_distance_matrix(self, index):
@@ -65,7 +64,8 @@ class Clusterer:
     
     def cluster(self, index, method, cut_off=0):
         """
-        Do the agglomerative hierarchical clustering process for the given documents in corpus.
+        Do clustering process for documents in corpus.
+        The algorithm used is agglomerative hierarchical clustering algorithm.
 
         Parameters
         ----------
@@ -87,13 +87,9 @@ class Clusterer:
         self.set_distance_matrix(index)
         
         # Set the linkage matrix as a result of the agglomerative hierarchical clustering process.
-        self.linked = linkage(self.proximity_matrix,
+        self.linkage = linkage(self.proximity_matrix,
                          method=method,
                          optimal_ordering=True)
-        
-        dend = dendrogram(self.linked,
-                    orientation='right',
-                    color_threshold=cut_off,
-                    labels=[doc.get_title() for doc in self.corpus])
-        self.dendrogram = Dendrogram(dend)
+        self.dendrogram = Dendrogram(self.linkage, [doc.get_title() for doc in self.corpus],
+                                     cut_off)
         return self.dendrogram.plot_dendrogram()

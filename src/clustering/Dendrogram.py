@@ -1,19 +1,19 @@
 
+from scipy.cluster.hierarchy import dendrogram
 import matplotlib.pyplot as plt
 
 class Dendrogram:
     
-    def __init__(self, dend):
-        self.dend = dend
+    def __init__(self, linked, labels, cut_off):
+        self.cut_off = cut_off
+        self.dend = dendrogram(linked,
+                    orientation='right',
+                    color_threshold=cut_off,
+                    labels=labels)
         
-    def plot_dendrogram(self, cut_off=0):
+    def plot_dendrogram(self):
         """
-        Plot dendrogram diagram
-
-        Parameters
-        ----------
-        cut_off : float, optional
-            The height of a cut-off point. The default is 0.
+        Plot dendrogram diagram.
 
         Returns
         -------
@@ -26,7 +26,7 @@ class Dendrogram:
         
         # Cut the dendrogram at cut_off height.
         # If the cut-off height equals to 0, there will be no cut-off line.
-        plt.axvline(x=cut_off, linestyle='dashed')
+        plt.axvline(x=self.cut_off, linestyle='dashed')
         return fig
     
     def extract_clusters_by_color(self):
