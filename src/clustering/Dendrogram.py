@@ -22,7 +22,6 @@ class Dendrogram:
         None.
 
         """
-        print(type(linked))
         self.cut_off = cut_off
         self.dend = dendrogram(linked,
                     orientation='right',
