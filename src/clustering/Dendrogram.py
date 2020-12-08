@@ -46,7 +46,7 @@ class Dendrogram:
             for leg in pi[1:3]:
                 i = (leg - 5) / 10
                 if abs(i - int(i)) <= 0:
-                    if c not in self.cluster_list:
+                    if c not in cluster_list:
                         cluster_list[c] = []
                     cluster_list[c].append(self.dend['ivl'][int(i)])
         return cluster_list

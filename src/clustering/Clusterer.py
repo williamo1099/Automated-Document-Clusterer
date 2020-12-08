@@ -7,7 +7,7 @@ class Clusterer:
     
     def __init__(self, corpus):
         self.corpus = corpus
-        self.proximity_matrix = []
+        self.distance_matrix = []
     
     def get_cluster(self):
         """
@@ -60,7 +60,7 @@ class Clusterer:
             for j in range(i + 1, len(self.corpus)):
                 doc_j = self.corpus[j]
                 distance = doc_i.count_distance(doc_j)
-                self.proximity_matrix.append(distance)
+                self.distance_matrix.append(distance)
     
     def cluster(self, index, method, cut_off=0):
         """
@@ -87,7 +87,7 @@ class Clusterer:
         self.set_distance_matrix(index)
         
         # Set the linkage matrix as a result of the agglomerative hierarchical clustering process.
-        self.linkage = linkage(self.proximity_matrix,
+        self.linkage = linkage(self.distance_matrix,
                          method=method,
                          optimal_ordering=True)
         self.dendrogram = Dendrogram(self.linkage, [doc.get_title() for doc in self.corpus],
