@@ -9,7 +9,7 @@ class Clusterer:
         self.corpus = corpus
         self.distance_matrix = []
     
-    def get_cluster(self):
+    def get_clusters(self):
         """
         Get a list of objects of each clusters obtained.
 
