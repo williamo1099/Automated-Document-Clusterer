@@ -6,128 +6,138 @@ import math
 class Document:
     
     def __init__(self, doc_id, title, content):
-        self.doc_id = doc_id
-        self.title = title
-        self.content = content
-    
-    def get_id(self):
         """
-        Method untuk mendapatkan nilai atribut doc_id.
-        Atribut doc_id menyimpan id dari dokumen teks.
+        The constructor for Document class.
+
+        Parameters
+        ----------
+        doc_id : string
+            The document's id.
+        title : string
+            The document's title.
+        content : string
+            The document's content.
 
         Returns
         -------
-        doc_id : string
-            Id dari dokumen teks.
+        None.
+
+        """
+        self.doc_id = doc_id
+        self.title = title
+        self.content = content
+        self.vector = []
+    
+    def get_id(self):
+        """
+        The method to get the id of document.
+
+        Returns
+        -------
+        string
+            The document's id.
 
         """
         return self.doc_id
     
     def get_title(self):
         """
-        Method untuk mendapatkan nilai atribut title.
-        Atribut title menyimpan judul dari dokumen teks.
+        The method to get the title of document.
 
         Returns
         -------
-        title : string
-            Judul dari dokumen teks.
+        string
+            The document's title.
 
         """
         return self.title
     
     def get_content(self):
         """
-        Method untuk mendapatkan nilai atribut content.
-        Atribut content menyimpan isi dari dokumen teks.
+        The method to get the content of document.
 
         Returns
         -------
-        content : string
-            Isi dari dokumen teks.
+        string
+            The document's content.
 
         """
         return self.content
     
-    def set_content_to_empty(self):
-        """
-        Method untuk mengosongkan nilai atribut content.
-        Dapat digunakan ketika index sudah disimpan (menandakan term-term yang ada sudah tersimpan).
-        Dilakukan untuk menghemat biaya penyimpanan index karena daftar dokumen teks (beserta nilai atributnya ikut disimpan sebagai metadata).
-        
-        Returns
-        -------
-        None.
-
-        """
-        self.content = ''
-    
     def get_vector(self):
         """
-        Method untuk mendapatkan nilai atribut vector yang merupakan representasi dari dokumen teks.
-        Vektor yang digunakan berisi bobot tf-idf dari masing-masing term yang ada.
+        The method to get the vector as the document's representation.
 
         Returns
         -------
-        vector : list
-            Vektor sebagai representasi dokumen teks.
+        list
+            The vector as the document's representation.
 
         """
         return self.vector
     
-    def set_vector(self, index, corpus_size):
+    def set_vector(self, index):
         """
-        Method untuk menghitung vektor yang digunakan sebagai representasi dokumen teks dan disimpan sebagai nilai atribut vector.
-        Proses yang dilakukan adalah menghitung bobot untuk masing-masing term.
-        Jika term tidak ada dalam dokumen teks, bobotnya adalah 0.
+        Build a vector as the document's representation.
+        Each dimension of the vector is a term's weight.
 
         Parameters
         ----------
         index : dictionary
-            Inverted index.
-        corpus_size : int
-            Jumlah seluruh dokumen teks yang ada.
+            The inverted index.
 
         Returns
         -------
         None.
 
         """
-        # Mengambil setiap term yang ada dalam index, diurutkan menaik menurut alphabet.
+        # Build a list of terms sorted in ascending order.
         dictionary = sorted(list(index.keys()), key=str.lower)
-        self.vector = []
+        # Set the corpus size.
+        corpus_size = len(set(doc for posting in index.values() for doc in posting.keys()))
+        
+        # Build a list of each terms' idf, to avoid calculating idf for same term repeatedly.
+        idf_list = {}
+        
         for term in dictionary:
             weight = 0
-            # Mengecek apakah term ada dalam dokumen teks, jika tidak ada maka bobotnya 0.
+            
+            # Check whether a term is contained in a document.
+            # If a term is not contained in a document, its weight equals to 0.
             if self.get_id() in index[term]:
-                # Menghitung nilai tf ketika term ada.
+                # Calculate tf weight for a term.
                 tf = math.log10(index[term][self.get_id()] + 1)
-                # Menghitung nilai idf.
-                idf = math.log10((corpus_size) / len(index[term]))
-                # Menghitung bobot term dengan pembobotan tf-idf.
+                
+                # Calculate idf weight for a term.
+                idf = idf_list.get(term)
+                if idf is None:
+                    idf = idf_list[term] = math.log10((corpus_size) / len(index[term]))
+                    
+                # Calculate tf-idf weight for a term.
                 weight = tf * idf
             self.vector.append(weight)
     
-    def count_distance(self, other_doc):
+    def calc_distance(self, other_doc):
         """
-        Method untuk menghitung kemiripan dengan dokumen teks lain.
-        Perhitungan jarak (cosine) dilakukan berdasarkan vektor representasi dokumen teks.
+        A method to calculate the cosine distance between two documents.
 
         Parameters
         ----------
         other_doc : Document
-            Dokumen teks lain yang diukur jaraknya.
+            Another document to compare.
 
         Returns
         -------
         distance : float
-            Jarak dengan other_doc.
+            The cosine distance between two documents.
 
         """
-        # Jika other_doc yang dibandingkan adalah dokumen teks ini sendiri.
+        # Check whether the other document is the same document as this.
+        # If two documents are equal, the distance is set to 0.
         if other_doc.get_id() == self.doc_id:
             return 0
-        # Mengambil vektor dari kedua dokumen teks.
-        vector_i = self.get_vector()
+        
+        # Get vectors of two documents.
+        vector_i = self.vector
         vector_j = other_doc.get_vector()
         return cosine(vector_i, vector_j)

@@ -5,6 +5,24 @@ import matplotlib.pyplot as plt
 class Dendrogram:
     
     def __init__(self, linked, labels, cut_off):
+        """
+        The constructor for Dendrogram class.
+
+        Parameters
+        ----------
+        linked : array
+            The linkage matrix.
+        labels : list
+            The list of documents' title.
+        cut_off : float
+            The cut-off height.
+
+        Returns
+        -------
+        None.
+
+        """
+        print(type(linked))
         self.cut_off = cut_off
         self.dend = dendrogram(linked,
                     orientation='right',
@@ -13,31 +31,31 @@ class Dendrogram:
         
     def plot_dendrogram(self):
         """
-        Plot dendrogram diagram.
+        The method to plot dendrogram diagram.
 
         Returns
         -------
         fig : figure
-            A figure of the dendrogram.
+            The figure of the dendrogram.
 
         """
         fig = plt.figure(figsize=(10, 5))
         dendrogram = self.dend
         
-        # Cut the dendrogram at cut_off height.
+        # Cut the dendrogram at cut-off height.
         # If the cut-off height equals to 0, there will be no cut-off line.
         plt.axvline(x=self.cut_off, linestyle='dashed')
         return fig
     
     def extract_clusters_by_color(self):
         """
-        Extract a list of objects of each clusters in a dendrogram based on colors.
+        The method to extract a list of objects of each clusters in the dendrogram based on colors.
         Shout out to http://www.nxn.se/valent/extract-cluster-elements-by-color-in-python.
         
         Returns
         -------
         cluster_list : dictionary
-            A list of objects of each clusters.
+            The list of objects of each clusters.
             Written as {cluster1: [doc1, doc2], cluster2: [doc3], etc.}.
 
         """
