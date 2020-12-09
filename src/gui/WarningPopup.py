@@ -4,12 +4,27 @@ import tkinter as tk
 class WarningPopup:
     
     def __init__(self, popup_title, warning_message):
+        """
+        The constructor for WarningPopup class.
+
+        Parameters
+        ----------
+        popup_title : string
+            The popup title.
+        warning_message : string
+            The popup message.
+
+        Returns
+        -------
+        None.
+
+        """
         self.popup_title = popup_title
         self.warning_message = warning_message
         
     def show_popup(self):
         """
-        Method untuk menampilkan pop-up warning.
+        The method to show popup warning.
         
         Returns
         -------

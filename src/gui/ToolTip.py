@@ -4,6 +4,21 @@ import tkinter as tk
 class ToolTip:
     
     def __init__(self, widget, tip):
+        """
+        The constructor for ToolTip class.
+
+        Parameters
+        ----------
+        widget : Tk button
+            The button.
+        tip : TYPE
+            The tool tip message.
+
+        Returns
+        -------
+        None.
+
+        """
         self.widget = widget
         self.widget.bind('<Enter>', self.enter)
         self.widget.bind('<Leave>', self.close)
@@ -11,12 +26,12 @@ class ToolTip:
         
     def enter(self, event=None):
         """
-        Method untuk menampilkan tool tip ketika mouse mendekati widget.
+        The method to show a tooltip when a mouse is hovering the object.
 
         Parameters
         ----------
         event : Event, optional
-            Deskripsi event. Nilai default adalah None.
+            The event indicating a hover. The default is None.
 
         Returns
         -------
@@ -37,12 +52,12 @@ class ToolTip:
         
     def close(self, event=None):
         """
-        Method untuk menghilangkan tool tip ketika mouse menjauhi widget.
+        The method to hide a tooltip.
 
         Parameters
         ----------
         event : Event, optional
-            Deskripsi event. Nilai default adalah None.
+            The event indicating a leave. The default is None.
 
         Returns
         -------
