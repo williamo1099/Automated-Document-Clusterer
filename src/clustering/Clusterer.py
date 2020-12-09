@@ -78,7 +78,7 @@ class Clusterer:
         -------
         dictionary
             The list of objects of each clusters.
-            Written as {cluster1: [doc1, doc2], cluster2: [doc3], etc.}..
+            Written as {cluster1: [doc1, doc2], cluster2: [doc3], etc.}.
 
         """
         return self.dendrogram.extract_clusters_by_color()
