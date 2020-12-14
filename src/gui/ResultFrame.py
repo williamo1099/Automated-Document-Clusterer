@@ -27,17 +27,20 @@ class ResultFrame:
         # Initialize the result frame in window.
         result_frame = tk.Frame(self.gui.get_window())
         result_frame.pack(side='top')
+        result_frame.configure(background='white')
         
         # Initialize the organize button in the frame.
         self.organize_button = tk.Button(master=self.gui.get_window(), text='Organize documents',
                                          command=lambda:self.organize_document(cluster_list))
         self.organize_button.pack(in_=result_frame, side='left', padx=5, pady=5)
+        self.organize_button.configure(background='white')
         ToolTip(self.organize_button, 'Organize document files based on the dendrogram')
         
         # Initialize the download button in the frame.
         self.download_button = tk.Button(master=self.gui.get_window(), text='Download plot',
                                     command=lambda:self.save_plot(figure))
         self.download_button.pack(in_=result_frame, side='right', padx=5, pady=5)
+        self.download_button.configure(background='white')
         ToolTip(self.download_button, 'Download the plot')
        
     def restart(self):

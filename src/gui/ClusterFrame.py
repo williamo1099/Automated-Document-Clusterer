@@ -29,16 +29,19 @@ class ClusterFrame:
         # Initialize the cluster frame in window.
         cluster_frame = tk.Frame(master=self.gui.get_window())
         cluster_frame.pack(side='top')
+        cluster_frame.configure(background='white')
         
         # Initialize the method combobox in the frame.
         self.method_list = ['single', 'complete', 'average']
         self.method_combobox = ttk.Combobox(master=self.gui.get_window(), values=self.method_list)
         self.method_combobox.current(0)
         self.method_combobox.pack(in_=cluster_frame, side='left', padx=2, pady=2)
+        self.method_combobox.configure(background='white')
         
         # Initialize the cluster button in the frame.
         self.cluster_button = tk.Button(master=self.gui.get_window(), text='Cluster', command=self.cluster)
         self.cluster_button.pack(in_=cluster_frame, side='right', padx=2, pady=2)
+        self.cluster_button.configure(background='white')
         ToolTip(self.cluster_button, 'Start clustering all documents')
     
     def restart(self):
@@ -79,7 +82,6 @@ class ClusterFrame:
         """
         clusterer = Clusterer(self.gui.get_corpus())
         figure = clusterer.cluster(self.method_list[self.method_combobox.current()], cut_off)
-        figure.set_facecolor('#ececec')
         
         # Check whether canvas status is True or not.
         # It is true when a figure has been drawn on canvas.
@@ -92,6 +94,7 @@ class ClusterFrame:
         self.cpcc_label = tk.Label(master=self.gui.get_window(),
                             text='Cophenetic correlation coefficient : ' + "{:.3f}".format(clusterer.calc_cophenetic_coeff()))
         self.cpcc_label.pack(pady=2)
+        self.cpcc_label.configure(background='white')
         
         def canvas_on_click(event):
             """

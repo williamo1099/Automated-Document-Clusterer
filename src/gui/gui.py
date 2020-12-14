@@ -28,6 +28,7 @@ class gui:
         self.window.title('Automated Document Clustering')
         self.window.geometry('750x600')
         self.window.resizable(width=False, height=False)
+        self.window.configure(background='white')
         
         # Initialize the menu bar.
         self.menu_bar = MenuBar(self)

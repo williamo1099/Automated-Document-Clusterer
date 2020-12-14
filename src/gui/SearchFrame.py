@@ -28,15 +28,17 @@ class SearchFrame:
         # Initialize the search frame in window.
         search_frame = tk.Frame(master=self.gui.get_window())
         search_frame.pack(side='top', fill='x')
+        search_frame.configure(background='white')
         
         # Initialize the folder entry in the frame.
         self.folder_entry = tk.Entry(master=self.gui.get_window(), width=50)
         self.folder_entry.pack(in_=search_frame, side='left', padx=2, pady=2)
-        self.folder_entry.configure(state='disabled')
+        self.folder_entry.configure(state='disabled', background='white')
         
         # Initialize the select button in the frame.
         self.select_button = tk.Button(master=self.gui.get_window(), text='Select folder', command=self.select_folder)
         self.select_button.pack(in_=search_frame, side='right', padx=2, pady=2)
+        self.select_button.configure(background='white')
         ToolTip(self.select_button, 'Select folder path containing the documents')
     
     def restart(self):
