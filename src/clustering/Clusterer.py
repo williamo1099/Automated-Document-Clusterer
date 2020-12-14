@@ -66,9 +66,8 @@ class Clusterer:
         self.linkage = linkage(self.distance_matrix,
                          method=method,
                          optimal_ordering=True)
-        self.dendrogram = Dendrogram(self.linkage, [doc.get_title() for doc in self.corpus],
-                                     cut_off)
-        return self.dendrogram.plot_dendrogram()
+        self.dendrogram = Dendrogram(self.linkage, cut_off)
+        return self.dendrogram.plot_dendrogram([doc.get_title() for doc in self.corpus])
     
     def extract_clusters(self):
         """

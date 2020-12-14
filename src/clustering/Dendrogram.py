@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class Dendrogram:
     
-    def __init__(self, linked, labels, cut_off):
+    def __init__(self, linked, cut_off):
         """
         The constructor for Dendrogram class.
 
@@ -12,8 +12,6 @@ class Dendrogram:
         ----------
         linked : array
             The linkage matrix.
-        labels : list
-            The list of documents' title.
         cut_off : float
             The cut-off height.
 
@@ -22,15 +20,17 @@ class Dendrogram:
         None.
 
         """
+        self.linked = linked
         self.cut_off = cut_off
-        self.dend = dendrogram(linked,
-                    orientation='right',
-                    color_threshold=cut_off,
-                    labels=labels)
         
-    def plot_dendrogram(self):
+    def plot_dendrogram(self, labels=None):
         """
         The method to plot dendrogram diagram.
+        
+        Parameters
+        ----------
+        labels : list
+            The list of documents' title. The default is None.
 
         Returns
         -------
@@ -39,7 +39,10 @@ class Dendrogram:
 
         """
         fig = plt.figure(figsize=(10, 5))
-        dendrogram = self.dend
+        self.dend = dendrogram(self.linked,
+                    orientation='right',
+                    color_threshold=self.cut_off,
+                    labels=labels)
         
         # Cut the dendrogram at cut-off height.
         # If the cut-off height equals to 0, there will be no cut-off line.
