@@ -6,7 +6,7 @@ from gui.ToolTip import ToolTip
 
 import tkinter as tk
 from tkinter import ttk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 class ClusterFrame:
     
@@ -118,7 +118,10 @@ class ClusterFrame:
         self.figure_canvas = FigureCanvasTkAgg(figure, master=self.gui.get_window())
         self.figure_canvas.draw()
         self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
-        # self.canvas.callbacks.connect('scroll_event', on_scroll)
+        
+        # Add canvas toolbar.
+        self.figure_toolbar = NavigationToolbar2Tk(self.figure_canvas, self.gui.get_window())
+        self.figure_toolbar.update()
         self.figure_canvas.get_tk_widget().pack(pady=2)
         
         # Initialize the result frame.
@@ -138,3 +141,4 @@ class ClusterFrame:
         
         self.cpcc_label.destroy()
         self.figure_canvas.get_tk_widget().destroy()
+        self.figure_toolbar.destroy()
