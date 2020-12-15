@@ -25,21 +25,21 @@ class ResultFrame:
         self.gui = gui
         
         # Initialize the result frame in window.
-        result_frame = tk.Frame(self.gui.get_window())
-        result_frame.pack(side='top')
-        result_frame.configure(background='white')
+        self.result_frame = tk.Frame(self.gui.get_window())
+        self.result_frame.pack(side='top')
+        self.result_frame.configure(background='white')
         
         # Initialize the organize button in the frame.
         self.organize_button = tk.Button(master=self.gui.get_window(), text='Organize documents',
                                          command=lambda:self.organize_document(cluster_list))
-        self.organize_button.pack(in_=result_frame, side='left', padx=5, pady=5)
+        self.organize_button.pack(in_=self.result_frame, side='left', padx=5, pady=5)
         self.organize_button.configure(background='white')
         ToolTip(self.organize_button, 'Organize document files based on the dendrogram')
         
         # Initialize the download button in the frame.
         self.download_button = tk.Button(master=self.gui.get_window(), text='Download plot',
                                     command=lambda:self.save_plot(figure))
-        self.download_button.pack(in_=result_frame, side='right', padx=5, pady=5)
+        self.download_button.pack(in_=self.result_frame, side='right', padx=5, pady=5)
         self.download_button.configure(background='white')
         ToolTip(self.download_button, 'Download the plot')
        
@@ -52,8 +52,7 @@ class ResultFrame:
         None.
 
         """
-        self.organize_button.destroy()
-        self.download_button.destroy()
+        self.result_frame.destroy()
     
     def organize_document(self, cluster_list):
         """
@@ -77,7 +76,7 @@ class ResultFrame:
         if not os.path.exists(organized_folder):
             os.mkdir(organized_folder)
             
-        # .For each label, put all documents together in the same folder.
+        # For each label, put all documents together in the same folder.
         for cluster, doc in cluster_list.items():
             
             # Create a new folder for current cluster.

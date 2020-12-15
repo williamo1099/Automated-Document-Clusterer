@@ -92,7 +92,7 @@ class ClusterFrame:
             
         # Show CPCC label.
         self.cpcc_label = tk.Label(master=self.gui.get_window(),
-                            text='Cophenetic correlation coefficient : ' + "{:.3f}".format(clusterer.calc_cophenetic_coeff()))
+                            text='Cophenetic correlation coefficient : ' + '{:.3f}'.format(clusterer.calc_cophenetic_coeff()))
         self.cpcc_label.pack(pady=2)
         self.cpcc_label.configure(background='white')
         
