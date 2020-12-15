@@ -137,7 +137,7 @@ class Indexer:
         
         # Do linguistic preprocessing (stop words removal and stemming).
         dictionary = self.LinguisticPreprocesser.stem(
-                    self.LinguisticPreprocesser.stem(token_list))
+                    self.LinguisticPreprocesser.remove_stopwords(token_list))
         return dictionary
     
     def index(self, document):
