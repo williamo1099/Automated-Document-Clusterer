@@ -1,12 +1,12 @@
 
 from clustering.Clusterer import Clusterer
-from gui.ResultFrame import ResultFrame
+from gui.NavigationToolbar import NavigationToolbar
 from gui.WarningPopup import WarningPopup
 from gui.ToolTip import ToolTip
 
 import tkinter as tk
 from tkinter import ttk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class ClusterFrame:
     
@@ -117,15 +117,11 @@ class ClusterFrame:
         # Draw figure on canvas.
         self.figure_canvas = FigureCanvasTkAgg(figure, master=self.gui.get_window())
         self.figure_canvas.draw()
-        self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
+        # self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
         
         # Add canvas toolbar.
-        self.figure_toolbar = NavigationToolbar2Tk(self.figure_canvas, self.gui.get_window())
-        self.figure_toolbar.update()
+        self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, clusterer.extract_clusters())
         self.figure_canvas.get_tk_widget().pack(pady=2)
-        
-        # Initialize the result frame.
-        self.result_frame = ResultFrame(self.gui, clusterer.extract_clusters(), figure)
         
     def reset_canvas(self):
         """
@@ -136,9 +132,6 @@ class ClusterFrame:
         None.
 
         """
-        # Reinitialize the result frame.
-        self.result_frame.restart()
-        
         self.cpcc_label.destroy()
         self.figure_canvas.get_tk_widget().destroy()
         self.figure_toolbar.destroy()
