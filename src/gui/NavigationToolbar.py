@@ -56,3 +56,5 @@ class NavigationToolbar(NavigationToolbar2Tk):
                 # Copy and move the document into the cluster folder.
                 source = os.path.join(self.gui.get_folder_path(), item + '.txt')
                 shutil.copyfile(source, ci_folder + '/' + item + '.txt')
+        else:
+            print('File exists')

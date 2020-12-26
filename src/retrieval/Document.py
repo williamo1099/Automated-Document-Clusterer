@@ -96,9 +96,6 @@ class Document:
         # Set the corpus size.
         corpus_size = len(set(doc for posting in index.values() for doc in posting.keys()))
         
-        # Build a list of each terms' idf, to avoid calculating idf for same term repeatedly.
-        idf_list = {}
-        
         for term in dictionary:
             weight = 0
             
@@ -109,9 +106,7 @@ class Document:
                 tf = math.log10(index[term][self.get_id()] + 1)
                 
                 # Calculate idf weight for a term.
-                idf = idf_list.get(term)
-                if idf is None:
-                    idf = idf_list[term] = math.log10((corpus_size) / len(index[term]))
+                idf = math.log10((corpus_size) / len(index[term]))
                     
                 # Calculate tf-idf weight for a term.
                 weight = tf * idf

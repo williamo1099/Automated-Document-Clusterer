@@ -31,7 +31,7 @@ class SearchFrame:
         search_frame.configure(background='white')
         
         # Initialize the folder entry in the frame.
-        self.folder_entry = tk.Entry(master=self.gui.get_window(), width=50)
+        self.folder_entry = tk.Entry(master=self.gui.get_window(), width=100)
         self.folder_entry.pack(in_=search_frame, side='left', padx=2, pady=2)
         self.folder_entry.configure(state='disabled', background='white')
         
@@ -92,8 +92,8 @@ class SearchFrame:
                     doc_titles.append(os.path.join(root, file))
         corpus = []
         
-        # Currently it is only compatible with MacOS file system.
-        escaped_folder_path = str(folder_path) + '/'
+        # Currently it is only compatible with Windows file system.
+        escaped_folder_path = str(folder_path) + '\\'
         
         # Retrieve information of each documents.
         for i in range(0, len(doc_titles)):
