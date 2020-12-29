@@ -4,6 +4,7 @@ from retrieval.Indexer import Indexer
 from gui.ToolTip import ToolTip
 
 import os
+import threading
 import tkinter as tk
 from tkinter import filedialog
 
@@ -105,7 +106,7 @@ class SearchFrame:
         self.gui.set_corpus(corpus)
         
         # Build the inverted index.
-        self.build_inverted_index()
+        threading.Thread(target=self.build_inverted_index, name='indexing_thread').start()
     
     def build_inverted_index(self):
         """

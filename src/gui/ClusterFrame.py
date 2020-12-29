@@ -4,6 +4,7 @@ from gui.NavigationToolbar import NavigationToolbar
 from gui.WarningPopup import WarningPopup
 from gui.ToolTip import ToolTip
 
+import threading
 import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -60,7 +61,7 @@ class ClusterFrame:
         # Check whether cluster status is True or not.
         # It is true when it is ready to do clustering.
         if self.gui.get_cluster_status() is True:
-            self.draw_canvas(0)
+            threading.Thread(target=self.draw_canvas, args=(0,), name='drawing_thread').start()
         else:
             popup = WarningPopup('Clustering process',
                                  'There are no documents to be clustered.')
