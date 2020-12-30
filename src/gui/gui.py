@@ -70,6 +70,22 @@ class gui:
         self.corpus = []
         self.inverted_index = None
         
+    def set_progress_value(self, value):
+        """
+        The method to set the progress bar value.
+
+        Parameters
+        ----------
+        value : int
+            The progress bar value.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.progress_frame.update_progress_bar(value)
+    
     def get_window(self):
         """
         The method to get the main gui window.

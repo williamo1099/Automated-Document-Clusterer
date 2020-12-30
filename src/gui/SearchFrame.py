@@ -6,7 +6,6 @@ from gui.ToolTip import ToolTip
 import os
 import threading
 import tkinter as tk
-from tkinter import ttk
 from tkinter import filedialog
 
 class SearchFrame:
@@ -124,15 +123,27 @@ class SearchFrame:
             The inverted index.
 
         """
+        # Start progress bar, with value equals to 0.
+        self.gui.set_progress_value(0)
+        
         indexer = Indexer()
         for doc in self.gui.get_corpus():
             indexer.index(doc)
         inverted_index = indexer.get_inverted_index()
         self.gui.set_inverted_index(inverted_index)
         
+        # Set progress bar value to 40.
+        self.gui.set_progress_value(40)
+        
         # Set the vector of each documents.
         for doc in self.gui.get_corpus():
             doc.set_vector(inverted_index)
         
+        # Set progress bar value to 90.
+        self.gui.set_progress_value(90)
+        
         # Set the status to true, indicating that it is ready  for clustering.
         self.gui.set_cluster_status(True)
+        
+        # Set progress bar value to 100, indicating the process has finished.
+        self.gui.set_progress_value(100)
