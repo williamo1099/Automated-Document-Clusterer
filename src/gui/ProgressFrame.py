@@ -29,12 +29,6 @@ class ProgressFrame:
         self.progress_bar = ttk.Progressbar(master=self.gui.get_window(), orient='horizontal')
         self.progress_bar.pack(in_=progress_frame, fill='x', padx=2, pady=2)
         
-        # Initialize the progress info label in the frame.
-        # self.progress_info_text = tk.StringVar()
-        # self.progress_info_text.set('None')
-        # self.progress_info = tk.Label(master=self.gui.get_window(), textvariable=self.progress_info_text)
-        # self.progress_info.pack(in_=progress_frame, side='right', padx=2, pady=2)
-        
     def update_progress_bar(self, value):
         """
         The method to update the progress bar value.
@@ -42,11 +36,12 @@ class ProgressFrame:
         Parameters
         ----------
         value : int
-            The progress bar value.
+            The progress bar value, in range of 0 and 100.
 
         Returns
         -------
         None.
 
         """
-        self.progress_bar['value'] = value
+        if value >= 0 & value <= 100:
+            self.progress_bar['value'] = value

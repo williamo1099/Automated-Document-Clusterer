@@ -32,12 +32,12 @@ class SearchFrame:
         search_frame.configure(background='white')
         
         # Initialize the folder entry in the frame.
-        self.folder_entry = tk.Entry(master=self.gui.get_window(), width=100)
+        self.folder_entry = tk.Entry(master=self.gui.get_window(), width=int((750 * 0.8) / 6))
         self.folder_entry.pack(in_=search_frame, side='left', padx=2, pady=2)
         self.folder_entry.configure(state='disabled', background='white')
         
         # Initialize the select button in the frame.
-        self.select_button = tk.Button(master=self.gui.get_window(), text='Select folder', command=self.select_folder)
+        self.select_button = tk.Button(master=self.gui.get_window(), text='Select folder', command=self.select_folder, width=int((750 * 0.2) / 6))
         self.select_button.pack(in_=search_frame, side='right', padx=2, pady=2)
         self.select_button.configure(background='white')
         ToolTip(self.select_button, 'Select folder path containing the documents')
@@ -125,6 +125,7 @@ class SearchFrame:
         """
         # Start progress bar, with value equals to 0.
         self.gui.set_progress_value(0)
+        self.gui.set_progress_value(10)
         
         indexer = Indexer()
         for doc in self.gui.get_corpus():
