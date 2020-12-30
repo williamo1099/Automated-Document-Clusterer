@@ -62,6 +62,7 @@ class ClusterFrame:
         # It is true when it is ready to do clustering.
         if self.gui.get_cluster_status() is True:
             self.draw_canvas(0)
+            # threading.Thread(target=self.draw_canvas, args=(0,), name='drawing_thread').start()
         else:
             popup = WarningPopup('Clustering process',
                                  'There are no documents to be clustered.')
