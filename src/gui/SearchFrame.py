@@ -6,6 +6,7 @@ from gui.ToolTip import ToolTip
 import os
 import threading
 import tkinter as tk
+from tkinter import ttk
 from tkinter import filedialog
 
 class SearchFrame:

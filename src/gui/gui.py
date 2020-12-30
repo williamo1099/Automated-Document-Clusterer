@@ -2,6 +2,7 @@
 from gui.MenuBar import MenuBar
 from gui.SearchFrame import SearchFrame
 from gui.ClusterFrame import ClusterFrame
+from gui.ProgressFrame import ProgressFrame
 
 import tkinter as tk
 
@@ -36,6 +37,7 @@ class gui:
         # Initialiaze all frames in the window.
         self.search_frame = SearchFrame(self)
         self.cluster_frame = ClusterFrame(self)
+        self.progress_frame = ProgressFrame(self)
         
     def start(self):
         """
