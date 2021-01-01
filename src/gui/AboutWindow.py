@@ -22,6 +22,7 @@ class AboutWindow:
         # Initialize the about window.
         about_window = tk.Toplevel(master=self.gui.get_window())
         about_window.title('About')
+        about_window.tk.call('wm', 'iconphoto', about_window._w, tk.PhotoImage(file='resources/logo25.png'))
         about_window.geometry('300x300')
         about_window.resizable(width=False, height=False)
         
