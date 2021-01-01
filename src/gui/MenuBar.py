@@ -139,4 +139,4 @@ class MenuBar:
         None.
 
         """
-        about_window = AboutWindow(self.gui)
+        AboutWindow(self.gui)
