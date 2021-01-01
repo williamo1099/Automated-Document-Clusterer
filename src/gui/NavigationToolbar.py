@@ -1,25 +1,41 @@
 
-from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
+from gui.ToolTip import ToolTip
+
 import os
 import shutil
+import tkinter as tk
+from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
 class NavigationToolbar(NavigationToolbar2Tk):
     
     def __init__(self, figure_canvas, gui, cluster_list):
         self.gui = gui
-        self.toolitems = (
-            ('Home', 'Reset original view', 'home', 'home'),
-            ('Back', 'Back to previous view', 'back', 'back'),
-            ('Forward', 'Forward to next view', 'forward', 'forward'),
-            ('Pan', 'Pan axes with left mouse, zoom with right', 'move', 'pan'),
-            ('Zoom', 'Zoom to rectangle', 'zoom_to_rect', 'zoom'),
-            ('Subplots', 'Configure subplots', 'subplots', 'configure_subplots'),
-            ('Organize', 'Organize the documents', 'home', 'organize_documents'),
-            ('Save', 'Save the figure', 'filesave', 'save_figure'),
-        )
+        self.cluster_list = cluster_list
+        
         NavigationToolbar2Tk.__init__(self, figure_canvas, self.gui.get_window())
         
-        self.cluster_list = cluster_list
+        # Initialize the cut button.
+        self.cut_icon = tk.PhotoImage(file=r'resources/cut.png', width=25, height=25)
+        self.cut_button = tk.Button(master=self, image=self.cut_icon, command=self.cut_dendrogram)
+        self.cut_button.pack(side='left')
+        ToolTip(self.cut_button, 'Cut the dendrogram')
+        
+        # Initialize the organize button.
+        self.organize_icon = tk.PhotoImage(file=r'resources/organize.png', width=25, height=25)
+        self.organize_button = tk.Button(master=self, image=self.organize_icon, command=self.organize_documents)
+        self.organize_button.pack(side='left')
+        ToolTip(self.organize_button, 'Organize all documents')
+        
+    def cut_dendrogram(self):
+        """
+        The method to set the cut status to true, indicating it is ready to cut the dendrogram.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.gui.set_cut_status(not self.gui.get_cut_status())
         
     def organize_documents(self):
         """
@@ -37,8 +53,6 @@ class NavigationToolbar(NavigationToolbar2Tk):
         None.
 
         """
-        self.push_current()
-        
         # Create a new folder organized.
         folder = 'organized'
         organized_folder = os.path.join(self.gui.get_folder_path(), folder)

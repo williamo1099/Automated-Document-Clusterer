@@ -112,7 +112,8 @@ class ClusterFrame:
             None.
 
             """
-            if event.inaxes is not None:
+            # Check whether cut status is True or not.
+            if event.inaxes is not None and self.gui.get_cut_status() is True:
                 cut_off = event.xdata
                 self.draw_canvas(cut_off)
         

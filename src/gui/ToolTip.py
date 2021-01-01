@@ -40,14 +40,13 @@ class ToolTip:
         """
         x = y = 0
         x, y, cx, cy = self.widget.bbox('insert')
-        x += self.widget.winfo_rootx() + 30
-        y += self.widget.winfo_rooty() + 20
+        x += self.widget.winfo_rootx() + 25
+        y += self.widget.winfo_rooty() - 2
         
         self.tool_tip = tk.Toplevel(self.widget)
         self.tool_tip.wm_overrideredirect(True)
         self.tool_tip.wm_geometry('+%d+%d' % (x, y))
-        label = tk.Label(self.tool_tip,
-                         text=self.tip)
+        label = tk.Label(self.tool_tip, text=self.tip, borderwidth=1, relief='solid')
         label.pack(ipadx=5)
         
     def close(self, event=None):

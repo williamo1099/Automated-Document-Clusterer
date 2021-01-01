@@ -20,6 +20,7 @@ class gui:
         # Initialize all variables.
         self.cluster_status = False
         self.canvas_status = False
+        self.cut_status = False
         self.folder_path = ''
         self.corpus = []
         self.inverted_index = None
@@ -155,6 +156,35 @@ class gui:
 
         """
         self.canvas_status = canvas_status
+        
+    def get_cut_status(self):
+        """
+        The method to get the cut-off status.
+        Cut-off status indicates whether it is ready to cut the dendrogram or not.
+
+        Returns
+        -------
+        boolean
+            The cut-off status.
+
+        """
+        return self.cut_status
+    
+    def set_cut_status(self, cut_status):
+        """
+        THe method to set the cut-off status.
+
+        Parameters
+        ----------
+        cut_status : boolean
+            The cut-off status.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.cut_status = cut_status
         
     def get_folder_path(self):
         """
