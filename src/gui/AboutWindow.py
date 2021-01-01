@@ -1,6 +1,5 @@
 
 import tkinter as tk
-from PIL import Image, ImageTk
 
 class AboutWindow:
     
@@ -27,7 +26,7 @@ class AboutWindow:
         about_window.resizable(width=False, height=False)
         
         # Initialize the logo in the window.
-        app_logo = ImageTk.PhotoImage(Image.open('resources/logo (big).png').resize((100, 100)))
+        app_logo = tk.PhotoImage(file='resources/logo100.png', width=100, height=100)
         panel = tk.Label(master=about_window, image=app_logo)
         panel.pack(side='top', pady=10)
         
@@ -40,7 +39,7 @@ class AboutWindow:
         version_label = tk.Label(master=about_window, text='Version 0.0.0')
         version_label.pack(side='top', pady=1)
         
-        # Initialize the
+        # Initialize the dependency label in the window.
         dependency_label = tk.Label(master=about_window, text='Built with\n' +
                                     'Matplotlib 3.3.2\n' + 'NLTK 3.5\n' + 'SciPy 1.5.4')
         dependency_label.pack(side='top', pady=2)

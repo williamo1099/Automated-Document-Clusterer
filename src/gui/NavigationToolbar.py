@@ -15,13 +15,13 @@ class NavigationToolbar(NavigationToolbar2Tk):
         NavigationToolbar2Tk.__init__(self, figure_canvas, self.gui.get_window())
         
         # Initialize the cut button.
-        self.cut_icon = tk.PhotoImage(file='resources/cut.png', width=25, height=25)
+        self.cut_icon = tk.PhotoImage(file='resources/Icons/cut.png', width=25, height=25)
         self.cut_button = tk.Button(master=self, image=self.cut_icon, command=self.cut_dendrogram)
         self.cut_button.pack(side='left')
         ToolTip(self.cut_button, 'Cut the dendrogram')
         
         # Initialize the organize button.
-        self.organize_icon = tk.PhotoImage(file='resources/organize.png', width=25, height=25)
+        self.organize_icon = tk.PhotoImage(file='resources/Icons/organize.png', width=25, height=25)
         self.organize_button = tk.Button(master=self, image=self.organize_icon, command=self.organize_documents)
         self.organize_button.pack(side='left')
         ToolTip(self.organize_button, 'Organize all documents')
