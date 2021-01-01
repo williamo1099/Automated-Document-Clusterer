@@ -34,20 +34,7 @@ class Indexer:
                 The list of tokens.
 
             """
-            # Converting all uppercase characters into lowercase characters (case folding).
-            tokens = word_tokenize(sequence.lower())
-            result = []
-            for token in tokens:
-                
-                # Check whether a token contains any non-alphabet character.
-                # All non-alphabet character in a token will be removed.
-                if token.isalpha():
-                    result.append(token)
-                else:
-                    normalized = ''.join(char for char in token if char.isalpha())
-                    if normalized != '':
-                        result.append(normalized)
-            return result
+            return word_tokenize(sequence)
         
     class LinguisticPreprocesser:
         
@@ -102,6 +89,48 @@ class Indexer:
                 stemmed = stemmer.stem(token)
                 result.append(stemmed)
             return result
+        
+        @staticmethod
+        def case_fold(token_list):
+            """
+            The method to case fold all tokens in a list of tokens.
+            
+            Parameters
+            ----------
+            token_list : list
+                The list of tokens.
+
+            Returns
+            -------
+            result : list
+                The list of terms (list of lowered tokens).
+
+            """
+            result = []
+            for token in token_list:
+                result.append(token.lower())
+            return result
+        
+        @staticmethod
+        def normalize(token_list):
+            """
+            
+
+            Parameters
+            ----------
+            token_list : list
+                The list of tokens.
+
+            Returns
+            -------
+            result : list
+                The list of terms (list of normalized tokens).
+
+            """
+            result = []
+            for token in token_list:
+                result.append(''.join(char for char in token if char.isalpha()))
+            return result
     
     def get_inverted_index(self):
         """
@@ -136,8 +165,10 @@ class Indexer:
         token_list = self.Tokenizer.tokenize(document.get_content())
         
         # Do linguistic preprocessing (stop words removal and stemming).
-        dictionary = self.LinguisticPreprocesser.stem(
-                    self.LinguisticPreprocesser.remove_stopwords(token_list))
+        dictionary = self.LinguisticPreprocesser.normalize(
+                    self.LinguisticPreprocesser.case_fold(
+                    self.LinguisticPreprocesser.stem(
+                    self.LinguisticPreprocesser.remove_stopwords(token_list))))
         return dictionary
     
     def index(self, document):
