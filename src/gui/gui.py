@@ -27,8 +27,8 @@ class gui:
         
         # Initialize the application's gui.
         self.window = tk.Tk()
-        self.window.title('Automated Document Clustering')
-        self.window.iconphoto(False, tk.PhotoImage(file='resources/logo.png'))
+        self.window.title('Automated Document Clusterer')
+        # self.window.iconphoto(False, tk.PhotoImage(file='resources/logo.png'))
         self.window.geometry('750x450')
         self.window.resizable(width=False, height=False)
         self.window.configure(background='white')

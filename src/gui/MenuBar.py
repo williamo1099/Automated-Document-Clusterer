@@ -1,9 +1,11 @@
 
+from gui.AboutWindow import AboutWindow
 from gui.WarningPopup import WarningPopup
 
 import tkinter as tk
 from tkinter import filedialog
 import pickle
+import webbrowser
 
 class MenuBar:
     
@@ -28,13 +30,22 @@ class MenuBar:
         self.gui.get_window().config(menu=menu)
         
         # Inititalize the file menu in menu bar.
-        file_menu = tk.Menu(menu)
+        file_menu = tk.Menu(menu, tearoff=False)
         menu.add_cascade(label='File', menu=file_menu)
-        file_menu.add_command(label='New file', command=self.reset_window)
+        file_menu.add_command(label='New file', command=self.new_window)
         file_menu.add_command(label='Save index', command=self.save_index)
         file_menu.add_command(label='Load index', command=self.load_index)
+        file_menu.add_separator()
+        file_menu.add_command(label='Exit', command=self.gui.get_window().destroy)
         
-    def reset_window(self):
+        # Initialize the help menu in menu bar.
+        help_menu = tk.Menu(menu, tearoff=False)
+        menu.add_cascade(label='Help', menu=help_menu)
+        help_menu.add_command(label='Documentation', command=self.documentation)
+        help_menu.add_separator()
+        help_menu.add_command(label='About', command=self.about)
+        
+    def new_window(self):
         """
         The method to reset the window.
 
@@ -106,3 +117,26 @@ class MenuBar:
             popup = WarningPopup('Loading an index',
                                  'There is no index to be loaded!')
             popup.show_popup()
+    
+    def documentation(self):
+        """
+        The method to show documentation on GitHub.
+        This feature is currently not available.
+
+        Returns
+        -------
+        None.
+
+        """
+        webbrowser.open('https://github.com/williamo1099/Skripsi-2020')
+        
+    def about(self):
+        """
+        The method to show an overview of the application.
+
+        Returns
+        -------
+        None.
+
+        """
+        about_window = AboutWindow(self.gui)
