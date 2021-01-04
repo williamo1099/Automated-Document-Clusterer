@@ -129,7 +129,9 @@ class Indexer:
             """
             result = []
             for token in token_list:
-                result.append(''.join(char for char in token if char.isalpha()))
+                normalized_token = ''.join(char for char in token if char.isalpha())
+                if normalized_token != '':
+                    result.append(normalized_token)
             return result
     
     def get_inverted_index(self):
