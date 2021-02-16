@@ -112,11 +112,6 @@ class SearchFrame:
         """
         The method to build an inverted index.
 
-        Parameters
-        ----------
-        corpus : list
-            The list of documents.
-
         Returns
         -------
         dictionary
