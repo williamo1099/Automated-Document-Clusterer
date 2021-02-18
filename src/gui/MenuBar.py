@@ -2,6 +2,7 @@
 from gui.AboutWindow import AboutWindow
 from gui.WarningPopup import WarningPopup
 
+import os
 import tkinter as tk
 from tkinter import filedialog
 import pickle
@@ -35,6 +36,8 @@ class MenuBar:
         file_menu.add_command(label='New file', command=self.new_window)
         file_menu.add_command(label='Save index', command=self.save_index)
         file_menu.add_command(label='Load index', command=self.load_index)
+        file_menu.add_separator()
+        file_menu.add_command(label='Update index', command=self.update_index)
         file_menu.add_separator()
         file_menu.add_command(label='Exit', command=self.gui.get_window().destroy)
         
@@ -116,6 +119,42 @@ class MenuBar:
         except EnvironmentError:
             popup = WarningPopup('Loading an index',
                                  'There is no index to be loaded!')
+            popup.show_popup()
+    
+    def update_index(self):
+        """
+        The method to update an inverted index.
+
+        Returns
+        -------
+        None
+
+        """
+        folder_path = self.gui.get_folder_path()
+        try:
+            # Retrieve all .txt files in folder.
+            curr_doc_titles = []
+            for root, directories, files in os.walk(folder_path):
+                for file in files:
+                    if '.txt' in file:
+                        curr_doc_titles.append(os.path.join(root, file))
+            
+            doc_titles = []
+            
+            # Compare two document lists.
+            difference = (list(list(set(doc_titles) - set(curr_doc_titles)) +
+                               list(set(curr_doc_titles)-set(doc_titles))))
+            
+            # Check if there is a difference between two document lists.
+            if len(difference) == 0: 
+                popup = WarningPopup('Updating an index',
+                                     'The index is currently up to date!')
+                popup.show_popup()
+            else:
+                print('')
+        except EnvironmentError:
+            popup = WarningPopup('Updating an index',
+                                 'The file path of the saved index does not exist!')
             popup.show_popup()
     
     def documentation(self):
