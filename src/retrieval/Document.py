@@ -132,7 +132,7 @@ class Document:
         if other_doc.get_id() == self.doc_id:
             return 0
         
-        # Get vectors of two documents.
+        # Get vectors of two documents and count distance between those two vectors.
         vector_i = self.vector
         vector_j = other_doc.get_vector()
         return cosine(vector_i, vector_j)

@@ -5,7 +5,7 @@ class AboutWindow:
     
     def __init__(self, gui):
         """
-        The constructor fot AboutWindow class.
+        The constructor for AboutWindow class.
 
         Parameters
         ----------

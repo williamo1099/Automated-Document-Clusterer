@@ -42,12 +42,6 @@ class NavigationToolbar(NavigationToolbar2Tk):
         The method to organize documents into folders based on documents' clusters.
         Currently this feature is only compatible with MacOS file system.
 
-        Parameters
-        ----------
-        cluster_list : dictionary
-            The list of objects of each clusters.
-            Written as {cluster1: [doc1, doc2], cluster2: [doc3], etc.}.
-
         Returns
         -------
         None.

@@ -11,7 +11,7 @@ class ToolTip:
         ----------
         widget : Tk button
             The button.
-        tip : TYPE
+        tip : string
             The tool tip message.
 
         Returns

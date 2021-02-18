@@ -72,6 +72,7 @@ class Clusterer:
     def extract_clusters(self, dictionary):
         """
         The method to get a list of objects of each clusters obtained.
+        Each cluster is named automatically based on most frequent terms.
         
         Parameters
         ----------

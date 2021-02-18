@@ -114,7 +114,7 @@ class Indexer:
         @staticmethod
         def normalize(token_list):
             """
-            
+            The method to normalize all tokens in a list of tokens.
 
             Parameters
             ----------
@@ -166,7 +166,7 @@ class Indexer:
         # Do tokenization process.
         token_list = self.Tokenizer.tokenize(document.get_content())
         
-        # Do linguistic preprocessing (stop words removal and stemming).
+        # Do linguistic preprocessing (stop words removal, stemming, case folding and normalization).
         dictionary = self.LinguisticPreprocesser.normalize(
                     self.LinguisticPreprocesser.case_fold(
                     self.LinguisticPreprocesser.stem(

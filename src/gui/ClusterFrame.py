@@ -58,6 +58,14 @@ class ClusterFrame:
             self.reset_canvas()
     
     def cluster(self):
+        """
+        The method to start clustering documents.
+
+        Returns
+        -------
+        None.
+
+        """
         # Check whether cluster status is True or not.
         # It is true when it is ready to do clustering.
         if self.gui.get_cluster_status() is True:

@@ -59,8 +59,8 @@ class SearchFrame:
 
         Parameters
         ----------
-        folder_path : TYPE
-            DESCRIPTION.
+        folder_path : string
+            The folder path.
 
         Returns
         -------
