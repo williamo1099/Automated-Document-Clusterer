@@ -36,7 +36,7 @@ class Indexer:
             """
             return word_tokenize(sequence)
         
-    class LinguisticPreprocesser:
+    class LinguisticPreprocessor:
         
         @staticmethod
         def remove_stopwords(token_list):
@@ -167,10 +167,10 @@ class Indexer:
         token_list = self.Tokenizer.tokenize(document.get_content())
         
         # Do linguistic preprocessing (stop words removal, stemming, case folding and normalization).
-        dictionary = self.LinguisticPreprocesser.normalize(
-                    self.LinguisticPreprocesser.case_fold(
-                    self.LinguisticPreprocesser.stem(
-                    self.LinguisticPreprocesser.remove_stopwords(token_list))))
+        dictionary = self.LinguisticPreprocessor.normalize(
+                    self.LinguisticPreprocessor.case_fold(
+                    self.LinguisticPreprocessor.stem(
+                    self.LinguisticPreprocessor.remove_stopwords(token_list))))
         return dictionary
     
     def index(self, document):
