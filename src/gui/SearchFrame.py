@@ -122,9 +122,14 @@ class SearchFrame:
         self.gui.set_progress_value(0)
         self.gui.set_progress_value(10)
         
+        stopwords_removal = self.gui.get_preprocessor_option()[0].get()
+        stemming = self.gui.get_preprocessor_option()[1].get()
+        case_folding = self.gui.get_preprocessor_option()[2].get()
+        normalization = self.gui.get_preprocessor_option()[3].get()
+        
         indexer = Indexer()
         for doc in self.gui.get_corpus():
-            indexer.index(doc)
+            indexer.index(doc, stopwords_removal, stemming, case_folding, normalization)
         inverted_index = indexer.get_inverted_index()
         self.gui.set_inverted_index(inverted_index)
         

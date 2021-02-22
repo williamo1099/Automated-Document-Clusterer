@@ -131,7 +131,7 @@ class ClusterFrame:
         self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
         
         # Add canvas toolbar.
-        self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, clusterer.extract_clusters(sorted(list(self.gui.get_inverted_index().keys()), key=str.lower)))
+        self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, clusterer.extract_clusters(sorted(list(self.gui.get_inverted_index().keys()), key=str.lower), self.gui.get_autorenaming_option().get()))
         self.figure_canvas.get_tk_widget().pack(pady=2)
         
     def reset_canvas(self):

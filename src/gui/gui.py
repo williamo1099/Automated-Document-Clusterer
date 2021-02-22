@@ -33,8 +33,15 @@ class gui:
         self.window.resizable(width=False, height=False)
         self.window.configure(background='white')
         
+        # Initialize the option variables.
+        self.preprocessor_option = [tk.BooleanVar(),
+                                    tk.BooleanVar(),
+                                    tk.BooleanVar(),
+                                    tk.BooleanVar()]
+        self.autorenaming_option = tk.BooleanVar()
+        
         # Initialize the menu bar.
-        self.menu_bar = MenuBar(self)
+        self.menu_bar = MenuBar(self, self.preprocessor_option, self.autorenaming_option)
         
         # Initialiaze all frames in the window.
         self.search_frame = SearchFrame(self)
@@ -71,6 +78,9 @@ class gui:
         self.folder_path = ''
         self.corpus = []
         self.inverted_index = None
+        
+        # Set progress bar value to 0.
+        self.set_progress_value(0)
         
     def set_progress_value(self, value):
         """
@@ -272,3 +282,27 @@ class gui:
 
         """
         self.inverted_index = inverted_index
+        
+    def get_preprocessor_option(self):
+        """
+        The method to get the preprocessor option.
+
+        Returns
+        -------
+        list
+            The preprocessor option.
+
+        """
+        return self.preprocessor_option
+    
+    def get_autorenaming_option(self):
+        """
+        The method to get the autorenaming option.
+
+        Returns
+        -------
+        BooleanVar
+            The autorenaming option.
+
+        """
+        return self.autorenaming_option

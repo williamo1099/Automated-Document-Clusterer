@@ -69,15 +69,17 @@ class Clusterer:
         self.dendrogram = Dendrogram(self.linkage, cut_off)
         return self.dendrogram.plot_dendrogram([doc.get_title() for doc in self.corpus])
     
-    def extract_clusters(self, dictionary):
+    def extract_clusters(self, dictionary, autorenaming=True):
         """
         The method to get a list of objects of each clusters obtained.
-        Each cluster is named automatically based on most frequent terms.
+        Each cluster is named automatically based on most frequent terms (if autorenaming is True).
         
         Parameters
         ----------
         dictionary : list
             The list of sorted terms.
+        autorenaming : boolean
+            The autorenaming status. The default is True.
 
         Returns
         -------
@@ -87,51 +89,56 @@ class Clusterer:
 
         """
         cluster_list = self.dendrogram.extract_clusters_by_color()
-        renamed_cluster_list = {}
         
-        for cluster, docs in cluster_list.items():
-            list_of_vectors = []
-            for doc_title in docs:
-                for doc in self.corpus:
-                    if doc.get_title() == doc_title:
-                        list_of_vectors.append(doc.get_vector())
+        # If the autorenaming is True, the cluster list will be automatically renamed.
+        if autorenaming is True:
+            renamed_cluster_list = {}
             
-            def multiply_vector(vector):
-                """
-                The method to do multiplication of vector.
-
-                Parameters
-                ----------
-                doc_list : tuple
-                    The list of documents.
-
-                Returns
-                -------
-                res : float
-                    Multiplication result.
-
-                """
-                res = 1
-                for dim in vector:
-                    res *= dim
-                return res
-            
-            # Calculate intersection between vectors.
-            intersect = [multiply_vector(vector) for vector in zip(*list_of_vectors)]
-            
-            # Find common words between all documents.
-            common_words = {}
-            for i in range(0, len(intersect)):
-                if intersect[i] != 0:
-                    common_words[intersect[i]] = dictionary[i]
-            
-            # Sort common words.
-            if (len(common_words) > 0):
-                sorted_commond_words = sorted(common_words.items())
-                renamed_cluster_list[sorted_commond_words[-1][1]] = cluster_list[cluster]
-            else:
-                renamed_cluster_list[cluster] = cluster_list[cluster]
-        return renamed_cluster_list
+            for cluster, docs in cluster_list.items():
+                list_of_vectors = []
+                for doc_title in docs:
+                    for doc in self.corpus:
+                        if doc.get_title() == doc_title:
+                            list_of_vectors.append(doc.get_vector())
+                
+                def multiply_vector(vector):
+                    """
+                    The method to do multiplication of vector.
+    
+                    Parameters
+                    ----------
+                    doc_list : tuple
+                        The list of documents.
+    
+                    Returns
+                    -------
+                    res : float
+                        Multiplication result.
+    
+                    """
+                    res = 1
+                    for dim in vector:
+                        res *= dim
+                    return res
+                
+                # Calculate intersection between vectors.
+                intersect = [multiply_vector(vector) for vector in zip(*list_of_vectors)]
+                
+                # Find common words between all documents.
+                common_words = {}
+                for i in range(0, len(intersect)):
+                    if intersect[i] != 0:
+                        common_words[intersect[i]] = dictionary[i]
+                
+                # Sort common words.
+                if (len(common_words) > 0):
+                    sorted_commond_words = sorted(common_words.items())
+                    renamed_cluster_list[sorted_commond_words[-1][1]] = cluster_list[cluster]
+                else:
+                    renamed_cluster_list[cluster] = cluster_list[cluster]
+            return renamed_cluster_list
+        else:
+            return cluster_list
     
     def calc_cophenetic_coeff(self):
         """
