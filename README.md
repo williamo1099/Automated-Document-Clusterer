@@ -1,37 +1,16 @@
-# Document Clustering
+# Automated Document Clusterer
 
-Perangkat lunak ini dibangun sebagai bagian dari Skripsi S1 Teknik Informatika UNPAR.
+![User interface of the application](img/GUI.png)
 
-## Tentang Perangkat Lunak
+Automated Document Clusterer is a simple application built on Python to automatically cluster a bunch of documents. The application does have some features.
+* Automatically cluster your document files based on contents of each documents. Algorithm used is agglomerative hierarchical clustering and the output is a dendrogram that can be cut at a certain height.
+* Automatically organize your document files based on clustering result. Each clusters will have a folder and each document files will be put in the corresponding cluster folder.
+* Automatically rename clusters get from the clustering result.
+* Evaluate the clustering result by using cophenetic correlation coefficient and F-score.
+* Save an inverted index indexing your document files which can be used and updated in the future.
 
-Perangkat lunak yang dibangun adalah sebuah perangkat lunak sederhana yang memiliki tujuan utama mengelompokan sekumpulan dokumen teks berdasarkan informasi yang terkandung di dalamnya. Perangkat lunak ini dibangun dengan menggunakan Python dan beberapa *library* Python.
+## Dependencies
 
-## *Library* yang Digunakan
-
-Perangkat lunak dibangun dengan bantuan dari beberapa *library* Python. Berikut adalah *library-library* yang digunakan.
-
-* _SciPy_, yang digunakan untuk melakukan proses pengelompokan dengan algoritma *clustering*.
-* _Matplotlib_, yang digunakan untuk melakukan visualisasi hasil pengelompokan.
-* _NLTK_, yang digunakan untuk melakukan pre-pemrosesan linguistik.
-
-
-## Fitur Perangkat Lunak
-
-Perangkat lunak yang dibangun memiliki beberapa fitur yang mendukung tujuan utama dari perangkat lunak. Berikut adalah beberapa fitur yang disediakan.
-
-* Perangkat lunak mampu mengelompokkan dokumen-dokumen teks secara otomatis berdasarkan informasi yang terkandung di dalam dokumen teks. Algoritma yang digunakan adalah _agglomerative hierarchical clustering_ dan keluaran yang didapatkan adalah sebuah _dendrogram_.
-* Perangkat lunak mampu mengorganisir *file* dokumen teks secara otomatis berdasarkan hasil pengelompokan yang telah didapatkan.
-* Perangkat lunak mampu menyimpan sebuah indeks yang digunakan untuk menyimpan dokumen-dokumen teks (yaitu _inverted index_). Dengan indeks tersebut, pengguna dapat memuat dan menggunakannya kembali.
-
-## Proses yang Dilakukan
-
-Beberapa proses dilakukan oleh perangkat lunak untuk mencapai tujuan utama dari perangkat lunak. Berikut adalah urutan proses yang dilakukan.
-
-* Menerima masukan sebuah *path folder* yang berisi sekumpulan dokumen teks yang akan dikelompokkan.
-* Mengambil seluruh dokumen teks yang ada dalam *folder* dan isi dari setiap dokumen teks tersebut.
-* Menyimpan isi dari setiap dokumen teks sebagai sebuah *character sequence* dan dilakukan tokenisasi (mendapatkan daftar token).
-* Melakukan pre-pemrosesan linguistik terhadap setiap token yang ada (terdiri dari pembuangan *stop words* dan proses *stemming*) untuk mendapatkan daftar *term*.
-* Menyimpan *term-term* yang ada dalam setiap dokumen teks dalam *inverted index* (untuk dapat disimpan dan digunakan kembali).
-* Membuat vektor sebagai representasi masing-masing dokumen teks dan mengukur jarak antara masing-masing vektor.
-* Membangun matriks jarak antara masing-masing dokumen teks dan melakukan pengelompokan dengan algoritma *agglomerative hierarchical clustering*.
-* Menampilkan hasil pengelompokan dalam sebuah *dendrogram*.
+* [SciPy](https://www.scipy.org/)
+* [Matplotlib](https://www.matplotlib.org/)
+* [NLTK](https://www.nltk.org/)
