@@ -2,6 +2,7 @@
 from clustering.Dendrogram import Dendrogram
 
 from scipy.cluster.hierarchy import linkage, cophenet
+from sklearn.metrics import confusion_matrix
 
 class Clusterer:
     
@@ -93,7 +94,6 @@ class Clusterer:
         # If the autorenaming is True, the cluster list will be automatically renamed.
         if autorenaming is True:
             renamed_cluster_list = {}
-            
             for cluster, docs in cluster_list.items():
                 list_of_vectors = []
                 for doc_title in docs:
@@ -136,8 +136,11 @@ class Clusterer:
                     renamed_cluster_list[sorted_commond_words[-1][1]] = cluster_list[cluster]
                 else:
                     renamed_cluster_list[cluster] = cluster_list[cluster]
+                    
+            self.result_list = renamed_cluster_list
             return renamed_cluster_list
         else:
+            self.result_list = renamed_cluster_list
             return cluster_list
     
     def calc_cophenetic_coeff(self):
@@ -154,7 +157,7 @@ class Clusterer:
         c, d = cophenet(self.linkage, self.distance_matrix)
         return c
     
-    def calc_f_score(self, benchmark):
+    def calc_f_score(self, benchmark, beta=1):
         """
         The method to calculate an F-score for the result obtained.
         The F-score value can be used for an external evaluation of the clusters.
@@ -163,6 +166,9 @@ class Clusterer:
         ----------
         benchmark : dictionary
             A list of labels of each objects, used as a benchmark.
+            Written as {cluster1: [doc1, doc2], cluster2: [doc3], etc.}.
+        beta : int
+            A positive real factor. The default is 1 (F1 score).
 
         Returns
         -------
@@ -170,4 +176,22 @@ class Clusterer:
             The F-score.
 
         """
-        return 0
+        # List all cluster names.
+        cluster_list = list(set().union(list(self.result_list.keys()),
+                                        list(benchmark.keys())))
+        
+        # List the predicted and true cluster of each documents.
+        pred_list = []
+        true_list = []
+        keys = list(benchmark.keys())
+        vals = list(benchmark.values())
+        for key, value in cluster_list.items():
+            pred_list.append(key)
+            true_list.append(keys[vals.index(key)])
+        
+        # Count the F-score.
+        tn, fp, fn, tp = confusion_matrix(true_list, pred_list).ravel()
+        precision = tp / (tp + fp)
+        recall = tp / (tp + fn)
+        f_score = ((pow(beta, 2) + 1) * precision * recall) / (pow(beta, 2) * precision + recall)
+        return f_score
