@@ -107,8 +107,8 @@ class Clusterer:
     
                     Parameters
                     ----------
-                    doc_list : tuple
-                        The list of documents.
+                    vector : list
+                        The vector.
     
                     Returns
                     -------
