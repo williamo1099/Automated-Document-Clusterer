@@ -12,5 +12,6 @@ Automated Document Clusterer is a simple application built on Python to automati
 ## Dependencies
 
 * [SciPy](https://www.scipy.org/)
+* [Scikit-Learn](https://scikit-learn.org/)
 * [Matplotlib](https://www.matplotlib.org/)
 * [NLTK](https://www.nltk.org/)
