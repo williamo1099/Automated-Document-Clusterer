@@ -4,10 +4,8 @@ from gui.NavigationToolbar import NavigationToolbar
 from gui.WarningPopup import WarningPopup
 from gui.ToolTip import ToolTip
 
-import os
 import threading
 import tkinter as tk
-from tkinter import filedialog
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -127,52 +125,8 @@ class ClusterFrame:
         self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
         
         # Add canvas toolbar.
-        self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, clusterer.extract_clusters(sorted(list(self.gui.get_inverted_index().keys()), key=str.lower), self.gui.get_autorenaming_option().get()))
+        self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, clusterer)
         self.figure_canvas.get_tk_widget().pack(pady=2)
-    
-    def evaluate_result(self, clusterer):
-        """
-        The method to evaluate cluster result.
-        Evaluation done is internal evaluation (using cophenetic correlation coefficient) and external evaluation (using F-score).
-
-        Parameters
-        ----------
-        clusterer : Clusterer
-            The clusterer doing the clustering process.
-
-        Returns
-        -------
-        list
-            Evaluation result.
-            Written as [cophenetic coefficient, F-score].
-
-        """
-        # Evaluate internally using cophenetic correlation coefficient.
-        cpcc = clusterer.calc_cophenetic_coeff()
-        
-        # Evaluate externally using F-measure.
-        folder_path = filedialog.askdirectory()        
-        doc_titles = []
-        for root, directories, files in os.walk(folder_path):
-            for file in files:
-                if '.txt' in file:
-                    doc_titles.append(os.path.join(root, file))
-        
-        escaped_folder_path = str(folder_path) + '\\'
-        
-        # Get benchmark data.
-        benchmark = {}
-        for i in range(0, len(doc_titles)):
-            doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
-            title = doc_title.split('\\')[0]
-            cluster = doc_title.split('\\')[1]
-            
-            if cluster not in benchmark:
-                benchmark[cluster] = []
-            benchmark[cluster].append(title)
-        
-        f_score = clusterer.calc_f_score(benchmark, 1)
-        return [cpcc, f_score]
     
     def reset_canvas(self):
         """
