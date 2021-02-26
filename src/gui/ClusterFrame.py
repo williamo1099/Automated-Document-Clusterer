@@ -172,5 +172,7 @@ class ClusterFrame:
         None.
 
         """
+        self.clusterer = None
+        self.figure = None
         self.figure_canvas.get_tk_widget().destroy()
         self.figure_toolbar.destroy()
