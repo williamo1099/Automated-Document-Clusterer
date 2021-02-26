@@ -202,9 +202,19 @@ class Clusterer:
             pred_list.append(key)
             true_list.append(keys[vals.index(key)])
         
-        # Count the F-score.
-        tn, fp, fn, tp = confusion_matrix(true_list, pred_list).ravel()
-        precision = tp / (tp + fp)
-        recall = tp / (tp + fn)
-        f_score = ((pow(beta, 2) + 1) * precision * recall) / (pow(beta, 2) * precision + recall)
-        return f_score
+        # Build the confusion matrix to count precision and recall.
+        conf_matrix = confusion_matrix(true_list, pred_list, labels=list(self.result_list.keys())).ravel()
+        
+        # Check if the length of confusion matrix built is 4.
+        # It is true if the pred_list and true_list are valid.
+        if len(conf_matrix) == 4:
+            tn, fp, fn, tp = conf_matrix
+            precision = tp / (tp + fp)
+            recall = tp / (tp + fn)    
+            
+            # Count the F-score.
+            f_score = ((pow(beta, 2) + 1) * precision * recall) / (pow(beta, 2) * precision + recall)
+            return f_score
+        else:
+            # F-score = -1 means not valid result.
+            return -1
