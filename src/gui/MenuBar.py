@@ -155,7 +155,8 @@ class MenuBar:
                     if '.txt' in file:
                         curr_doc_titles.append(os.path.join(root, file))
             
-            doc_titles = []
+            # Retrieve all saved documents' title.
+            doc_titles = [doc.get_title() for doc in self.gui.get_corpus()]
             
             # Compare two document lists.
             difference = (list(list(set(doc_titles) - set(curr_doc_titles)) +
