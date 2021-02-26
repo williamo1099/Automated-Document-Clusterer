@@ -85,39 +85,43 @@ class NavigationToolbar(NavigationToolbar2Tk):
 
         Returns
         -------
-        list
-            Evaluation result.
-            Written as [cophenetic coefficient, F-score].
+        None
 
         """
         # Evaluate internally using cophenetic correlation coefficient.
         cpcc = self.clusterer.calc_cophenetic_coeff()
         
         # Evaluate externally using F-measure.
-        folder_path = filedialog.askdirectory()        
-        doc_titles = []
-        for root, directories, files in os.walk(folder_path):
-            for file in files:
-                if '.txt' in file:
-                    doc_titles.append(os.path.join(root, file))
-        
-        escaped_folder_path = str(folder_path) + '\\'
-        
-        # Get benchmark data.
-        benchmark = {}
-        for i in range(0, len(doc_titles)):
-            doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
-            title = doc_title.split('\\')[0]
-            cluster = doc_title.split('\\')[1]
+        try:
+            folder_path = filedialog.askdirectory()        
+            doc_titles = []
+            for root, directories, files in os.walk(folder_path):
+                for file in files:
+                    if '.txt' in file:
+                        doc_titles.append(os.path.join(root, file))
             
-            if cluster not in benchmark:
-                benchmark[cluster] = []
-            benchmark[cluster].append(title)
-        f_score = self.clusterer.calc_f_score(benchmark, 1)
+            escaped_folder_path = str(folder_path) + '\\'
         
-        # Show evaluation through a popup window.
-        popup = WarningPopup('Clustering evaluation',
-                             'Cophenetic correlation coefficient : ' + '{:.3f}'.format(cpcc) + '\n' +
-                             'F-score : ' + '{:.3f}'.format(f_score))
-        popup.show_popup()
-        return [cpcc, f_score]
+            # Get benchmark data.
+            benchmark = {}
+            for i in range(0, len(doc_titles)):
+                doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
+                title = doc_title.split('\\')[0]
+                cluster = doc_title.split('\\')[1]
+                
+                if cluster not in benchmark:
+                    benchmark[cluster] = []
+                benchmark[cluster].append(title)
+            f_score = self.clusterer.calc_f_score(benchmark, 1)
+        
+            # Show evaluation through a popup window.
+            popup = WarningPopup('Clustering evaluation',
+                                 'Cophenetic correlation coefficient : ' + '{:.3f}'.format(cpcc) + '\n' +
+                                 'F-score : ' + '{:.3f}'.format(f_score))
+            popup.show_popup()
+        except EnvironmentError:
+            # This means that user does not provide benchmark data.
+            # Show evaluation through a popup window.
+            popup = WarningPopup('Clustering evaluation',
+                                 'Cophenetic correlation coefficient : ' + '{:.3f}'.format(cpcc) + '\n' +
+                                 'F-score : -')
