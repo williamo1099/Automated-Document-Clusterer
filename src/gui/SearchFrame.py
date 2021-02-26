@@ -106,7 +106,8 @@ class SearchFrame:
         self.gui.set_corpus(corpus)
         
         # Build the inverted index.
-        threading.Thread(target=self.build_inverted_index, name='indexing_thread').start()
+        indexing_thread = threading.Thread(target=self.build_inverted_index, name='indexing_thread')
+        indexing_thread.start()
     
     def build_inverted_index(self):
         """

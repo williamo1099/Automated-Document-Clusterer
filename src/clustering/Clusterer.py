@@ -22,6 +22,7 @@ class Clusterer:
         """
         self.corpus = corpus
         self.distance_matrix = []
+        self.dendrogram = None
         
     def set_distance_matrix(self):
         """
@@ -39,7 +40,21 @@ class Clusterer:
                 doc_j = self.corpus[j]
                 distance = doc_i.calc_distance(doc_j)
                 self.distance_matrix.append(distance)
-        
+    
+    def get_dendrogram(self):
+        """
+        The method to get dendrogram figure.
+
+        Returns
+        -------
+        figure
+            A figure of a dendrogram visualizing the result of clustering process.
+
+        """
+        if self.dendrogram is None:
+            return None
+        return self.dendrogram.plot_dendrogram([doc.get_title() for doc in self.corpus])
+    
     def cluster(self, method, cut_off=0):
         """
         The method to do clustering process for documents in corpus.
@@ -55,20 +70,18 @@ class Clusterer:
 
         Returns
         -------
-        figure
-            A figure of a dendrogram visualizing the result of clustering process.
+        None.
 
         """
         # Set a 1-D condensed distance matrix.
         if self.distance_matrix == []:
             self.set_distance_matrix()
-        
+            
         # Set the linkage matrix as a result of the agglomerative hierarchical clustering process.
         self.linkage = linkage(self.distance_matrix,
                          method=method,
                          optimal_ordering=True)
         self.dendrogram = Dendrogram(self.linkage, cut_off)
-        return self.dendrogram.plot_dendrogram([doc.get_title() for doc in self.corpus])
     
     def extract_clusters(self, dictionary, autorenaming=True):
         """

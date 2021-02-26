@@ -1,5 +1,6 @@
 
 from gui.gui import gui
 
-gui = gui()
-gui.start()
+if __name__ == '__main__':
+    gui = gui()
+    gui.start()

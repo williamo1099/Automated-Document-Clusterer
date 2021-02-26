@@ -44,6 +44,10 @@ class ClusterFrame:
         self.cluster_button.pack(in_=cluster_frame, side='right', padx=2, pady=2)
         self.cluster_button.configure(background='white')
         ToolTip(self.cluster_button, 'Start clustering all documents')
+        
+        # Initialize the variable.
+        self.clusterer = None
+        self.figure = None
     
     def restart(self):
         """
@@ -69,16 +73,20 @@ class ClusterFrame:
         # Check whether cluster status is True or not.
         # It is true when it is ready to do clustering.
         if self.gui.get_cluster_status() is True:
-            self.draw_canvas(0)
-            # threading.Thread(target=self.draw_canvas, args=(0,), name='drawing_thread').start()
+            # Start clustering.
+            clustering_thread = threading.Thread(target=self.do_clustering, args=(0,), daemon=True, name='clustering_thread')
+            clustering_thread.start()
+            
+            # Draw figure on canvas.
+            self.draw_on_canvas()
         else:
             popup = WarningPopup('Clustering process',
                                  'There are no documents to be clustered.')
             popup.show_popup()
     
-    def draw_canvas(self, cut_off=0):
+    def do_clustering(self, cut_off=0):
         """
-        The method to draw the dendrogram figure on canvas.
+        The method to do clustering process.
 
         Parameters
         ----------
@@ -90,15 +98,36 @@ class ClusterFrame:
         None.
 
         """
-        clusterer = Clusterer(self.gui.get_corpus())
-        figure = clusterer.cluster(self.method_list[self.method_combobox.current()], cut_off)
+        # Start progress bar, with value equals to 0.
+        self.gui.set_progress_value(0)
         
+        # Check if clusterer is None or not.
+        # If it is none, initialize with a new Clusterer.
+        if self.clusterer is None:
+            self.clusterer = Clusterer(self.gui.get_corpus())
+        self.gui.set_progress_value(5)
+        
+        # Start the clustering process.
+        self.clusterer.cluster(self.method_list[self.method_combobox.current()], cut_off)
+        self.gui.set_progress_value(90)
+        
+        # Set the figure get from clustering process.
+        self.figure = self.clusterer.get_dendrogram()
+        self.gui.set_progress_value(100)
+    
+    def draw_on_canvas(self):
+        """
+        The method to draw the dendrogram figure on canvas.
+
+        Returns
+        -------
+        None.
+
+        """
         # Check whether canvas status is True or not.
         # It is true when a figure has been drawn on canvas.
         if self.gui.get_canvas_status() is True:
             self.reset_canvas()
-        else:
-            self.gui.set_canvas_status(True)
             
         def canvas_on_click(event):
             """
@@ -119,24 +148,29 @@ class ClusterFrame:
                 cut_off = event.xdata
                 self.draw_canvas(cut_off)
         
-        # Draw figure on canvas.
-        self.figure_canvas = FigureCanvasTkAgg(figure, master=self.gui.get_window())
-        self.figure_canvas.draw()
-        self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
-        
-        # Add canvas toolbar.
-        self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, clusterer)
-        self.figure_canvas.get_tk_widget().pack(pady=2)
+        if self.figure is not None and self.clusterer is not None:
+            # Set canvas status to True.
+            self.gui.set_canvas_status(True)
+            
+            # Draw figure on canvas.
+            self.figure_canvas = FigureCanvasTkAgg(self.figure, master=self.gui.get_window())
+            self.figure_canvas.draw()
+            self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
+            
+            # Add canvas toolbar.
+            self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, self.clusterer)
+            self.figure_canvas.get_tk_widget().pack(pady=2)
+        else:
+            self.gui.get_window().after(500, self.draw_on_canvas)
     
     def reset_canvas(self):
         """
-        The method to reset the drawn canvas and result frame.
+        The method to reset the clusterer, drawn canvas and result frame.
 
         Returns
         -------
         None.
 
         """
-        self.cpcc_label.destroy()
         self.figure_canvas.get_tk_widget().destroy()
         self.figure_toolbar.destroy()
