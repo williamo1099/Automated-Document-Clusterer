@@ -125,3 +125,4 @@ class NavigationToolbar(NavigationToolbar2Tk):
             popup = WarningPopup('Clustering evaluation',
                                  'Cophenetic correlation coefficient : ' + '{:.3f}'.format(cpcc) + '\n' +
                                  'F-score : -')
+            popup.show_popup()
