@@ -99,12 +99,8 @@ class ClusterFrame:
 
         """
         # Start progress bar, with value equals to 0.
-        self.gui.set_progress_value(0)
-        
-        # Check if clusterer is None or not.
-        # If it is none, initialize with a new Clusterer.
-        if self.clusterer is None:
-            self.clusterer = Clusterer(self.gui.get_corpus())
+        self.gui.set_progress_value(0)        
+        self.clusterer = Clusterer(self.gui.get_corpus())
         self.gui.set_progress_value(5)
         
         # Start the clustering process.
@@ -146,7 +142,14 @@ class ClusterFrame:
             # Check whether cut status is True or not.
             if event.inaxes is not None and self.gui.get_cut_status() is True:
                 cut_off = event.xdata
-                self.draw_canvas(cut_off)
+                self.reset_canvas()
+                
+                # Start clustering.
+                clustering_thread = threading.Thread(target=self.do_clustering, args=(cut_off,), daemon=True, name='clustering_thread')
+                clustering_thread.start()
+                
+                # Draw figure on canvas.
+                self.draw_on_canvas()
         
         if self.figure is not None and self.clusterer is not None:
             # Set canvas status to True.
@@ -165,7 +168,7 @@ class ClusterFrame:
     
     def reset_canvas(self):
         """
-        The method to reset the clusterer, drawn canvas and result frame.
+        The method to reset the clusterer, figure, drawn canvas and result frame.
 
         Returns
         -------
@@ -176,3 +179,4 @@ class ClusterFrame:
         self.figure = None
         self.figure_canvas.get_tk_widget().destroy()
         self.figure_toolbar.destroy()
+        self.gui.set_canvas_status(False)
