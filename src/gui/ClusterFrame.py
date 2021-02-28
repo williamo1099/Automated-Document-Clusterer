@@ -1,6 +1,7 @@
 
 from clustering.Clusterer import Clusterer
 from gui.NavigationToolbar import NavigationToolbar
+from gui.FigureWindow import FigureWindow
 from gui.WarningPopup import WarningPopup
 from gui.ToolTip import ToolTip
 
@@ -111,7 +112,7 @@ class ClusterFrame:
         # Calculate proper figure size based on corpus size.
         figsize = [10, 5]
         if len(self.gui.get_corpus()) > 50:
-            figsize = []
+            figsize = [10, 5]
         self.figure = self.clusterer.get_dendrogram(figsize)
         self.gui.set_progress_value(100)
     
@@ -133,35 +134,35 @@ class ClusterFrame:
             # Set canvas status to True.
             self.gui.set_canvas_status(True)
             
-            # Check the corpus size.
-            # If the size is more than 50, show figure on separated window.
-            if len(self.gui.get_corpus()) <= 50:
-                def canvas_on_click(event):
-                    """
-                    The method to handle on click event on canvas.
-        
-                    Parameters
-                    ----------
-                    event : Event
-                        An event indicating a click from user.
-        
-                    Returns
-                    -------
-                    None.
-        
-                    """
-                    # Check whether cut status is True or not.
-                    if event.inaxes is not None and self.gui.get_cut_status() is True:
-                        cut_off = event.xdata
-                        self.reset_canvas()
-                        
-                        # Start clustering.
-                        clustering_thread = threading.Thread(target=self.do_clustering, args=(cut_off,), daemon=True, name='clustering_thread')
-                        clustering_thread.start()
-                        
-                        # Draw figure on canvas.
-                        self.draw_on_canvas()
+            def canvas_on_click(event):
+                """
+                The method to handle on click event on canvas.
+    
+                Parameters
+                ----------
+                event : Event
+                    An event indicating a click from user.
+    
+                Returns
+                -------
+                None.
+    
+                """
+                # Check whether cut status is True or not.
+                if event.inaxes is not None and self.gui.get_cut_status() is True:
+                    cut_off = event.xdata
+                    self.reset_canvas()
+                    
+                    # Start clustering.
+                    clustering_thread = threading.Thread(target=self.do_clustering, args=(cut_off,), daemon=True, name='clustering_thread')
+                    clustering_thread.start()
+                    
+                    # Draw figure on canvas.
+                    self.draw_on_canvas()
             
+            # Check the corpus size.
+            # If the size is more than 50, the figure will be displayed in a separated window.
+            if len(self.gui.get_corpus()) <= 50:
                 # Draw figure on canvas.
                 self.figure_canvas = FigureCanvasTkAgg(self.figure, master=self.gui.get_window())
                 self.figure_canvas.draw()
@@ -171,8 +172,14 @@ class ClusterFrame:
                 self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, self.clusterer)
                 self.figure_canvas.get_tk_widget().pack(pady=2)
             else:
+                # Initialize info label.
+                self.info_label = ttk.Label(self.gui.get_window(), text='Figure is displayed in a separated window.')
+                self.info_label.configure(background='white')
+                self.info_label.pack(pady=2)
+                
                 # Initialize figure window.
-                pass
+                self.figure_window = FigureWindow(self.gui, self.clusterer, self.figure, canvas_on_click)
+                self.figure_window.start()
         else:
             self.gui.get_window().after(500, self.draw_on_canvas)
     
@@ -187,6 +194,14 @@ class ClusterFrame:
         """
         self.clusterer = None
         self.figure = None
-        self.figure_canvas.get_tk_widget().destroy()
-        self.figure_toolbar.destroy()
+        
+        # Check the corpus size.
+        # If the size is more than 50, the figure is displayed in a separated window.
+        if len(self.gui.get_corpus()) <= 50:
+            self.figure_canvas.get_tk_widget().destroy()
+            self.figure_toolbar.destroy()
+        else:
+            self.info_label.destroy()
+            self.figure_window.reset()
+        
         self.gui.set_canvas_status(False)

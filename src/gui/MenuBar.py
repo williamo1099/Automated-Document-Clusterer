@@ -195,4 +195,5 @@ class MenuBar:
         None.
 
         """
-        AboutWindow(self.gui)
+        self.about_window = AboutWindow(self.gui)
+        self.about_window.start()

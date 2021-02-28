@@ -11,6 +11,23 @@ from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 class NavigationToolbar(NavigationToolbar2Tk):
     
     def __init__(self, figure_canvas, gui, clusterer):
+        """
+        The constructor for NavigationToolbar class.
+
+        Parameters
+        ----------
+        figure_canvas : FigureCanvas
+            Canvas on which figure is drawn.
+        gui : gui
+            The main gui.
+        clusterer : Clusterer
+            The clusterer which did the clustering process.
+
+        Returns
+        -------
+        None.
+
+        """
         self.gui = gui
         self.clusterer = clusterer
         
@@ -48,7 +65,7 @@ class NavigationToolbar(NavigationToolbar2Tk):
     def organize_documents(self):
         """
         The method to organize documents into folders based on documents' clusters.
-        Currently this feature is only compatible with MacOS file system.
+        Currently this feature is only compatible with Windows file system.
 
         Returns
         -------
