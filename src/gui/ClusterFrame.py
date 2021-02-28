@@ -59,6 +59,7 @@ class ClusterFrame:
         None.
 
         """
+        self.clusterer = None
         if self.gui.get_canvas_status() is True:
             self.reset_canvas()
     
@@ -125,10 +126,8 @@ class ClusterFrame:
         None.
 
         """
-        # Check whether canvas status is True or not.
-        # It is true when a figure has been drawn on canvas.
-        if self.gui.get_canvas_status() is True:
-            self.reset_canvas()
+        # Reset the canvas if it has been drawn.
+        self.reset_canvas()
         
         if self.figure is not None and self.clusterer is not None:
             # Set canvas status to True.
@@ -185,23 +184,25 @@ class ClusterFrame:
     
     def reset_canvas(self):
         """
-        The method to reset the clusterer, figure, drawn canvas and result frame.
+        The method to reset the figure, drawn canvas and result frame.
 
         Returns
         -------
         None.
 
         """
-        self.clusterer = None
-        self.figure = None
-        
-        # Check the corpus size.
-        # If the size is more than 50, the figure is displayed in a separated window.
-        if len(self.gui.get_corpus()) <= 50:
-            self.figure_canvas.get_tk_widget().destroy()
-            self.figure_toolbar.destroy()
-        else:
-            self.info_label.destroy()
-            self.figure_window.reset()
-        
-        self.gui.set_canvas_status(False)
+        # Check whether canvas status is True or not.
+        # It is true when a figure has been drawn on canvas.
+        if self.gui.get_canvas_status() is True:
+            self.figure = None
+            
+            # Check the corpus size.
+            # If the size is more than 50, the figure is displayed in a separated window.
+            if len(self.gui.get_corpus()) <= 50:
+                self.figure_canvas.get_tk_widget().destroy()
+                self.figure_toolbar.destroy()
+            else:
+                self.info_label.destroy()
+                self.figure_window.reset()
+            
+            self.gui.set_canvas_status(False)
