@@ -1,5 +1,5 @@
 
-from gui.AboutWindow import AboutWindow
+from gui.window.AboutWindow import AboutWindow
 from gui.WarningPopup import WarningPopup
 
 import os

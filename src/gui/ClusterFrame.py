@@ -1,7 +1,7 @@
 
 from clustering.Clusterer import Clusterer
 from gui.NavigationToolbar import NavigationToolbar
-from gui.FigureWindow import FigureWindow
+from gui.window.FigureWindow import FigureWindow
 from gui.WarningPopup import WarningPopup
 from gui.ToolTip import ToolTip
 
