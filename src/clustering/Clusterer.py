@@ -41,9 +41,14 @@ class Clusterer:
                 distance = doc_i.calc_distance(doc_j)
                 self.distance_matrix.append(distance)
     
-    def get_dendrogram(self):
+    def get_dendrogram(self, size=[10, 5]):
         """
         The method to get dendrogram figure.
+        
+        Parameters
+        ----------
+        size : list
+            The size of the dendrogram figure. The default is [10, 5].
 
         Returns
         -------
@@ -53,7 +58,7 @@ class Clusterer:
         """
         if self.dendrogram is None:
             return None
-        return self.dendrogram.plot_dendrogram([doc.get_title() for doc in self.corpus])
+        return self.dendrogram.plot_dendrogram([doc.get_title() for doc in self.corpus], size)
     
     def cluster(self, method, cut_off=0):
         """

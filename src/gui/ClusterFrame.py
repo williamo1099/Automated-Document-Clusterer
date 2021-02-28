@@ -108,7 +108,11 @@ class ClusterFrame:
         self.gui.set_progress_value(90)
         
         # Set the figure get from clustering process.
-        self.figure = self.clusterer.get_dendrogram()
+        # Calculate proper figure size based on corpus size.
+        figsize = [10, 5]
+        if len(self.gui.get_corpus()) > 50:
+            figsize = []
+        self.figure = self.clusterer.get_dendrogram(figsize)
         self.gui.set_progress_value(100)
     
     def draw_on_canvas(self):
@@ -124,45 +128,51 @@ class ClusterFrame:
         # It is true when a figure has been drawn on canvas.
         if self.gui.get_canvas_status() is True:
             self.reset_canvas()
-            
-        def canvas_on_click(event):
-            """
-            The method to handle on click event on canvas.
-
-            Parameters
-            ----------
-            event : Event
-                An event indicating a click from user.
-
-            Returns
-            -------
-            None.
-
-            """
-            # Check whether cut status is True or not.
-            if event.inaxes is not None and self.gui.get_cut_status() is True:
-                cut_off = event.xdata
-                self.reset_canvas()
-                
-                # Start clustering.
-                clustering_thread = threading.Thread(target=self.do_clustering, args=(cut_off,), daemon=True, name='clustering_thread')
-                clustering_thread.start()
-                
-                # Draw figure on canvas.
-                self.draw_on_canvas()
         
         if self.figure is not None and self.clusterer is not None:
             # Set canvas status to True.
             self.gui.set_canvas_status(True)
             
-            # Draw figure on canvas.
-            self.figure_canvas = FigureCanvasTkAgg(self.figure, master=self.gui.get_window())
-            self.figure_canvas.draw()
-            self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
+            # Check the corpus size.
+            # If the size is more than 50, show figure on separated window.
+            if len(self.gui.get_corpus()) <= 50:
+                def canvas_on_click(event):
+                    """
+                    The method to handle on click event on canvas.
+        
+                    Parameters
+                    ----------
+                    event : Event
+                        An event indicating a click from user.
+        
+                    Returns
+                    -------
+                    None.
+        
+                    """
+                    # Check whether cut status is True or not.
+                    if event.inaxes is not None and self.gui.get_cut_status() is True:
+                        cut_off = event.xdata
+                        self.reset_canvas()
+                        
+                        # Start clustering.
+                        clustering_thread = threading.Thread(target=self.do_clustering, args=(cut_off,), daemon=True, name='clustering_thread')
+                        clustering_thread.start()
+                        
+                        # Draw figure on canvas.
+                        self.draw_on_canvas()
             
-            # Add canvas toolbar.
-            self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, self.clusterer)
-            self.figure_canvas.get_tk_widget().pack(pady=2)
+                # Draw figure on canvas.
+                self.figure_canvas = FigureCanvasTkAgg(self.figure, master=self.gui.get_window())
+                self.figure_canvas.draw()
+                self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
+                
+                # Add canvas toolbar.
+                self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, self.clusterer)
+                self.figure_canvas.get_tk_widget().pack(pady=2)
+            else:
+                # Initialize figure window.
+                pass
         else:
             self.gui.get_window().after(500, self.draw_on_canvas)
     
