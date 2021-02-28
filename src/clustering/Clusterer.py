@@ -88,7 +88,7 @@ class Clusterer:
                          optimal_ordering=True)
         self.dendrogram = Dendrogram(self.linkage, cut_off)
     
-    def extract_clusters(self, dictionary, autorenaming=True):
+    def extract_clusters(self, dictionary=None, autorenaming=True):
         """
         The method to get a list of objects of each clusters obtained.
         Each cluster is named automatically based on most frequent terms (if autorenaming is True).
@@ -194,21 +194,39 @@ class Clusterer:
             The F-score.
 
         """
-        # List all cluster names.
-        cluster_list = list(set().union(list(self.result_list.keys()),
-                                        list(benchmark.keys())))
+        self.extract_clusters()
+        
+        # List all document names.
+        doc_list = set([doc for doc_list in self.result_list.values() for doc in doc_list])
+        
+        # List all clusters and docs in result list and benchmark.
+        pred_keys = []
+        pred_vals = []
+        for cluster, doc_list in self.result_list.items():
+            for doc in doc_list:
+                pred_keys.append(cluster)
+                pred_vals.append(doc)
+        true_keys = []
+        true_vals = []
+        for cluster, doc_list in benchmark.items():
+            for doc in doc_list:
+                true_keys.append(cluster)
+                true_vals.append(doc)
         
         # List the predicted and true cluster of each documents.
         pred_list = []
         true_list = []
-        keys = list(benchmark.keys())
-        vals = list(benchmark.values())
-        for key, value in cluster_list.items():
-            pred_list.append(key)
-            true_list.append(keys[vals.index(key)])
+        for doc in doc_list:
+            # Find which cluster doc is in based on prediction and benchmark.
+            pred_list.append(pred_keys[pred_vals.index(doc)])
+            true_list.append(true_keys[true_vals.index(doc)])
+        print(pred_list, true_list)
         
         # Build the confusion matrix to count precision and recall.
-        conf_matrix = confusion_matrix(true_list, pred_list, labels=list(self.result_list.keys())).ravel()
+        cluster_list = list(self.result_list.keys())
+        print(cluster_list)
+        conf_matrix = confusion_matrix(true_list, pred_list, labels=cluster_list).ravel()
+        print(conf_matrix)
         
         # Check if the length of confusion matrix built is 4.
         # It is true if the pred_list and true_list are valid.
