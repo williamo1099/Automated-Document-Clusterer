@@ -2,7 +2,7 @@
 from clustering.Dendrogram import Dendrogram
 
 from scipy.cluster.hierarchy import linkage, cophenet
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import f1_score
 
 class Clusterer:
     
@@ -196,8 +196,9 @@ class Clusterer:
         """
         self.extract_clusters()
         
-        # List all document names.
-        doc_list = set([doc for doc_list in self.result_list.values() for doc in doc_list])
+        # List all cluster and document names.
+        cluster_list = list(self.result_list.keys())
+        doc_list = list(set([doc for doc_list in self.result_list.values() for doc in doc_list]))
         
         # List all clusters and docs in result list and benchmark.
         pred_keys = []
@@ -217,27 +218,10 @@ class Clusterer:
         pred_list = []
         true_list = []
         for doc in doc_list:
-            # Find which cluster doc is in based on prediction and benchmark.
+            # Find which cluster doc is in, based on prediction and benchmark.
             pred_list.append(pred_keys[pred_vals.index(doc)])
             true_list.append(true_keys[true_vals.index(doc)])
-        print(pred_list, true_list)
-        
-        # Build the confusion matrix to count precision and recall.
-        cluster_list = list(self.result_list.keys())
-        print(cluster_list)
-        conf_matrix = confusion_matrix(true_list, pred_list, labels=cluster_list).ravel()
-        print(conf_matrix)
-        
-        # Check if the length of confusion matrix built is 4.
-        # It is true if the pred_list and true_list are valid.
-        if len(conf_matrix) == 4:
-            tn, fp, fn, tp = conf_matrix
-            precision = tp / (tp + fp)
-            recall = tp / (tp + fn)    
             
-            # Count the F-score.
-            f_score = ((pow(beta, 2) + 1) * precision * recall) / (pow(beta, 2) * precision + recall)
-            return f_score
-        else:
-            # F-score = -1 means not valid result.
-            return -1
+        # Count F-score.
+        f_score = f1_score(true_list, pred_list, average=None, labels=cluster_list)
+        return f_score
