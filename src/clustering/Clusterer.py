@@ -22,6 +22,7 @@ class Clusterer:
         """
         self.corpus = corpus
         self.distance_matrix = []
+        self.linkage = None
         self.dendrogram = None
         
     def set_distance_matrix(self):
@@ -83,9 +84,10 @@ class Clusterer:
             self.set_distance_matrix()
             
         # Set the linkage matrix as a result of the agglomerative hierarchical clustering process.
-        self.linkage = linkage(self.distance_matrix,
-                         method=method,
-                         optimal_ordering=True)
+        if self.linkage is None:
+            self.linkage = linkage(self.distance_matrix,
+                             method=method,
+                             optimal_ordering=True)
         self.dendrogram = Dendrogram(self.linkage, cut_off)
     
     def extract_clusters(self, dictionary=None, autorenaming=True):
@@ -155,10 +157,10 @@ class Clusterer:
                 else:
                     renamed_cluster_list[cluster] = cluster_list[cluster]
                     
-            self.result_list = renamed_cluster_list
+            self.flat_clusters = renamed_cluster_list
             return renamed_cluster_list
         else:
-            self.result_list = renamed_cluster_list
+            self.flat_clusters = renamed_cluster_list
             return cluster_list
     
     def calc_cophenetic_coeff(self):
@@ -197,13 +199,13 @@ class Clusterer:
         self.extract_clusters()
         
         # List all cluster and document names.
-        cluster_list = list(self.result_list.keys())
-        doc_list = list(set([doc for doc_list in self.result_list.values() for doc in doc_list]))
+        cluster_list = list(self.flat_clusters.keys())
+        doc_list = list(set([doc for doc_list in self.flat_clusters.values() for doc in doc_list]))
         
         # List all clusters and docs in result list and benchmark.
         pred_keys = []
         pred_vals = []
-        for cluster, doc_list in self.result_list.items():
+        for cluster, doc_list in self.flat_clusters.items():
             for doc in doc_list:
                 pred_keys.append(cluster)
                 pred_vals.append(doc)

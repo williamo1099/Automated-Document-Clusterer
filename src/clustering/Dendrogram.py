@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 
 class Dendrogram:
     
-    def __init__(self, linked, cut_off):
+    def __init__(self, linkage, cut_off):
         """
         The constructor for Dendrogram class.
 
         Parameters
         ----------
-        linked : array
+        linkage : array
             The linkage matrix.
         cut_off : float
             The cut-off height.
@@ -20,7 +20,7 @@ class Dendrogram:
         None.
 
         """
-        self.linked = linked
+        self.linkage = linkage
         self.cut_off = cut_off
         
     def plot_dendrogram(self, labels=None, size=[10, 5]):
@@ -41,7 +41,7 @@ class Dendrogram:
 
         """
         fig = plt.figure(figsize=(size[0], size[1]))
-        self.dend = dendrogram(self.linked,
+        self.dend = dendrogram(self.linkage,
                     orientation='right',
                     color_threshold=self.cut_off,
                     labels=labels)
