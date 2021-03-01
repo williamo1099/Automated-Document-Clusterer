@@ -177,9 +177,9 @@ class Clusterer:
         c, d = cophenet(self.linkage, self.distance_matrix)
         return c
     
-    def calc_f_score(self, benchmark, beta=1):
+    def calc_f_score(self, benchmark):
         """
-        The method to calculate an F-score for the result obtained.
+        The method to calculate an F-score for the result obtained (beta = 1).
         The F-score value can be used for an external evaluation of the clusters.
 
         Parameters
@@ -187,8 +187,6 @@ class Clusterer:
         benchmark : dictionary
             A list of labels of each objects, used as a benchmark.
             Written as {cluster1: [doc1, doc2], cluster2: [doc3], etc.}.
-        beta : int
-            A positive real factor. The default is 1 (F1 score).
 
         Returns
         -------
