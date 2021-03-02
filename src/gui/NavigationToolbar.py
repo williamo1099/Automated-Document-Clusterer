@@ -83,7 +83,6 @@ class NavigationToolbar(NavigationToolbar2Tk):
             
         # For each label, put all documents together in the same folder.
         for cluster, doc in cluster_list.items():
-            
             # Create a new folder for current cluster.
             ci_folder = os.path.join(organized_folder, cluster)
             os.mkdir(ci_folder)

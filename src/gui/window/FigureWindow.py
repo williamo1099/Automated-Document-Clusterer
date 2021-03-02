@@ -6,7 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class FigureWindow:
     
-    def __init__(self, gui, clusterer, figure, on_click):
+    def __init__(self, gui, clusterer, figure, canvas_on_click):
         """
         The constructor for FigureWindow class.
 
@@ -14,8 +14,12 @@ class FigureWindow:
         ----------
         gui : gui
             The main gui.
+        clusterer : Clusterer
+            The clusterer which did the clustering process.
         figure : figure
             The dendrogram figure.
+        canvas_on_click : function
+            The on click function.
 
         Returns
         -------
@@ -31,7 +35,7 @@ class FigureWindow:
         # Draw figure on canvas.
         self.figure_canvas = FigureCanvasTkAgg(figure, master=self.window)
         self.figure_canvas.draw()
-        self.figure_canvas.callbacks.connect('button_press_event', on_click)
+        self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
         
         # Add canvas toolbar.
         self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, clusterer)
