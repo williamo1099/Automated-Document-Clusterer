@@ -93,7 +93,10 @@ class NavigationToolbar(NavigationToolbar2Tk):
                 source = os.path.join(self.gui.get_folder_path(), item + '.txt')
                 shutil.copyfile(source, ci_folder + '/' + item + '.txt')
         else:
-            print('File exists')
+            # If the organized folder exists, a warning popup will show up.
+            popup = WarningPopup('Organizing files',
+                                  'Folder exists.')
+            popup.show_popup()
     
     def evaluate_result(self):
         """
@@ -109,8 +112,9 @@ class NavigationToolbar(NavigationToolbar2Tk):
         cpcc = self.clusterer.calc_cophenetic_coeff()
         
         # Evaluate externally using F-measure.
-        try:
-            folder_path = filedialog.askdirectory()        
+        folder_path = filedialog.askdirectory()
+        
+        if not folder_path:
             doc_titles = []
             for root, directories, files in os.walk(folder_path):
                 for file in files:
@@ -129,17 +133,17 @@ class NavigationToolbar(NavigationToolbar2Tk):
                 if cluster not in benchmark:
                     benchmark[cluster] = []
                 benchmark[cluster].append(title)
-            f_score = self.clusterer.calc_f_score(benchmark, 1)
+            f_score = self.clusterer.calc_f_score(benchmark)
         
             # Show evaluation through a popup window.
             popup = WarningPopup('Clustering evaluation',
-                                 'Cophenetic correlation coefficient : ' + '{:.3f}'.format(cpcc) + '\n' +
-                                 'F-score : ' + '{:.3f}'.format(f_score))
+                                 'Cophenetic correlation coefficient : ' + cpcc + '\n' +
+                                 'F-score : ' + f_score)
             popup.show_popup()
-        except EnvironmentError:
+        else:
             # This means that user does not provide benchmark data.
             # Show evaluation through a popup window.
             popup = WarningPopup('Clustering evaluation',
-                                 'Cophenetic correlation coefficient : ' + '{:.3f}'.format(cpcc) + '\n' +
-                                 'F-score : -')
+                                  'Cophenetic correlation coefficient : ' + cpcc + '\n' +
+                                  'F-score : -')
             popup.show_popup()

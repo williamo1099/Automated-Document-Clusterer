@@ -175,7 +175,7 @@ class Clusterer:
 
         """
         c, d = cophenet(self.linkage, self.distance_matrix)
-        return c
+        return round(c, 3)
     
     def calc_f_score(self, benchmark):
         """
@@ -224,4 +224,4 @@ class Clusterer:
             
         # Count F-score.
         f_score = f1_score(true_list, pred_list, average=None, labels=cluster_list)
-        return f_score
+        return round(f_score, 3)
