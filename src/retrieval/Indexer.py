@@ -5,16 +5,24 @@ from nltk.stem import PorterStemmer
 
 class Indexer:
     
-    def __init__(self):
+    def __init__(self, inverted_index=None):
         """
         The constructor for Indexer class.
+        
+        Parameters
+        ----------
+        inverted_index : dict
+            The inverted index. The default is None.
 
         Returns
         -------
         None.
 
         """
-        self.inverted_index = {}
+        if inverted_index is not None:
+            self.inverted_index = inverted_index
+        else:
+            self.inverted_index = {}
         
     class Tokenizer:
         
