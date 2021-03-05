@@ -81,6 +81,22 @@ class gui:
         
         # Set progress bar value to 0.
         self.set_progress_value(0)
+    
+    def update_inverted_index(self, extended_corpus):
+        """
+        The method to update the inverted index.
+
+        Parameters
+        ----------
+        extended_corpus : list
+            The new added documents list.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.search_frame.update_inverted_index(extended_corpus)
         
     def set_progress_value(self, value):
         """

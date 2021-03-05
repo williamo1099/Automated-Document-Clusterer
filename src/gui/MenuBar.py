@@ -1,4 +1,5 @@
 
+from retrieval.Document import Document
 from gui.window.AboutWindow import AboutWindow
 from gui.WarningPopup import WarningPopup
 
@@ -153,14 +154,13 @@ class MenuBar:
             for root, directories, files in os.walk(folder_path):
                 for file in files:
                     if '.txt' in file:
-                        curr_doc_titles.append(os.path.join(root, file))
+                        curr_doc_titles.append(file.replace('.txt', ''))
             
             # Retrieve all saved documents' title.
             doc_titles = [doc.get_title() for doc in self.gui.get_corpus()]
             
             # Compare two document lists.
-            difference = (list(list(set(doc_titles) - set(curr_doc_titles)) +
-                               list(set(curr_doc_titles)-set(doc_titles))))
+            difference = list(set(curr_doc_titles) - set(doc_titles))
             
             # Check if there is a difference between two document lists.
             if len(difference) == 0: 
@@ -168,7 +168,17 @@ class MenuBar:
                                      'The index is currently up to date!')
                 popup.show_popup()
             else:
-                print('')
+                extended_corpus = []
+                for i in range(0, len(difference)):
+                    doc_id = 'doc_' + str(i + len(self.gui.get_corpus()))
+                    doc_title = difference[i]
+                    doc_content = open(folder_path + '\\' + difference[i] + '.txt', 'r', encoding='utf-8').read().replace('\n', '')
+                    doc_i = Document(doc_id, doc_title, doc_content)
+                    extended_corpus.append(doc_i)
+                
+                # Update the corpus and inverted index.
+                self.gui.set_corpus(self.gui.get_corpus() + extended_corpus)
+                self.gui.update_inverted_index(extended_corpus)
         except EnvironmentError:
             popup = WarningPopup('Updating an index',
                                  'The file path of the saved index does not exist!')

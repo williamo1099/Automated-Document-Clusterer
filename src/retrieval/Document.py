@@ -26,7 +26,6 @@ class Document:
         self.doc_id = doc_id
         self.title = title
         self.content = content
-        self.vector = []
     
     def get_id(self):
         """
@@ -96,6 +95,7 @@ class Document:
         # Set the corpus size.
         corpus_size = len(set(doc for posting in index.values() for doc in posting.keys()))
         
+        self.vector = []
         for term in dictionary:
             weight = 0
             

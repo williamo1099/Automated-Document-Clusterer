@@ -160,3 +160,33 @@ class SearchFrame:
         
         # Set progress bar value to 100, indicating the process has finished.
         self.gui.set_progress_value(100)
+    
+    def update_inverted_index(self, extended_corpus):
+        """
+        The method to update the inverted index.
+
+        Parameters
+        ----------
+        extended_corpus : list
+            The list of newly added documents.
+
+        Returns
+        -------
+        None.
+
+        """
+        stopwords_removal = self.gui.get_preprocessor_option()[0].get()
+        stemming = self.gui.get_preprocessor_option()[1].get()
+        case_folding = self.gui.get_preprocessor_option()[2].get()
+        normalization = self.gui.get_preprocessor_option()[3].get()
+        
+        # Update the inverted index.
+        indexer = Indexer(self.gui.get_inverted_index())
+        for doc in extended_corpus:
+            indexer.index(doc, stopwords_removal, stemming, case_folding, normalization)
+        inverted_index = indexer.get_inverted_index()
+        self.gui.set_inverted_index(inverted_index)
+        
+        # Update the vector.
+        for doc in self.gui.get_corpus():
+            doc.set_vector(inverted_index)
