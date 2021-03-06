@@ -152,7 +152,7 @@ class SearchFrame:
             self.gui.set_progress_value(current_progress_value)
             doc.set_vector(inverted_index)
         
-        # Set progress bar value to 90.
+        # Set progress bar value to 95.
         self.gui.set_progress_value(95)
         
         # Set the status to true, indicating that it is ready  for clustering.
@@ -175,18 +175,43 @@ class SearchFrame:
         None.
 
         """
+        # Start progress bar, with value equals to 0.
+        self.gui.set_progress_value(0)
+        
         stopwords_removal = self.gui.get_preprocessor_option()[0].get()
         stemming = self.gui.get_preprocessor_option()[1].get()
         case_folding = self.gui.get_preprocessor_option()[2].get()
         normalization = self.gui.get_preprocessor_option()[3].get()
         
+        # Set progress value for each documents for indexing process.
+        current_progress_value = 5
+        incr = (int) ((50 - 5) / len(self.gui.get_corpus()))
+        
         # Update the inverted index.
         indexer = Indexer(self.gui.get_inverted_index())
         for doc in extended_corpus:
+            # Set current progress value.
+            current_progress_value += incr
+            self.gui.set_progress_value(current_progress_value)
             indexer.index(doc, stopwords_removal, stemming, case_folding, normalization)
         inverted_index = indexer.get_inverted_index()
         self.gui.set_inverted_index(inverted_index)
         
+        # Set progress value for each documents for vectorizing process.
+        incr = (int) ((95 - 50) / len(self.gui.get_corpus()))
+        
         # Update the vector.
         for doc in self.gui.get_corpus():
+            # Set current progress value.
+            current_progress_value += incr
+            self.gui.set_progress_value(current_progress_value)
             doc.set_vector(inverted_index)
+            
+        # Set progress bar value to 95.
+        self.gui.set_progress_value(95)
+        
+        # Set the status to true, indicating that it is ready for clustering.
+        self.gui.set_cluster_status(True)
+        
+        # Set progress bar value to 100, indicating the process has finished.
+        self.gui.set_progress_value(100)

@@ -4,10 +4,11 @@ from gui.window.AboutWindow import AboutWindow
 from gui.WarningPopup import WarningPopup
 
 import os
-import tkinter as tk
-from tkinter import filedialog
+import threading
 import pickle
 import webbrowser
+import tkinter as tk
+from tkinter import filedialog
 
 class MenuBar:
     
@@ -178,7 +179,8 @@ class MenuBar:
                 
                 # Update the corpus and inverted index.
                 self.gui.set_corpus(self.gui.get_corpus() + extended_corpus)
-                self.gui.update_inverted_index(extended_corpus)
+                updating_thread = threading.Thread(target=self.gui.update_inverted_index, args=(extended_corpus,), name='updating_thread')
+                updating_thread.start()
         except EnvironmentError:
             popup = WarningPopup('Updating an index',
                                  'The file path of the saved index does not exist!')
