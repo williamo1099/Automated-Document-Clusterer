@@ -80,7 +80,8 @@ class Clusterer:
 
         """
         # Set a 1-D condensed distance matrix.
-        self.set_distance_matrix()
+        if self.distance_matrix is []:
+            self.set_distance_matrix()
             
         # Set the linkage matrix as a result of the agglomerative hierarchical clustering process.
         if self.linkage is None:
