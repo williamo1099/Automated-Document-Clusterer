@@ -150,7 +150,10 @@ class SearchFrame:
             # Set current progress value.
             current_progress_value += incr
             self.gui.set_progress_value(current_progress_value)
-            doc.set_vector(inverted_index)
+            
+            index = sorted(list(inverted_index.keys()), key=str.lower)
+            corpus_size = len(self.gui.get_corpus())
+            doc.set_vector(inverted_index, index, corpus_size)
         
         # Set progress bar value to 95.
         self.gui.set_progress_value(95)
@@ -205,7 +208,10 @@ class SearchFrame:
             # Set current progress value.
             current_progress_value += incr
             self.gui.set_progress_value(current_progress_value)
-            doc.set_vector(inverted_index)
+            
+            index = sorted(list(inverted_index.keys()), key=str.lower)
+            corpus_size = len(self.gui.get_corpus())
+            doc.set_vector(inverted_index, index, corpus_size)
             
         # Set progress bar value to 95.
         self.gui.set_progress_value(95)

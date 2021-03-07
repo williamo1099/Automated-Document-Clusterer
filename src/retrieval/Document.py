@@ -75,7 +75,7 @@ class Document:
         """
         return self.vector
     
-    def set_vector(self, index):
+    def set_vector(self, index, dictionary, corpus_size):
         """
         Build a vector as the document's representation.
         Each dimension of the vector is a term's weight.
@@ -84,17 +84,16 @@ class Document:
         ----------
         index : dictionary
             The inverted index.
+        dictionary : list
+            The list of terms.
+        corpus_size : int
+            The size of corpus.
 
         Returns
         -------
         None.
 
         """
-        # Build a list of terms sorted in ascending order.
-        dictionary = sorted(list(index.keys()), key=str.lower)
-        # Set the corpus size.
-        corpus_size = len(set(doc for posting in index.values() for doc in posting.keys()))
-        
         self.vector = []
         for term in dictionary:
             weight = 0
