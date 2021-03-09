@@ -42,7 +42,7 @@ class Clusterer:
                 distance = doc_i.calc_distance(doc_j)
                 self.distance_matrix.append(distance)
     
-    def get_dendrogram(self, size=[10, 5]):
+    def get_dendrogram(self, size=[10, 5], orientation='right'):
         """
         The method to get dendrogram figure.
         
@@ -50,6 +50,8 @@ class Clusterer:
         ----------
         size : list
             The size of the dendrogram figure. The default is [10, 5].
+        orientation : string
+            The dendrogram figure orientation. The default is right.
 
         Returns
         -------
@@ -59,7 +61,7 @@ class Clusterer:
         """
         if self.dendrogram is None:
             return None
-        return self.dendrogram.plot_dendrogram([doc.get_title() for doc in self.corpus], size)
+        return self.dendrogram.plot_dendrogram([doc.get_title() for doc in self.corpus], size, orientation)
     
     def cluster(self, method, cut_off=0):
         """
@@ -80,8 +82,7 @@ class Clusterer:
 
         """
         # Set a 1-D condensed distance matrix.
-        if self.distance_matrix is []:
-            self.set_distance_matrix()
+        self.set_distance_matrix()
             
         # Set the linkage matrix as a result of the agglomerative hierarchical clustering process.
         if self.linkage is None:

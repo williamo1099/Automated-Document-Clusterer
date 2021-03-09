@@ -112,9 +112,11 @@ class ClusterFrame:
         # Set the figure get from clustering process.
         # Calculate proper figure size based on corpus size.
         figsize = [10, 5]
+        orientation = 'right'
         if len(self.gui.get_corpus()) > 50:
-            figsize = [10, 20]
-        self.figure = self.clusterer.get_dendrogram(figsize)
+            figsize = None
+            orientation = 'top'
+        self.figure = self.clusterer.get_dendrogram(figsize, orientation)
         self.gui.set_progress_value(100)
     
     def draw_on_canvas(self):

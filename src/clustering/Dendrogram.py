@@ -23,16 +23,18 @@ class Dendrogram:
         self.linkage = linkage
         self.cut_off = cut_off
         
-    def plot_dendrogram(self, labels=None, size=[10, 5]):
+    def plot_dendrogram(self, labels, size=[10, 5], orientation='right'):
         """
         The method to plot dendrogram diagram.
         
         Parameters
         ----------
         labels : list
-            The list of documents' title. The default is None.
+            The list of documents' title.
         size : list
             The size of the dendrogram figure. The default is [10, 5].
+        orientation : string
+            The figure orientation. The default is right.
 
         Returns
         -------
@@ -40,9 +42,12 @@ class Dendrogram:
             The figure of the dendrogram.
 
         """
-        fig = plt.figure(figsize=(size[0], size[1]))
+        if size is not None:
+            fig = plt.figure(figsize=(size[0], size[1]))
+        else:
+            fig = plt.figure()
         self.dend = dendrogram(self.linkage,
-                    orientation='right',
+                    orientation=orientation,
                     color_threshold=self.cut_off,
                     labels=labels)
         
