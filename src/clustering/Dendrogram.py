@@ -42,10 +42,7 @@ class Dendrogram:
             The figure of the dendrogram.
 
         """
-        if size is not None:
-            fig = plt.figure(figsize=(size[0], size[1]))
-        else:
-            fig = plt.figure()
+        fig = plt.figure(figsize=(size[0], size[1]))
         self.dend = dendrogram(self.linkage,
                     orientation=orientation,
                     color_threshold=self.cut_off,

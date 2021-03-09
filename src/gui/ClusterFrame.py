@@ -114,7 +114,7 @@ class ClusterFrame:
         figsize = [10, 5]
         orientation = 'right'
         if len(self.gui.get_corpus()) > 50:
-            figsize = None
+            figsize = [20, 20]
             orientation = 'top'
         self.figure = self.clusterer.get_dendrogram(figsize, orientation)
         self.gui.set_progress_value(100)
