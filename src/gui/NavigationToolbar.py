@@ -112,8 +112,8 @@ class NavigationToolbar(NavigationToolbar2Tk):
         
         # Evaluate externally using F-measure.
         folder_path = filedialog.askdirectory()
-        
-        if not folder_path:
+        print(folder_path)
+        if folder_path != '':
             doc_titles = []
             for root, directories, files in os.walk(folder_path):
                 for file in files:
@@ -136,13 +136,13 @@ class NavigationToolbar(NavigationToolbar2Tk):
         
             # Show evaluation through a popup window.
             popup = WarningPopup('Clustering evaluation',
-                                 'Cophenetic correlation coefficient : ' + cpcc + '\n' +
-                                 'F-score : ' + f_score)
+                                 'Cophenetic correlation coefficient : ' + str(cpcc) + '\n' +
+                                 'F-score : ' + str(f_score))
             popup.show_popup()
         else:
             # This means that user does not provide benchmark data.
             # Show evaluation through a popup window.
             popup = WarningPopup('Clustering evaluation',
-                                  'Cophenetic correlation coefficient : ' + cpcc + '\n' +
+                                  'Cophenetic correlation coefficient : ' + str(cpcc) + '\n' +
                                   'F-score : -')
             popup.show_popup()
