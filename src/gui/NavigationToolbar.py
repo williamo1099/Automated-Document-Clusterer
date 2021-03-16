@@ -110,39 +110,7 @@ class NavigationToolbar(NavigationToolbar2Tk):
         # Evaluate internally using cophenetic correlation coefficient.
         cpcc = self.clusterer.calc_cophenetic_coeff()
         
-        # Evaluate externally using F-measure.
-        folder_path = filedialog.askdirectory()
-        print(folder_path)
-        if folder_path != '':
-            doc_titles = []
-            for root, directories, files in os.walk(folder_path):
-                for file in files:
-                    if '.txt' in file:
-                        doc_titles.append(os.path.join(root, file))
-            
-            escaped_folder_path = str(folder_path) + '\\'
-        
-            # Get benchmark data.
-            benchmark = {}
-            for i in range(0, len(doc_titles)):
-                doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
-                cluster = doc_title.split('\\')[0]
-                title = doc_title.split('\\')[1]
-                
-                if cluster not in benchmark:
-                    benchmark[cluster] = []
-                benchmark[cluster].append(title)
-            f_score = self.clusterer.calc_f_score(benchmark)
-        
-            # Show evaluation through a popup window.
-            popup = WarningPopup('Clustering evaluation',
-                                 'Cophenetic correlation coefficient : ' + str(cpcc) + '\n' +
-                                 'F-score : ' + str(f_score))
-            popup.show_popup()
-        else:
-            # This means that user does not provide benchmark data.
-            # Show evaluation through a popup window.
-            popup = WarningPopup('Clustering evaluation',
-                                  'Cophenetic correlation coefficient : ' + str(cpcc) + '\n' +
-                                  'F-score : -')
-            popup.show_popup()
+        # Show evaluation through a popup window.
+        popup = WarningPopup('Clustering evaluation',
+                              'Cophenetic correlation coefficient : ' + str(cpcc))
+        popup.show_popup()
