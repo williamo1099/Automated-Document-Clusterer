@@ -23,9 +23,9 @@ class Document:
         None.
 
         """
-        self.__doc_id = doc_id
-        self.__title = title
-        self.__content = content
+        self.doc_id = doc_id
+        self.title = title
+        self.content = content
     
     def get_id(self):
         """
@@ -37,7 +37,7 @@ class Document:
             The document's id.
 
         """
-        return self.__doc_id
+        return self.doc_id
     
     def get_title(self):
         """
@@ -49,7 +49,7 @@ class Document:
             The document's title.
 
         """
-        return self.__title
+        return self.title
     
     def get_content(self):
         """
@@ -61,7 +61,7 @@ class Document:
             The document's content.
 
         """
-        return self.__content
+        return self.content
     
     def get_vector(self):
         """
@@ -73,7 +73,7 @@ class Document:
             The vector as the document's representation.
 
         """
-        return self.__vector
+        return self.vector
     
     def set_vector(self, index, dictionary, corpus_size):
         """
@@ -94,7 +94,7 @@ class Document:
         None.
 
         """
-        self.__vector = []
+        self.vector = []
         for term in dictionary:
             weight = 0
             
@@ -109,7 +109,7 @@ class Document:
                     
                 # Calculate tf-idf weight for a term.
                 weight = tf * idf
-            self.__vector.append(weight)
+            self.vector.append(weight)
     
     def calc_distance(self, other_doc):
         """
@@ -128,10 +128,10 @@ class Document:
         """
         # Check whether the other document is the same document as this.
         # If two documents are equal, the distance is set to 0.
-        if other_doc.get_id() == self.__doc_id:
+        if other_doc.get_id() == self.doc_id:
             return 0
         
         # Get vectors of two documents and count distance between those two vectors.
-        vector_i = self.__vector
+        vector_i = self.vector
         vector_j = other_doc.get_vector()
         return cosine(vector_i, vector_j)
