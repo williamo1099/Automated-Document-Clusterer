@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class Dendrogram:
         
-    def plot_dendrogram(self, linkage, cut_off, labels, size=[10, 5], orientation='right'):
+    def _plot_dendrogram(self, linkage, cut_off, labels, figsize=(10, 5), orientation='right'):
         """
         The method to plot dendrogram diagram.
         
@@ -16,7 +16,7 @@ class Dendrogram:
             The cut-off height.
         labels : list
             The list of documents' title.
-        size : list
+        figsize : tuple
             The size of the dendrogram figure. The default is [10, 5].
         orientation : string
             The figure orientation. The default is right.
@@ -27,8 +27,8 @@ class Dendrogram:
             The figure of the dendrogram.
 
         """
-        fig = plt.figure(figsize=(size[0], size[1]))
-        self.dend = dendrogram(linkage,
+        fig = plt.figure(figsize=figsize)
+        self.__dend = dendrogram(linkage,
                     orientation=orientation,
                     color_threshold=cut_off,
                     labels=labels)
@@ -38,7 +38,7 @@ class Dendrogram:
         plt.axvline(x=cut_off, linestyle='dashed')
         return fig
     
-    def extract_clusters_by_color(self):
+    def _extract_clusters_by_color(self):
         """
         The method to extract a list of objects of each clusters in the dendrogram based on colors.
         Shout out to http://www.nxn.se/valent/extract-cluster-elements-by-color-in-python.
@@ -51,11 +51,11 @@ class Dendrogram:
 
         """
         cluster_list = {}
-        for c, pi in zip(self.dend['color_list'], self.dend['icoord']):
+        for c, pi in zip(self.__dend['color_list'], self.__dend['icoord']):
             for leg in pi[1:3]:
                 i = (leg - 5) / 10
                 if abs(i - int(i)) <= 0:
                     if c not in cluster_list:
                         cluster_list[c] = []
-                    cluster_list[c].append(self.dend['ivl'][int(i)])
+                    cluster_list[c].append(self.__dend['ivl'][int(i)])
         return cluster_list
