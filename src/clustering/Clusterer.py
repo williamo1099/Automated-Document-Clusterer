@@ -2,7 +2,6 @@
 from clustering.Dendrogram import Dendrogram
 
 from scipy.cluster.hierarchy import linkage, cophenet
-from sklearn.metrics import f1_score
 
 class Clusterer:
     
@@ -42,12 +41,14 @@ class Clusterer:
                 distance = doc_i.calc_distance(doc_j)
                 self.distance_matrix.append(distance)
     
-    def get_dendrogram(self, size=[10, 5], orientation='right'):
+    def get_dendrogram(self, cut_off=0, size=[10, 5], orientation='right'):
         """
         The method to get dendrogram figure.
         
         Parameters
         ----------
+        cut_off : float, optional
+            The cut-off height. The default is 0.
         size : list
             The size of the dendrogram figure. The default is [10, 5].
         orientation : string
@@ -61,9 +62,9 @@ class Clusterer:
         """
         if self.dendrogram is None:
             return None
-        return self.dendrogram.plot_dendrogram([doc.get_title() for doc in self.corpus], size, orientation)
+        return self.dendrogram.plot_dendrogram(self.linkage, cut_off, [doc.get_title() for doc in self.corpus], size, orientation)
     
-    def cluster(self, method, cut_off=0):
+    def cluster(self, method):
         """
         The method to do clustering process for documents in corpus.
         Algorithm used is agglomerative hierarchical clustering algorithm.
@@ -73,8 +74,6 @@ class Clusterer:
         method : string
             The method used for calculating distances between two clusters.
             Possible values for this parameter are single, complete and average.
-        cut_off : float, optional
-            The height of a cut-off point. The default is 0.
 
         Returns
         -------
@@ -89,7 +88,7 @@ class Clusterer:
             self.linkage = linkage(self.distance_matrix,
                              method=method,
                              optimal_ordering=True)
-        self.dendrogram = Dendrogram(self.linkage, cut_off)
+        self.dendrogram = Dendrogram()
     
     def extract_clusters(self, dictionary=None, autorenaming=True):
         """

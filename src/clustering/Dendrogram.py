@@ -3,32 +3,17 @@ from scipy.cluster.hierarchy import dendrogram
 import matplotlib.pyplot as plt
 
 class Dendrogram:
-    
-    def __init__(self, linkage, cut_off):
+        
+    def plot_dendrogram(self, linkage, cut_off, labels, size=[10, 5], orientation='right'):
         """
-        The constructor for Dendrogram class.
-
+        The method to plot dendrogram diagram.
+        
         Parameters
         ----------
         linkage : array
             The linkage matrix.
         cut_off : float
             The cut-off height.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.linkage = linkage
-        self.cut_off = cut_off
-        
-    def plot_dendrogram(self, labels, size=[10, 5], orientation='right'):
-        """
-        The method to plot dendrogram diagram.
-        
-        Parameters
-        ----------
         labels : list
             The list of documents' title.
         size : list
@@ -43,14 +28,14 @@ class Dendrogram:
 
         """
         fig = plt.figure(figsize=(size[0], size[1]))
-        self.dend = dendrogram(self.linkage,
+        self.dend = dendrogram(linkage,
                     orientation=orientation,
-                    color_threshold=self.cut_off,
+                    color_threshold=cut_off,
                     labels=labels)
         
         # Cut the dendrogram at cut-off height.
         # If the cut-off height equals to 0, there will be no cut-off line.
-        plt.axvline(x=self.cut_off, linestyle='dashed')
+        plt.axvline(x=cut_off, linestyle='dashed')
         return fig
     
     def extract_clusters_by_color(self):
