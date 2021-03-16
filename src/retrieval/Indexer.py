@@ -19,15 +19,26 @@ class Indexer:
         None.
 
         """
-        if inverted_index is not None:
-            self.inverted_index = inverted_index
-        else:
-            self.inverted_index = {}
+        self.__inverted_index = {} if inverted_index is None else inverted_index
         
+    @property
+    def inverted_index(self):
+        """
+        The method to get inverted index built by method index.
+
+        Returns
+        -------
+        dictionary
+            The inverted index built.
+            Written as {term1: {doc1: freq, doc2: freq}, term2: {doc1: freq}, etc.}.
+
+        """
+        return self.__inverted_index
+    
     class Tokenizer:
         
         @staticmethod
-        def tokenize(sequence):
+        def _tokenize(sequence):
             """
             The method to tokenize a character sequence into a list of tokens.
 
@@ -47,7 +58,7 @@ class Indexer:
     class LinguisticPreprocessor:
         
         @staticmethod
-        def remove_stopwords(token_list):
+        def _remove_stopwords(token_list):
             """
             The method to remove stop words from a list of tokens.
             Language supported is English.
@@ -75,7 +86,7 @@ class Indexer:
             return result
     
         @staticmethod
-        def stem(token_list):
+        def _stem(token_list):
             """
             The method to stem all tokens in a list of tokens.
             Technique used is suffix-stripping technique, with Porter stemming algorithm.
@@ -100,7 +111,7 @@ class Indexer:
             return result
         
         @staticmethod
-        def case_fold(token_list):
+        def _case_fold(token_list):
             """
             The method to case fold all tokens in a list of tokens.
             
@@ -121,7 +132,7 @@ class Indexer:
             return result
         
         @staticmethod
-        def normalize(token_list):
+        def _normalize(token_list):
             """
             The method to normalize all tokens in a list of tokens.
 
@@ -142,73 +153,8 @@ class Indexer:
                 if normalized_token != '':
                     result.append(normalized_token)
             return result
-    
-    def get_inverted_index(self):
-        """
-        The method to get inverted index built by method index.
 
-        Returns
-        -------
-        dictionary
-            The inverted index built.
-            Written as {term1: {doc1: freq, doc2: freq}, term2: {doc1: freq}, etc.}.
-
-        """
-        return self.inverted_index
-    
-    def preprocess(self, document, stopwords_removal=True, stemming=True, case_folding=True, normalization=True):
-        """
-        The method to get a list of terms in a document.
-        Each term is a result of linguistic preprocessing of each tokens in the document.
-
-        Parameters
-        ----------
-        document : Document
-            The document.
-        stopwords_removal : boolean
-            The stopwords removal status (if true, stopwords removal step will be done). The default is True.
-        stemming : boolean
-            The stemming status (if true, stemming step will be done). The default is True.
-        case_folding : boolean
-            The case folding status (if true, case folding step will be done). The default is True.
-        normalization : boolean
-            The normalization status (if true, normalization step will be done). The default is True.
-
-        Returns
-        -------
-        dictionary : list
-            The list of terms in the document.
-
-        """
-        # Do tokenization process.
-        token_list = self.Tokenizer.tokenize(document.get_content())
-        
-        # Do linguistic preprocessing (stop words removal, stemming, case folding and normalization).
-        dictionary = []
-        if stopwords_removal is True:
-            dictionary = self.LinguisticPreprocessor.remove_stopwords(token_list)
-        
-        if stemming is True:
-            if dictionary == []:
-                dictionary = self.LinguisticPreprocessor.stem(token_list)
-            dictionary = self.LinguisticPreprocessor.stem(dictionary)
-        
-        if case_folding is True:
-            if dictionary == []:
-                dictionary = self.LinguisticPreprocessor.case_fold(token_list)
-            dictionary = self.LinguisticPreprocessor.case_fold(dictionary)
-        
-        if normalization is True:
-            if dictionary == []:
-                dictionary = self.LinguisticPreprocessor.normalize(token_list)
-            dictionary = self.LinguisticPreprocessor.normalize(dictionary)
-        
-        if dictionary != []:
-            return dictionary
-        else:
-            return token_list
-    
-    def index(self, document, stopwords_removal=True, stemming=True, case_folding=True, normalization=True):
+    def index(self, document, stopwords_removal_option=True, stemming_option=True, case_folding_option=True, normalization_option=True):
         """
         The method to build an inverted index.
 
@@ -216,13 +162,13 @@ class Indexer:
         ----------
         document : Document
             The document.
-        stopwords_removal : boolean
+        stopwords_removal_option : boolean
             The stopwords removal status (if true, stopwords removal step will be done). The default is True.
-        stemming : boolean
+        stemming_option : boolean
             The stemming status (if true, stemming step will be done). The default is True.
-        case_folding : boolean
+        case_folding_option : boolean
             The case folding status (if true, case folding step will be done). The default is True.
-        normalization : boolean
+        normalization_option : boolean
             The normalization status (if true, normalization step will be done). The default is True.
 
 
@@ -232,21 +178,72 @@ class Indexer:
 
         """
         # Get the list of terms in a document.
-        dictionary = self.preprocess(document, stopwords_removal=True, stemming=True, case_folding=True, normalization=True)
+        dictionary = self.__preprocess(document, stopwords_removal_option, stemming_option, case_folding_option, normalization_option)
         
         # Get the document's id.
-        doc_id = document.get_id()
+        doc_id = document.doc_id
         for term in dictionary:
-            
             # Check whether a term is already stored in the index.
             # If a term is not stored yet, the term will be stored as a new key in the index.
-            if term not in self.inverted_index:
-                self.inverted_index[term] = {}
+            if term not in self.__inverted_index:
+                self.__inverted_index[term] = {}
                 
             # Check whether the document is stored in the posting list.
             # If the document is not stored yet, the frequency will be set to 1.
-            # If the document is stored already, the frequency will be set to the previous frequency + 1.
-            if doc_id not in self.inverted_index[term]:
-                self.inverted_index[term][doc_id] = 1
-            else:
-                self.inverted_index[term][doc_id] += 1
+            # Else, the frequency will be set to the previous frequency + 1.
+            self.__inverted_index[term][doc_id] = 1 if doc_id not in self.inverted_index[term] else self.__inverted_index[term][doc_id] + 1
+        
+        # Delete the document's content (to save some space).
+        del document.content
+        
+    def __preprocess(self, document, stopwords_removal_option=True, stemming_option=True, case_folding_option=True, normalization_option=True):
+        """
+        The method to get a list of terms in a document.
+        Each term is a result of linguistic preprocessing of each tokens in the document.
+
+        Parameters
+        ----------
+        document : Document
+            The document.
+        stopwords_removal_option : boolean
+            The stopwords removal status (if true, stopwords removal step will be done). The default is True.
+        stemming_option : boolean
+            The stemming status (if true, stemming step will be done). The default is True.
+        case_folding_option : boolean
+            The case folding status (if true, case folding step will be done). The default is True.
+        normalization_option : boolean
+            The normalization status (if true, normalization step will be done). The default is True.
+
+        Returns
+        -------
+        dictionary : list
+            The list of terms in the document.
+
+        """
+        # Do tokenization process.
+        token_list = self.Tokenizer._tokenize(document.content)
+        
+        # Do linguistic preprocessing (stop words removal, stemming, case folding and normalization).
+        dictionary = []
+        if stopwords_removal_option is True:
+            dictionary = self.LinguisticPreprocessor._remove_stopwords(token_list)
+        
+        if stemming_option is True:
+            if dictionary == []:
+                dictionary = self.LinguisticPreprocessor._stem(token_list)
+            dictionary = self.LinguisticPreprocessor._stem(dictionary)
+        
+        if case_folding_option is True:
+            if dictionary == []:
+                dictionary = self.LinguisticPreprocessor._case_fold(token_list)
+            dictionary = self.LinguisticPreprocessor._case_fold(dictionary)
+        
+        if normalization_option is True:
+            if dictionary == []:
+                dictionary = self.LinguisticPreprocessor._normalize(token_list)
+            dictionary = self.LinguisticPreprocessor._normalize(dictionary)
+        
+        if dictionary != []:
+            return dictionary
+        else:
+            return token_list
