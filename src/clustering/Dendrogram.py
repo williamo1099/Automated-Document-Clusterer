@@ -3,20 +3,35 @@ from scipy.cluster.hierarchy import dendrogram
 import matplotlib.pyplot as plt
 
 class Dendrogram:
-        
-    def _plot_dendrogram(self, linkage, cut_off, labels, figsize=[10, 5], orientation='right'):
+    
+    def __init__(self, linkage, cut_off):
         """
-        The method to plot dendrogram diagram.
-        
+        The constructor for Dendrogram class.
+
         Parameters
         ----------
         linkage : array
             The linkage matrix.
         cut_off : float
             The cut-off height.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.linkage = linkage
+        self.cut_off = cut_off
+        
+    def plot_dendrogram(self, labels, size=[10, 5], orientation='right'):
+        """
+        The method to plot dendrogram diagram.
+        
+        Parameters
+        ----------
         labels : list
             The list of documents' title.
-        figsize : list
+        size : list
             The size of the dendrogram figure. The default is [10, 5].
         orientation : string
             The figure orientation. The default is right.
@@ -27,18 +42,18 @@ class Dendrogram:
             The figure of the dendrogram.
 
         """
-        fig = plt.figure(figsize=(figsize[0], figsize[1]))
-        self.dend = dendrogram(linkage,
+        fig = plt.figure(figsize=(size[0], size[1]))
+        self.dend = dendrogram(self.linkage,
                     orientation=orientation,
-                    color_threshold=cut_off,
+                    color_threshold=self.cut_off,
                     labels=labels)
         
         # Cut the dendrogram at cut-off height.
         # If the cut-off height equals to 0, there will be no cut-off line.
-        plt.axvline(x=cut_off, linestyle='dashed')
+        plt.axvline(x=self.cut_off, linestyle='dashed')
         return fig
     
-    def _extract_clusters_by_color(self):
+    def extract_clusters_by_color(self):
         """
         The method to extract a list of objects of each clusters in the dendrogram based on colors.
         Shout out to http://www.nxn.se/valent/extract-cluster-elements-by-color-in-python.

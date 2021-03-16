@@ -106,7 +106,7 @@ class ClusterFrame:
         self.gui.set_progress_value(5)
         
         # Start the clustering process.
-        self.clusterer.cluster(self.method_list[self.method_combobox.current()])
+        self.clusterer.cluster(self.method_list[self.method_combobox.current()], cut_off)
         self.gui.set_progress_value(90)
         
         # Set the figure get from clustering process.
@@ -116,7 +116,7 @@ class ClusterFrame:
         if len(self.gui.get_corpus()) > 50:
             figsize = [20, 20]
             orientation = 'top'
-        self.figure = self.clusterer.get_dendrogram(cut_off, figsize, orientation)
+        self.figure = self.clusterer.get_dendrogram(figsize, orientation)
         self.gui.set_progress_value(100)
     
     def draw_on_canvas(self):
