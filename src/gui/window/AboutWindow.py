@@ -52,7 +52,7 @@ class AboutWindow:
         copyright_label.configure(fg='#808080')
         copyright_label.pack(side='bottom', pady=10)
     
-    def start(self):
+    def _start(self):
         """
         The method to start the about window.
 

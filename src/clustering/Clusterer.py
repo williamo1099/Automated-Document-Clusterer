@@ -32,7 +32,7 @@ class Clusterer:
         ----------
         cut_off : float, optional
             The cut-off height. The default is 0.
-        size : tuple
+        figsize : tuple
             The size of the dendrogram figure. The default is (10, 5).
         orientation : string
             The dendrogram figure orientation. The default is right.
