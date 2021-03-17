@@ -26,31 +26,31 @@ class ClusterFrame:
         None.
 
         """
-        self.gui = gui
+        self.__gui = gui
         
         # Initialize the cluster frame in window.
-        cluster_frame = tk.Frame(master=self.gui.get_window())
-        cluster_frame.pack(side='top')
-        cluster_frame.configure(background='white')
+        frame = tk.Frame(master=self.__gui.window)
+        frame.pack(side='top')
+        frame.configure(background='white')
         
         # Initialize the method combobox in the frame.
-        self.method_list = ['single', 'complete', 'average']
-        self.method_combobox = ttk.Combobox(master=self.gui.get_window(), values=self.method_list)
-        self.method_combobox.current(0)
-        self.method_combobox.pack(in_=cluster_frame, side='left', padx=2, pady=2)
-        self.method_combobox.configure(background='white')
+        self.__method_list = ['single', 'complete', 'average']
+        self.__method_combobox = ttk.Combobox(master=self.__gui.window, values=self.__method_list)
+        self.__method_combobox.current(0)
+        self.__method_combobox.pack(in_=frame, side='left', padx=2, pady=2)
+        self.__method_combobox.configure(background='white')
         
         # Initialize the cluster button in the frame.
-        self.cluster_button = tk.Button(master=self.gui.get_window(), text='Cluster', command=self.cluster)
-        self.cluster_button.pack(in_=cluster_frame, side='right', padx=2, pady=2)
-        self.cluster_button.configure(background='white')
-        ToolTip(self.cluster_button, 'Start clustering all documents')
+        self.__cluster_button = tk.Button(master=self.__gui.window, text='Cluster', command=self.__cluster)
+        self.__cluster_button.pack(in_=frame, side='right', padx=2, pady=2)
+        self.__cluster_button.configure(background='white')
+        ToolTip(self.__cluster_button, 'Start clustering all documents')
         
         # Initialize the variable.
-        self.clusterer = None
-        self.figure = None
+        self.__clusterer = None
+        self.__figure = None
     
-    def restart(self):
+    def _restart(self):
         """
         The method to restore the frame's conditions to original.
 
@@ -59,11 +59,35 @@ class ClusterFrame:
         None.
 
         """
-        self.clusterer = None
-        if self.gui.get_canvas_status() is True:
-            self.reset_canvas()
+        self.__clusterer = None
+        if self.__gui.canvas_status is True:
+            self.__reset_canvas()
     
-    def cluster(self):
+    def __reset_canvas(self):
+        """
+        The method to reset the figure, drawn canvas and result frame.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Check whether canvas status is True or not.
+        # It is true when a figure has been drawn on canvas.
+        if self.__gui.canvas_status is True:
+            self.__figure = None
+            
+            # Check the corpus size.
+            # If the size is more than 50, the figure is displayed in a separated window.
+            if len(self.__gui.corpus) <= 50:
+                self.__figure_canvas.get_tk_widget().destroy()
+                self.__figure_toolbar.destroy()
+            else:
+                self.__info_label.destroy()
+                self.__figure_window._reset()
+            self.__gui.canvas_status = False
+    
+    def __cluster(self):
         """
         The method to start clustering documents.
 
@@ -74,19 +98,19 @@ class ClusterFrame:
         """
         # Check whether cluster status is True or not.
         # It is true when it is ready to do clustering.
-        if self.gui.get_cluster_status() is True:
+        if self.__gui.cluster_status is True:
             # Start clustering.
-            clustering_thread = threading.Thread(target=self.do_clustering, args=(0,), daemon=True, name='clustering_thread')
+            clustering_thread = threading.Thread(target=self.__do_clustering, args=(0,), name='clustering_thread')
             clustering_thread.start()
             
             # Draw figure on canvas.
-            self.draw_on_canvas()
+            self.__draw_on_canvas()
         else:
             popup = WarningPopup('Clustering process',
                                  'There are no documents to be clustered.')
             popup.show_popup()
     
-    def do_clustering(self, cut_off=0):
+    def __do_clustering(self, cut_off=0):
         """
         The method to do clustering process.
 
@@ -101,25 +125,25 @@ class ClusterFrame:
 
         """
         # Start progress bar, with value equals to 0.
-        self.gui.set_progress_value(0)        
-        self.clusterer = Clusterer(self.gui.get_corpus())
-        self.gui.set_progress_value(5)
+        self.__gui._set_progress_value(0)
+        self.__clusterer = Clusterer(self.__gui.corpus)
+        self.__gui._set_progress_value(5)
         
         # Start the clustering process.
-        self.clusterer.cluster(self.method_list[self.method_combobox.current()])
-        self.gui.set_progress_value(90)
+        self.__clusterer.cluster(self.__method_list[self.__method_combobox.current()])
+        self.__gui._set_progress_value(90)
         
         # Set the figure get from clustering process.
         # Calculate proper figure size based on corpus size.
         figsize = [10, 5]
         orientation = 'right'
-        if len(self.gui.get_corpus()) > 50:
+        if len(self.__gui.corpus) > 50:
             figsize = [20, 20]
             orientation = 'top'
-        self.figure = self.clusterer.get_dendrogram(cut_off, figsize, orientation)
-        self.gui.set_progress_value(100)
+        self.__figure = self.__clusterer.plot_dendrogram(cut_off, figsize, orientation)
+        self.__gui._set_progress_value(100)
     
-    def draw_on_canvas(self):
+    def __draw_on_canvas(self):
         """
         The method to draw the dendrogram figure on canvas.
 
@@ -129,82 +153,44 @@ class ClusterFrame:
 
         """
         # Reset the canvas if it has been drawn.
-        self.reset_canvas()
+        self.__reset_canvas()
         
-        if self.figure is not None and self.clusterer is not None:
+        if self.__figure is not None and self.__clusterer is not None:
             # Set canvas status to True.
-            self.gui.set_canvas_status(True)
+            self.__gui.canvas_status = True
             
-            def canvas_on_click(event):
-                """
-                The method to handle on click event on canvas.
-    
-                Parameters
-                ----------
-                event : Event
-                    An event indicating a click from user.
-    
-                Returns
-                -------
-                None.
-    
-                """
+            def _canvas_on_click(event):
                 # Check whether cut status is True or not.
-                if event.inaxes is not None and self.gui.get_cut_status() is True:
+                if event.inaxes is not None and self.__gui.cut_status is True:
                     cut_off = event.xdata
-                    self.reset_canvas()
+                    self.__reset_canvas()
                     
                     # Start clustering.
-                    clustering_thread = threading.Thread(target=self.do_clustering, args=(cut_off,), daemon=True, name='clustering_thread')
+                    clustering_thread = threading.Thread(target=self.__do_clustering, args=(cut_off,), name='clustering_thread')
                     clustering_thread.start()
                     
                     # Draw figure on canvas.
-                    self.draw_on_canvas()
+                    self.__draw_on_canvas()
             
             # Check the corpus size.
             # If the size is more than 50, the figure will be displayed in a separated window.
-            if len(self.gui.get_corpus()) <= 50:
+            if len(self.__gui.corpus) <= 50:
                 # Draw figure on canvas.
-                self.figure_canvas = FigureCanvasTkAgg(self.figure, master=self.gui.get_window())
-                self.figure_canvas.draw()
-                self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
+                self.__figure_canvas = FigureCanvasTkAgg(self.__figure, master=self.__gui.window)
+                self.__figure_canvas.draw()
+                self.__figure_canvas.callbacks.connect('button_press_event', _canvas_on_click)
                 
                 # Add canvas toolbar.
-                self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, self.clusterer)
-                self.figure_canvas.get_tk_widget().pack(pady=2)
+                self.__figure_toolbar = NavigationToolbar(self.__figure_canvas, self.__gui, self.__clusterer)
+                self.__figure_canvas.get_tk_widget().pack(pady=2)
             else:
                 # Initialize info label.
-                self.info_label = ttk.Label(self.gui.get_window(), text='Figure is displayed in a separated window.')
-                self.info_label.configure(background='white')
-                self.info_label.pack(pady=2)
+                self.__info_label = ttk.Label(self.__gui.window, text='Figure is displayed in a separated window.')
+                self.__info_label.configure(background='white')
+                self.__info_label.pack(pady=2)
                 
                 # Initialize figure window.
-                self.figure_window = FigureWindow(self.gui, self.clusterer, self.figure, canvas_on_click)
-                self.figure_window.start()
+                self.__figure_window = FigureWindow(self.__gui, self.__clusterer, self.__figure, _canvas_on_click)
+                self.__figure_window._start()
         else:
-            self.gui.get_window().after(500, self.draw_on_canvas)
-    
-    def reset_canvas(self):
-        """
-        The method to reset the figure, drawn canvas and result frame.
-
-        Returns
-        -------
-        None.
-
-        """
-        # Check whether canvas status is True or not.
-        # It is true when a figure has been drawn on canvas.
-        if self.gui.get_canvas_status() is True:
-            self.figure = None
-            
-            # Check the corpus size.
-            # If the size is more than 50, the figure is displayed in a separated window.
-            if len(self.gui.get_corpus()) <= 50:
-                self.figure_canvas.get_tk_widget().destroy()
-                self.figure_toolbar.destroy()
-            else:
-                self.info_label.destroy()
-                self.figure_window.reset()
-            
-            self.gui.set_canvas_status(False)
+            self.__gui.window.after(500, self.__draw_on_canvas)

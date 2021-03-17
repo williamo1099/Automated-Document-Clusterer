@@ -26,22 +26,22 @@ class FigureWindow:
         None.
 
         """
-        self.gui = gui
+        self.__gui = gui
         
         # Initialize the figure window.
-        self.window = tk.Toplevel(master=self.gui.get_window())
-        self.window.title('Figure')
+        self.__window = tk.Toplevel(master=self.__gui.window)
+        self.__window.title('Figure')
         
         # Draw figure on canvas.
-        self.figure_canvas = FigureCanvasTkAgg(figure, master=self.window)
-        self.figure_canvas.draw()
-        self.figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
+        self.__figure_canvas = FigureCanvasTkAgg(figure, master=self.window)
+        self.__figure_canvas.draw()
+        self.__figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
         
         # Add canvas toolbar.
-        self.figure_toolbar = NavigationToolbar(self.figure_canvas, self.gui, clusterer)
-        self.figure_canvas.get_tk_widget().pack(pady=2)
+        self.__figure_toolbar = NavigationToolbar(self.__figure_canvas, self.__gui, clusterer)
+        self.__figure_canvas.get_tk_widget().pack(pady=2)
     
-    def start(self):
+    def _start(self):
         """
         The method to start the figure window.
 
@@ -50,9 +50,9 @@ class FigureWindow:
         None.
 
         """
-        self.window.mainloop()
+        self.__window.mainloop()
     
-    def reset(self):
+    def _reset(self):
         """
         The method to reset the figure window.
 
@@ -61,6 +61,6 @@ class FigureWindow:
         None.
 
         """
-        self.figure_canvas.get_tk_widget().destroy()
-        self.figure_toolbar.destroy()
-        self.window.destroy()
+        self.__figure_canvas.get_tk_widget().destroy()
+        self.__figure_toolbar.destroy()
+        self.__window.destroy()

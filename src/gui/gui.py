@@ -18,157 +18,94 @@ class gui:
 
         """
         # Initialize all variables.
-        self.cluster_status = False
-        self.canvas_status = False
-        self.cut_status = False
-        self.folder_path = ''
-        self.corpus = []
-        self.inverted_index = None
+        self.__cluster_status = False
+        self.__canvas_status = False
+        self.__cut_status = False
+        self.__folder_path = ''
+        self.__corpus = []
+        self.__inverted_index = None
         
         # Initialize the application's gui.
-        self.window = tk.Tk()
-        self.window.title('Automated Document Clusterer')
-        self.window.tk.call('wm', 'iconphoto', self.window._w, tk.PhotoImage(file='resources/logo25.png'))
-        self.window.geometry('750x450')
-        self.window.resizable(width=False, height=False)
-        self.window.configure(background='white')
+        self.__window = tk.Tk()
+        self.__window.title('Automated Document Clusterer')
+        # self.__window.tk.call('wm', 'iconphoto', self.window._w, tk.PhotoImage(file='resources/logo25.png'))
+        self.__window.geometry('750x450')
+        self.__window.resizable(width=False, height=False)
+        self.__window.configure(background='white')
         
         # Initialize the option variables.
-        self.preprocessor_option = [tk.BooleanVar(),
+        self.__preprocessor_option = [tk.BooleanVar(),
                                     tk.BooleanVar(),
                                     tk.BooleanVar(),
                                     tk.BooleanVar()]
-        self.autorenaming_option = tk.BooleanVar()
+        self.__autorenaming_option = tk.BooleanVar()
         
-        # Initialize the menu bar.
-        self.menu_bar = MenuBar(self, self.preprocessor_option, self.autorenaming_option)
-        
-        # Initialiaze all frames in the window.
-        self.search_frame = SearchFrame(self)
-        self.cluster_frame = ClusterFrame(self)
-        self.progress_frame = ProgressFrame(self)
-        
-    def start(self):
-        """
-        The method to start application's gui.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.window.mainloop()
-        
-    def restart(self):
-        """
-        The method to restore application's conditions to original.
-
-        Returns
-        -------
-        None.
-
-        """
-        # Restart all frames contained in window.
-        self.search_frame.restart()
-        self.cluster_frame.restart()
-        
-        # Reinitialize all variables.
-        self.cluster_status = False
-        self.canvas_status = False
-        self.folder_path = ''
-        self.corpus = []
-        self.inverted_index = None
-        
-        # Set progress bar value to 0.
-        self.set_progress_value(0)
+        # Initialize the menu bar and frames.
+        self.__menu_bar = MenuBar(self, self.preprocessor_option, self.autorenaming_option)
+        self.__search_frame = SearchFrame(self)
+        self.__cluster_frame = ClusterFrame(self)
+        self.__progress_frame = ProgressFrame(self)
     
-    def update_inverted_index(self, extended_corpus):
-        """
-        The method to update the inverted index.
-
-        Parameters
-        ----------
-        extended_corpus : list
-            The new added documents list.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.search_frame.update_inverted_index(extended_corpus)
-        
-    def set_progress_value(self, value):
-        """
-        The method to set the progress bar value.
-
-        Parameters
-        ----------
-        value : int
-            The progress bar value.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.progress_frame.update_progress_bar(value)
-    
-    def get_window(self):
+    @property
+    def window(self):
         """
         The method to get the main gui window.
-
+        
         Returns
         -------
         Tk Interface
             The main gui window.
-
+            
         """
-        return self.window
+        return self.__window
     
-    def get_cluster_status(self):
+    @property
+    def cluster_status(self):
         """
         The method to get the cluster status.
         Cluster status indicates whether it is ready to do clustering process or not.
-
+        
         Returns
         -------
         boolean
             The cluster status.
-
+        
         """
-        return self.cluster_status
+        return self.__cluster_status
     
-    def set_cluster_status(self, cluster_status):
+    @cluster_status.setter
+    def cluster_status(self, cluster_status):
         """
         THe method to set the cluster status.
-
+        
         Parameters
         ----------
         cluster_status : boolean
             The cluster status.
-
+        
         Returns
         -------
         None.
-
+        
         """
-        self.cluster_status = cluster_status
+        self.__cluster_status = cluster_status
     
-    def get_canvas_status(self):
+    @property
+    def canvas_status(self):
         """
         The method to get the canvas status.
         Canvas status indicates whether it is ready to draw on canvas or not.
-
+        
         Returns
         -------
         boolean
             The canvas status.
-
+        
         """
-        return self.canvas_status
+        return self.__canvas_status
     
-    def set_canvas_status(self, canvas_status):
+    @canvas_status.setter
+    def canvas_status(self, canvas_status):
         """
         The method to set the canvas status.
 
@@ -182,9 +119,10 @@ class gui:
         None.
 
         """
-        self.canvas_status = canvas_status
-        
-    def get_cut_status(self):
+        self.__canvas_status = canvas_status
+    
+    @property
+    def cut_status(self):
         """
         The method to get the cut-off status.
         Cut-off status indicates whether it is ready to cut the dendrogram or not.
@@ -195,9 +133,10 @@ class gui:
             The cut-off status.
 
         """
-        return self.cut_status
+        return self.__cut_status
     
-    def set_cut_status(self, cut_status):
+    @cut_status.setter
+    def cut_status(self, cut_status):
         """
         THe method to set the cut-off status.
 
@@ -211,9 +150,10 @@ class gui:
         None.
 
         """
-        self.cut_status = cut_status
-        
-    def get_folder_path(self):
+        self.__cut_status = cut_status
+    
+    @property
+    def folder_path(self):
         """
         The method to get the folder path of corpus.
 
@@ -223,9 +163,10 @@ class gui:
             The folder path.
 
         """
-        return self.folder_path
+        return self.__folder_path
     
-    def set_folder_path(self, folder_path):
+    @folder_path.setter
+    def folder_path(self, folder_path):
         """
         The method to set the folder path of corpus.
         This automatically set the folder entry to current folder path.
@@ -240,10 +181,11 @@ class gui:
         None.
 
         """
-        self.folder_path = folder_path
-        self.search_frame.set_folder_entry(folder_path)
-        
-    def get_corpus(self):
+        self.__search_frame._set_folder_entry(folder_path)
+        self.__folder_path = folder_path
+    
+    @property
+    def corpus(self):
         """
         The method to get corpus.
 
@@ -253,9 +195,10 @@ class gui:
             The list of documents.
 
         """
-        return self.corpus
+        return self.__corpus
     
-    def set_corpus(self, corpus):
+    @corpus.setter
+    def corpus(self, corpus):
         """
         The method to set corpus.
 
@@ -269,9 +212,10 @@ class gui:
         None.
 
         """
-        self.corpus = corpus
-        
-    def get_inverted_index(self):
+        self.__corpus = corpus
+    
+    @property
+    def inverted_index(self):
         """
         The method to get the inverted index.
 
@@ -281,9 +225,10 @@ class gui:
             The inverted index.
 
         """
-        return self.inverted_index
+        return self.__inverted_index
     
-    def set_inverted_index(self, inverted_index):
+    @inverted_index.setter
+    def inverted_index(self, inverted_index):
         """
         The method to set the inverted index.
 
@@ -297,11 +242,13 @@ class gui:
         None.
 
         """
-        self.inverted_index = inverted_index
-        
-    def get_preprocessor_option(self):
+        self.__inverted_index = inverted_index
+    
+    @property
+    def preprocessor_option(self):
         """
         The method to get the preprocessor option.
+        The option is consisting of stop words removal option, stemming option, case folding option and normalization option.
 
         Returns
         -------
@@ -309,9 +256,10 @@ class gui:
             The preprocessor option.
 
         """
-        return self.preprocessor_option
+        return self.__preprocessor_option
     
-    def get_autorenaming_option(self):
+    @property
+    def autorenaming_option(self):
         """
         The method to get the autorenaming option.
 
@@ -321,4 +269,70 @@ class gui:
             The autorenaming option.
 
         """
-        return self.autorenaming_option
+        return self.__autorenaming_option
+        
+    def start(self):
+        """
+        The method to start application's gui.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.__window.mainloop()
+    
+    def _restart(self):
+        """
+        The method to restore application's conditions to original.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Restart all frames contained in window.
+        self.__search_frame._restart()
+        self.__cluster_frame._restart()
+        
+        # Reinitialize all variables.
+        self.__cluster_status = False
+        self.__canvas_status = False
+        self.__folder_path = ''
+        self.__corpus = []
+        self.__inverted_index = None
+        
+        # Set progress bar value to 0.
+        self._set_progress_value(0)
+    
+    def _set_progress_value(self, value):
+        """
+        The method to set the progress bar value.
+
+        Parameters
+        ----------
+        value : int
+            The progress bar value.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.__progress_frame._update_progress_bar(value)
+    
+    def _update_inverted_index(self, extended_corpus):
+        """
+        The method to update the inverted index.
+
+        Parameters
+        ----------
+        extended_corpus : list
+            The new added documents list.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.__search_frame._update_inverted_index(self.__inverted_index, extended_corpus)

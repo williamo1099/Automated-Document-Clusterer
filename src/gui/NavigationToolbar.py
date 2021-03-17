@@ -5,7 +5,6 @@ from gui.ToolTip import ToolTip
 import os
 import shutil
 import tkinter as tk
-from tkinter import filedialog
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
 class NavigationToolbar(NavigationToolbar2Tk):
@@ -28,30 +27,29 @@ class NavigationToolbar(NavigationToolbar2Tk):
         None.
 
         """
-        self.gui = gui
-        self.clusterer = clusterer
-        
-        NavigationToolbar2Tk.__init__(self, figure_canvas, self.gui.get_window())
+        self.__gui = gui
+        self.__clusterer = clusterer
+        NavigationToolbar2Tk.__init__(self, figure_canvas, self.__gui.window)
         
         # Initialize the cut button.
-        self.cut_icon = tk.PhotoImage(file='resources/Icons/cut.png', width=25, height=25)
-        self.cut_button = tk.Button(master=self, image=self.cut_icon, command=self.cut_dendrogram)
-        self.cut_button.pack(side='left')
-        ToolTip(self.cut_button, 'Cut the dendrogram')
+        self.__cut_icon = tk.PhotoImage(file='resources/Icons/cut.png', width=25, height=25)
+        self.__cut_button = tk.Button(master=self, image=self.__cut_icon, command=self.__cut_dendrogram)
+        self.__cut_button.pack(side='left')
+        ToolTip(self.__cut_button, 'Cut the dendrogram')
         
         # Initialize the organize button.
-        self.organize_icon = tk.PhotoImage(file='resources/Icons/organize.png', width=25, height=25)
-        self.organize_button = tk.Button(master=self, image=self.organize_icon, command=self.organize_documents)
-        self.organize_button.pack(side='left')
-        ToolTip(self.organize_button, 'Organize all documents')
+        self.__organize_icon = tk.PhotoImage(file='resources/Icons/organize.png', width=25, height=25)
+        self.__organize_button = tk.Button(master=self, image=self.__organize_icon, command=self.__organize_documents)
+        self.__organize_button.pack(side='left')
+        ToolTip(self.__organize_button, 'Organize all documents')
         
         # Initialize the evaluate button.
-        self.evaluate_icon = tk.PhotoImage(file='resources/Icons/evaluate.png', width=25, height=25)
-        self.evaluate_button = tk.Button(master=self, image=self.evaluate_icon, command=self.evaluate_result)
-        self.evaluate_button.pack(side='left')
-        ToolTip(self.evaluate_button, 'Evaluate clustering result')
+        self.__evaluate_icon = tk.PhotoImage(file='resources/Icons/evaluate.png', width=25, height=25)
+        self.__evaluate_button = tk.Button(master=self, image=self.__evaluate_icon, command=self.__evaluate_result)
+        self.__evaluate_button.pack(side='left')
+        ToolTip(self.__evaluate_button, 'Evaluate clustering result')
         
-    def cut_dendrogram(self):
+    def __cut_dendrogram(self):
         """
         The method to set the cut status to true, indicating it is ready to cut the dendrogram.
 
@@ -60,9 +58,9 @@ class NavigationToolbar(NavigationToolbar2Tk):
         None.
 
         """
-        self.gui.set_cut_status(not self.gui.get_cut_status())
+        self.__gui.cut_status = (not self.__gui.cut_status)
         
-    def organize_documents(self):
+    def __organize_documents(self):
         """
         The method to organize documents into folders based on documents' clusters.
         Currently this feature is only compatible with Windows file system.
@@ -73,11 +71,11 @@ class NavigationToolbar(NavigationToolbar2Tk):
 
         """
         # Get cluster list.
-        cluster_list = self.clusterer.extract_clusters(sorted(list(self.gui.get_inverted_index().keys()), key=str.lower), self.gui.get_autorenaming_option().get())
+        cluster_list = self.__clusterer.extract_clusters(sorted(list(self.__gui.inverted_index.keys()), key=str.lower), self.__gui.autorenaming_option.get())
         
         # Create a new folder organized.
         folder = 'organized'
-        organized_folder = os.path.join(self.gui.get_folder_path(), folder)
+        organized_folder = os.path.join(self.__gui.folder_path, folder)
         if not os.path.exists(organized_folder):
             os.mkdir(organized_folder)
             
@@ -87,9 +85,8 @@ class NavigationToolbar(NavigationToolbar2Tk):
             ci_folder = os.path.join(organized_folder, cluster)
             os.mkdir(ci_folder)
             for item in doc:
-                
                 # Copy and move the document into the cluster folder.
-                source = os.path.join(self.gui.get_folder_path(), item + '.txt')
+                source = os.path.join(self.__gui.folder_path, item + '.txt')
                 shutil.copyfile(source, ci_folder + '/' + item + '.txt')
         else:
             # If the organized folder exists, a warning popup will show up.
@@ -97,10 +94,10 @@ class NavigationToolbar(NavigationToolbar2Tk):
                                   'Folder exists.')
             popup.show_popup()
     
-    def evaluate_result(self):
+    def __evaluate_result(self):
         """
         The method to evaluate cluster result.
-        Evaluation done is internal evaluation (using cophenetic correlation coefficient) and external evaluation (using F-score).
+        Evaluation done is internal evaluation (using cophenetic correlation coefficient).
 
         Returns
         -------
@@ -108,7 +105,7 @@ class NavigationToolbar(NavigationToolbar2Tk):
 
         """
         # Evaluate internally using cophenetic correlation coefficient.
-        cpcc = self.clusterer.calc_cophenetic_coeff()
+        cpcc = self.__clusterer.calc_cophenetic_coeff()
         
         # Show evaluation through a popup window.
         popup = WarningPopup('Clustering evaluation',

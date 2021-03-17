@@ -24,25 +24,25 @@ class SearchFrame:
         None.
 
         """
-        self.gui = gui
+        self.__gui = gui
         
         # Initialize the search frame in window.
-        search_frame = tk.Frame(master=self.gui.get_window())
-        search_frame.pack(side='top', fill='x')
-        search_frame.configure(background='white')
+        frame = tk.Frame(master=self.__gui.window)
+        frame.pack(side='top', fill='x')
+        frame.configure(background='white')
         
         # Initialize the folder entry in the frame.
-        self.folder_entry = tk.Entry(master=self.gui.get_window(), width=int((750 * 0.8) / 6))
-        self.folder_entry.pack(in_=search_frame, side='left', padx=2, pady=2)
-        self.folder_entry.configure(state='disabled', background='white')
+        self.__folder_entry = tk.Entry(master=self.__gui.window, width=int((750 * 0.8) / 6))
+        self.__folder_entry.pack(in_=frame, side='left', padx=2, pady=2)
+        self.__folder_entry.configure(state='disabled', background='white')
         
         # Initialize the select button in the frame.
-        self.select_button = tk.Button(master=self.gui.get_window(), text='Select folder', command=self.select_folder, width=int((750 * 0.2) / 6))
-        self.select_button.pack(in_=search_frame, side='right', padx=2, pady=2)
-        self.select_button.configure(background='white')
-        ToolTip(self.select_button, 'Select folder path containing the documents')
+        self.__select_button = tk.Button(master=self.__gui.window, text='Select folder', command=self.__select_folder, width=int((750 * 0.2) / 6))
+        self.__select_button.pack(in_=frame, side='right', padx=2, pady=2)
+        self.__select_button.configure(background='white')
+        ToolTip(self.__select_button, 'Select folder path containing the documents')
     
-    def restart(self):
+    def _restart(self):
         """
         The method to restore the frame's conditions to original.
 
@@ -51,9 +51,9 @@ class SearchFrame:
         None.
 
         """
-        self.set_folder_entry('')
+        self._set_folder_entry('')
     
-    def set_folder_entry(self, folder_path):
+    def _set_folder_entry(self, folder_path):
         """
         The method to change folder path shown in folder entry.
 
@@ -67,12 +67,12 @@ class SearchFrame:
         None.
 
         """
-        self.folder_entry.configure(state='normal')
-        self.folder_entry.delete(0, 'end')
-        self.folder_entry.insert(0, folder_path)
-        self.folder_entry.configure(state='disabled')
+        self.__folder_entry.configure(state='normal')
+        self.__folder_entry.delete(0, 'end')
+        self.__folder_entry.insert(0, folder_path)
+        self.__folder_entry.configure(state='disabled')
     
-    def select_folder(self):
+    def __select_folder(self):
         """
         The method to select a folder containing documents to be clustered.
 
@@ -82,8 +82,7 @@ class SearchFrame:
 
         """
         folder_path = filedialog.askdirectory()
-        self.set_folder_entry(folder_path)
-        self.gui.set_folder_path(folder_path)
+        self.__gui.folder_path = folder_path
         
         # Retrieve all .txt files in folder.
         doc_titles = []
@@ -103,68 +102,13 @@ class SearchFrame:
             doc_content = open(doc_titles[i], 'r', encoding='utf-8').read().replace('\n', '')
             doc_i = Document(doc_id, doc_title, doc_content)
             corpus.append(doc_i)
-        self.gui.set_corpus(corpus)
+        self.__gui.corpus = corpus
         
         # Build the inverted index.
-        indexing_thread = threading.Thread(target=self.build_inverted_index, name='indexing_thread')
+        indexing_thread = threading.Thread(target=self.__build_inverted_index, name='indexing_thread')
         indexing_thread.start()
     
-    def build_inverted_index(self):
-        """
-        The method to build an inverted index.
-
-        Returns
-        -------
-        dictionary
-            The inverted index.
-
-        """
-        # Start progress bar, with value equals to 0.
-        self.gui.set_progress_value(0)
-        
-        stopwords_removal = self.gui.get_preprocessor_option()[0].get()
-        stemming = self.gui.get_preprocessor_option()[1].get()
-        case_folding = self.gui.get_preprocessor_option()[2].get()
-        normalization = self.gui.get_preprocessor_option()[3].get()
-        self.gui.set_progress_value(5)
-        
-        # Set progress value for each documents for indexing process.
-        current_progress_value = 5
-        incr = (int) ((50 - 5) / len(self.gui.get_corpus()))
-        
-        indexer = Indexer()
-        for doc in self.gui.get_corpus():
-            # Set current progress value.
-            current_progress_value += incr
-            self.gui.set_progress_value(current_progress_value)
-            indexer.index(doc, stopwords_removal, stemming, case_folding, normalization)
-        inverted_index = indexer.get_inverted_index()
-        self.gui.set_inverted_index(inverted_index)
-        
-        # Set progress bar value to 50.
-        self.gui.set_progress_value(50)
-        
-        # Set progress value for each documents for vectorizing process.
-        incr = (int) ((95 - 50) / len(self.gui.get_corpus()))
-        for doc in self.gui.get_corpus():
-            # Set current progress value.
-            current_progress_value += incr
-            self.gui.set_progress_value(current_progress_value)
-            
-            index = sorted(list(inverted_index.keys()), key=str.lower)
-            corpus_size = len(self.gui.get_corpus())
-            doc.set_vector(inverted_index, index, corpus_size)
-        
-        # Set progress bar value to 95.
-        self.gui.set_progress_value(95)
-        
-        # Set the status to true, indicating that it is ready  for clustering.
-        self.gui.set_cluster_status(True)
-        
-        # Set progress bar value to 100, indicating the process has finished.
-        self.gui.set_progress_value(100)
-    
-    def update_inverted_index(self, extended_corpus):
+    def _update_inverted_index(self, inverted_index, extended_corpus):
         """
         The method to update the inverted index.
 
@@ -178,46 +122,52 @@ class SearchFrame:
         None.
 
         """
+        self.__build_inverted_index(inverted_index, extended_corpus)
+    
+    def __build_inverted_index(self, inverted_index=None, extended_corpus=None):
+        """
+        The method to build an inverted index.
+        
+        Parameters
+        ----------
+        inverted_index : dictionary, optional
+            The current inverted index (for updating). The default is None.
+        extended_corpus : list, optional
+            The list of new documents (for updating). The default is None.
+
+        Returns
+        -------
+        dictionary
+            The inverted index.
+
+        """
         # Start progress bar, with value equals to 0.
-        self.gui.set_progress_value(0)
+        self.__gui._set_progress_value(0)
         
-        stopwords_removal = self.gui.get_preprocessor_option()[0].get()
-        stemming = self.gui.get_preprocessor_option()[1].get()
-        case_folding = self.gui.get_preprocessor_option()[2].get()
-        normalization = self.gui.get_preprocessor_option()[3].get()
+        stopwords_removal_option = self.__gui.preprocessor_option[0].get()
+        stemming_option = self.__gui.preprocessor_option[1].get()
+        case_folding_option = self.__gui.preprocessor_option[2].get()
+        normalization_option = self.__gui.preprocessor_option[3].get()
+        self.__gui._set_progress_value(5)
         
-        # Set progress value for each documents for indexing process.
-        current_progress_value = 5
-        incr = (int) ((50 - 5) / len(self.gui.get_corpus()))
+        indexer = Indexer(inverted_index)
+        for doc in (self.__gui.corpus if extended_corpus is None else extended_corpus):
+            indexer.index(doc, stopwords_removal_option, stemming_option, case_folding_option, normalization_option)
+        inverted_index = indexer.inverted_index
+        self.__gui.inverted_index = inverted_index
         
-        # Update the inverted index.
-        indexer = Indexer(self.gui.get_inverted_index())
-        for doc in extended_corpus:
-            # Set current progress value.
-            current_progress_value += incr
-            self.gui.set_progress_value(current_progress_value)
-            indexer.index(doc, stopwords_removal, stemming, case_folding, normalization)
-        inverted_index = indexer.get_inverted_index()
-        self.gui.set_inverted_index(inverted_index)
+        # Set progress bar value to 50.
+        self.__gui._set_progress_value(50)
         
         # Set progress value for each documents for vectorizing process.
-        incr = (int) ((95 - 50) / len(self.gui.get_corpus()))
-        
-        # Update the vector.
-        for doc in self.gui.get_corpus():
-            # Set current progress value.
-            current_progress_value += incr
-            self.gui.set_progress_value(current_progress_value)
-            
+        for doc in self.__gui.corpus:
             index = sorted(list(inverted_index.keys()), key=str.lower)
-            corpus_size = len(self.gui.get_corpus())
-            doc.set_vector(inverted_index, index, corpus_size)
-            
+            corpus_size = len(self.__gui.corpus)
+            doc.build_vector(inverted_index, index, corpus_size)
+        
         # Set progress bar value to 95.
-        self.gui.set_progress_value(95)
+        self.__gui._set_progress_value(95)
         
-        # Set the status to true, indicating that it is ready for clustering.
-        self.gui.set_cluster_status(True)
-        
-        # Set progress bar value to 100, indicating the process has finished.
-        self.gui.set_progress_value(100)
+        # Set the status to true, indicating that it is ready for clustering, and set progress bar value to 100, indicating the process has finished.
+        self.__gui.cluster_status = True
+        self.__gui._set_progress_value(100)

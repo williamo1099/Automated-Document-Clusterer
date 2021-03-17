@@ -18,18 +18,18 @@ class ProgressFrame:
         None.
 
         """
-        self.gui = gui
+        self.__gui = gui
         
         # Initialize the progress frame in window.
-        progress_frame = tk.Frame(master=self.gui.get_window())
-        progress_frame.pack(side='bottom', fill='x')
-        progress_frame.configure(background='white')
+        frame = tk.Frame(master=self.__gui.window)
+        frame.pack(side='bottom', fill='x')
+        frame.configure(background='white')
         
         # Initialize the progress bar in the frame.
-        self.progress_bar = ttk.Progressbar(master=self.gui.get_window(), orient='horizontal')
-        self.progress_bar.pack(in_=progress_frame, fill='x', padx=2, pady=2)
+        self.__progress_bar = ttk.Progressbar(master=self.__gui.window, orient='horizontal')
+        self.__progress_bar.pack(in_=frame, fill='x', padx=2, pady=2)
         
-    def update_progress_bar(self, value):
+    def _update_progress_bar(self, value):
         """
         The method to update the progress bar value.
 
@@ -44,4 +44,4 @@ class ProgressFrame:
 
         """
         if value >= 0 & value <= 100:
-            self.progress_bar['value'] = value
+            self.__progress_bar['value'] = value
