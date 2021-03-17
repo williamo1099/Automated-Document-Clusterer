@@ -41,7 +41,7 @@ class gui:
         self.__autorenaming_option = tk.BooleanVar()
         
         # Initialize the menu bar and frames.
-        self.__menu_bar = MenuBar(self, self.preprocessor_option, self.autorenaming_option)
+        self.__menu_bar = MenuBar(self)
         self.__search_frame = SearchFrame(self)
         self.__cluster_frame = ClusterFrame(self)
         self.__progress_frame = ProgressFrame(self)

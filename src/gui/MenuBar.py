@@ -12,7 +12,7 @@ from tkinter import filedialog
 
 class MenuBar:
     
-    def __init__(self, gui, preprocessor_option, autorenaming_option):
+    def __init__(self, gui):
         """
         The constructor for MenuBar class.
 
@@ -20,10 +20,6 @@ class MenuBar:
         ----------
         gui : gui
             The main gui.
-        preprocessor_option : list
-            The preprocessor option which is consisting of stop words removal option, stemming option, case folding option and normalization option.
-        autorenaming_option : BooleanVar
-            The autorenaming option.
 
         Returns
         -------
@@ -48,17 +44,17 @@ class MenuBar:
         file_menu.add_command(label='Exit', command=self.__gui.window.destroy)
         
         # Initialize the option menu in menu bar.
-        for preprocessor_item in preprocessor_option:
+        for preprocessor_item in self.__gui.preprocessor_option:
             preprocessor_item.set(True)
         option_menu = tk.Menu(menu, tearoff=False)
         menu.add_cascade(label='Option', menu=option_menu)
-        option_menu.add_checkbutton(label='Stop words removal', onvalue=1, offvalue=0, variable=preprocessor_option[0])
-        option_menu.add_checkbutton(label='Stemming', onvalue=1, offvalue=0, variable=preprocessor_option[1])
-        option_menu.add_checkbutton(label='Case folding', onvalue=1, offvalue=0, variable=preprocessor_option[2])
-        option_menu.add_checkbutton(label='Normalization', onvalue=1, offvalue=0, variable=preprocessor_option[3])
+        option_menu.add_checkbutton(label='Stop words removal', onvalue=1, offvalue=0, variable=self.__gui.preprocessor_option[0])
+        option_menu.add_checkbutton(label='Stemming', onvalue=1, offvalue=0, variable=self.__gui.preprocessor_option[1])
+        option_menu.add_checkbutton(label='Case folding', onvalue=1, offvalue=0, variable=self.__gui.preprocessor_option[2])
+        option_menu.add_checkbutton(label='Normalization', onvalue=1, offvalue=0, variable=self.__gui.preprocessor_option[3])
         option_menu.add_separator()
-        autorenaming_option.set(True)
-        option_menu.add_checkbutton(label='Auto-renamed clusters', onvalue=1, offvalue=0, variable=autorenaming_option)
+        self.__gui.autorenaming_option.set(True)
+        option_menu.add_checkbutton(label='Auto-renamed clusters', onvalue=1, offvalue=0, variable=self.__gui.autorenaming_option)
         
         # Initialize the help menu in menu bar.
         help_menu = tk.Menu(menu, tearoff=False)
