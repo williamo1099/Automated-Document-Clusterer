@@ -101,7 +101,7 @@ class MenuBar:
         else:
             popup = WarningPopup('Saving an index',
                                  'There is no index to be saved!')
-            popup.show_popup()
+            popup._show_popup()
             
     def __load_index(self):
         """
@@ -129,11 +129,11 @@ class MenuBar:
                 self.__gui.cluster_status = True
                 popup = WarningPopup('Loading an index',
                                  'An index is successfully loaded!')
-                popup.show_popup()
+                popup._show_popup()
         except EnvironmentError:
             popup = WarningPopup('Loading an index',
                                  'There is no index to be loaded!')
-            popup.show_popup()
+            popup._show_popup()
     
     def __update_index(self):
         """
@@ -160,7 +160,7 @@ class MenuBar:
             if len(difference) == 0:
                 popup = WarningPopup('Updating an index',
                                      'The index is currently up to date!')
-                popup.show_popup()
+                popup._show_popup()
             else:
                 extended_corpus = []
                 for i in range(len(self.__gui.corpus), len(self.__gui.corpus) + len(difference)):
@@ -177,7 +177,7 @@ class MenuBar:
         except EnvironmentError:
             popup = WarningPopup('Updating an index',
                                  'The file path of the saved index does not exist!')
-            popup.show_popup()
+            popup._show_popup()
     
     def __documentation(self):
         """

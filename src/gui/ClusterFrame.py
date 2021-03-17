@@ -12,7 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class ClusterFrame:
     
-    def __init__(self, gui):
+    def __init__(self, gui, method_list):
         """
         The constructor for ClusterFrame class.
 
@@ -20,6 +20,8 @@ class ClusterFrame:
         ----------
         gui : gui
             The main gui.
+        method_list : list
+            The list of all available methods.
 
         Returns
         -------
@@ -34,7 +36,7 @@ class ClusterFrame:
         frame.configure(background='white')
         
         # Initialize the method combobox in the frame.
-        self.__method_list = ['single', 'complete', 'average']
+        self.__method_list = method_list
         self.__method_combobox = ttk.Combobox(master=self.__gui.window, values=self.__method_list)
         self.__method_combobox.current(0)
         self.__method_combobox.pack(in_=frame, side='left', padx=2, pady=2)
@@ -108,7 +110,7 @@ class ClusterFrame:
         else:
             popup = WarningPopup('Clustering process',
                                  'There are no documents to be clustered.')
-            popup.show_popup()
+            popup._show_popup()
     
     def __do_clustering(self, cut_off=0):
         """

@@ -51,7 +51,7 @@ class NavigationToolbar(NavigationToolbar2Tk):
         
     def __cut_dendrogram(self):
         """
-        The method to set the cut status to true, indicating it is ready to cut the dendrogram.
+        The method to set the cut status to true, indicating it is ready to cut the dendrogram, or false.
 
         Returns
         -------
@@ -79,20 +79,20 @@ class NavigationToolbar(NavigationToolbar2Tk):
         if not os.path.exists(organized_folder):
             os.mkdir(organized_folder)
             
-        # For each label, put all documents together in the same folder.
-        for cluster, doc in cluster_list.items():
-            # Create a new folder for current cluster.
-            ci_folder = os.path.join(organized_folder, cluster)
-            os.mkdir(ci_folder)
-            for item in doc:
-                # Copy and move the document into the cluster folder.
-                source = os.path.join(self.__gui.folder_path, item + '.txt')
-                shutil.copyfile(source, ci_folder + '/' + item + '.txt')
+            # For each label, put all documents together in the same folder.
+            for cluster, doc in cluster_list.items():
+                # Create a new folder for current cluster.
+                ci_folder = os.path.join(organized_folder, cluster)
+                os.mkdir(ci_folder)
+                for item in doc:
+                    # Copy and move the document into the cluster folder.
+                    source = os.path.join(self.__gui.folder_path, item + '.txt')
+                    shutil.copyfile(source, ci_folder + '/' + item + '.txt')
         else:
             # If the organized folder exists, a warning popup will show up.
             popup = WarningPopup('Organizing files',
                                   'Folder exists.')
-            popup.show_popup()
+            popup._show_popup()
     
     def __evaluate_result(self):
         """
@@ -110,4 +110,4 @@ class NavigationToolbar(NavigationToolbar2Tk):
         # Show evaluation through a popup window.
         popup = WarningPopup('Clustering evaluation',
                               'Cophenetic correlation coefficient : ' + str(cpcc))
-        popup.show_popup()
+        popup._show_popup()

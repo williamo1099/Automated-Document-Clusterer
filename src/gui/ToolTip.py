@@ -20,11 +20,11 @@ class ToolTip:
 
         """
         self.widget = widget
-        self.widget.bind('<Enter>', self.enter)
-        self.widget.bind('<Leave>', self.close)
+        self.widget.bind('<Enter>', self.__enter)
+        self.widget.bind('<Leave>', self.__close)
         self.tip = tip
         
-    def enter(self, event=None):
+    def __enter(self, event=None):
         """
         The method to show a tooltip when a mouse is hovering the object.
 
@@ -49,7 +49,7 @@ class ToolTip:
         label = tk.Label(self.tool_tip, text=self.tip, borderwidth=1, relief='solid')
         label.pack(ipadx=5)
         
-    def close(self, event=None):
+    def __close(self, event=None):
         """
         The method to hide a tooltip.
 

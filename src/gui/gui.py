@@ -43,7 +43,7 @@ class gui:
         # Initialize the menu bar and frames.
         self.__menu_bar = MenuBar(self)
         self.__search_frame = SearchFrame(self)
-        self.__cluster_frame = ClusterFrame(self)
+        self.__cluster_frame = ClusterFrame(self, ['single', 'complete', 'average'])
         self.__progress_frame = ProgressFrame(self)
     
     @property

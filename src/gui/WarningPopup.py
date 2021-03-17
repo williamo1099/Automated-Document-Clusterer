@@ -19,10 +19,10 @@ class WarningPopup:
         None.
 
         """
-        self.popup_title = popup_title
-        self.warning_message = warning_message
+        self.__popup_title = popup_title
+        self.__warning_message = warning_message
         
-    def show_popup(self):
+    def _show_popup(self):
         """
         The method to show popup warning.
         
@@ -32,13 +32,15 @@ class WarningPopup:
 
         """
         warning_popup = tk.Tk()
-        warning_popup.wm_title(self.popup_title)
+        warning_popup.wm_title(self.__popup_title)
         label = tk.Label(warning_popup,
-                         text=self.warning_message)
+                         text=self.__warning_message)
         label.pack(side='top',
                    fill='x',
                    pady=10,
                    padx=5)
+        
+        # Initialize the OK button.
         ok_button = tk.Button(warning_popup,
                               text='Ok',
                               command=warning_popup.destroy)
