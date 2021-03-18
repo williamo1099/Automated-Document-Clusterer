@@ -1,5 +1,5 @@
 
-from gui.WarningPopup import WarningPopup
+from gui.window.WarningPopup import WarningPopup
 from gui.ToolTip import ToolTip
 
 import os
@@ -90,9 +90,9 @@ class NavigationToolbar(NavigationToolbar2Tk):
                     shutil.copyfile(source, ci_folder + '/' + item + '.txt')
         else:
             # If the organized folder exists, a warning popup will show up.
-            popup = WarningPopup('Organizing files',
+            popup = WarningPopup(self.__gui, 'Organizing files',
                                   'Folder exists.')
-            popup._show_popup()
+            popup._start()
     
     def __evaluate_result(self):
         """
@@ -108,6 +108,6 @@ class NavigationToolbar(NavigationToolbar2Tk):
         cpcc = self.__clusterer.calc_cophenetic_coeff()
         
         # Show evaluation through a popup window.
-        popup = WarningPopup('Clustering evaluation',
+        popup = WarningPopup(self.__gui, 'Clustering evaluation',
                               'Cophenetic correlation coefficient : ' + str(cpcc))
-        popup._show_popup()
+        popup._start()

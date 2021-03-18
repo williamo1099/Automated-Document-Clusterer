@@ -1,8 +1,8 @@
 
 from gui.MenuBar import MenuBar
-from gui.SearchFrame import SearchFrame
-from gui.ClusterFrame import ClusterFrame
-from gui.ProgressFrame import ProgressFrame
+from gui.frame.SearchFrame import SearchFrame
+from gui.frame.ClusterFrame import ClusterFrame
+from gui.frame.ProgressFrame import ProgressFrame
 
 import tkinter as tk
 
@@ -76,7 +76,7 @@ class gui:
     @cluster_status.setter
     def cluster_status(self, cluster_status):
         """
-        THe method to set the cluster status.
+        The method to set the cluster status.
         
         Parameters
         ----------

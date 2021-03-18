@@ -1,7 +1,7 @@
 
 from retrieval.Document import Document
 from gui.window.AboutWindow import AboutWindow
-from gui.WarningPopup import WarningPopup
+from gui.window.WarningPopup import WarningPopup
 
 import os
 import threading
@@ -99,9 +99,9 @@ class MenuBar:
             with open(index_path, 'wb') as handle:
                 pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
-            popup = WarningPopup('Saving an index',
+            popup = WarningPopup(self.__gui, 'Saving an index',
                                  'There is no index to be saved!')
-            popup._show_popup()
+            popup._start()
             
     def __load_index(self):
         """
@@ -127,13 +127,13 @@ class MenuBar:
                 
                 # Set the cluster status to True, indicating clustering process is ready to do.
                 self.__gui.cluster_status = True
-                popup = WarningPopup('Loading an index',
+                popup = WarningPopup(self.__gui, 'Loading an index',
                                  'An index is successfully loaded!')
-                popup._show_popup()
+                popup._start()
         except EnvironmentError:
-            popup = WarningPopup('Loading an index',
+            popup = WarningPopup(self.__gui, 'Loading an index',
                                  'There is no index to be loaded!')
-            popup._show_popup()
+            popup._start()
     
     def __update_index(self):
         """
@@ -158,9 +158,9 @@ class MenuBar:
             
             # Check if there is a difference between two document lists.
             if len(difference) == 0:
-                popup = WarningPopup('Updating an index',
+                popup = WarningPopup(self.__gui, 'Updating an index',
                                      'The index is currently up to date!')
-                popup._show_popup()
+                popup._start()
             else:
                 extended_corpus = []
                 for i in range(len(self.__gui.corpus), len(self.__gui.corpus) + len(difference)):
@@ -175,9 +175,9 @@ class MenuBar:
                 updating_thread = threading.Thread(target=self.__gui._update_inverted_index, args=(extended_corpus,), name='updating_thread')
                 updating_thread.start()
         except EnvironmentError:
-            popup = WarningPopup('Updating an index',
+            popup = WarningPopup(self.__gui, 'Updating an index',
                                  'The file path of the saved index does not exist!')
-            popup._show_popup()
+            popup._start()
     
     def __documentation(self):
         """

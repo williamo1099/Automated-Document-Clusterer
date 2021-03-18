@@ -1,8 +1,8 @@
 
 from clustering.Clusterer import Clusterer
-from gui.NavigationToolbar import NavigationToolbar
+from gui.frame.NavigationToolbar import NavigationToolbar
 from gui.window.FigureWindow import FigureWindow
-from gui.WarningPopup import WarningPopup
+from gui.window.WarningPopup import WarningPopup
 from gui.ToolTip import ToolTip
 
 import threading
@@ -108,9 +108,9 @@ class ClusterFrame:
             # Draw figure on canvas.
             self.__draw_on_canvas()
         else:
-            popup = WarningPopup('Clustering process',
+            popup = WarningPopup(self.__gui, 'Clustering process',
                                  'There are no documents to be clustered.')
-            popup._show_popup()
+            popup._start()
     
     def __do_clustering(self, cut_off=0):
         """

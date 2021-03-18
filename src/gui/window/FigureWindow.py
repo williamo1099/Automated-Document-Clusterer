@@ -1,5 +1,5 @@
 
-from gui.NavigationToolbar import NavigationToolbar
+from gui.frame.NavigationToolbar import NavigationToolbar
 
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
