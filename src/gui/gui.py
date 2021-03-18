@@ -1,5 +1,5 @@
 
-from gui.MenuBar import MenuBar
+from gui.frame.MenuBar import MenuBar
 from gui.frame.SearchFrame import SearchFrame
 from gui.frame.ClusterFrame import ClusterFrame
 from gui.frame.ProgressFrame import ProgressFrame
