@@ -40,7 +40,7 @@ class FigureWindow:
         
         # Add canvas toolbar.
         self.__figure_toolbar = NavigationToolbar(self.__figure_canvas, self.__gui, clusterer)
-        self.__figure_canvas.get_tk_widget().pack(pady=2)
+        self.__figure_canvas.get_tk_widget().pack()
     
     def _start(self):
         """

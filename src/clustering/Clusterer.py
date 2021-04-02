@@ -62,7 +62,8 @@ class Clusterer:
 
         """
         # Set a 1-D condensed distance matrix.
-        self.__build_distance_matrix()
+        if self.__distance_matrix == []:
+            self.__build_distance_matrix()
             
         # Set the linkage matrix as a result of the agglomerative hierarchical clustering process.
         if self.__linkage is None:
