@@ -108,9 +108,9 @@ class Clusterer:
 
         """
         cluster_list = self.__dendrogram._extract_clusters_by_color()
-        return cluster_list if autorenaming_option is False else self.__autorename_clusters(cluster_list, dictionary)
+        return cluster_list if autorenaming_option is False else self.__autorename_clusters(cluster_list, dictionary, 5)
     
-    def __autorename_clusters(self, cluster_list, dictionary):
+    def __autorename_clusters(self, cluster_list, dictionary, n=1):
         """
         The method to rename all clusters in cluster list based on most frequent terms.
 
@@ -120,6 +120,8 @@ class Clusterer:
             The cluster result list which clusters are not named.
         dictionary : list
             The list of sorted terms.
+        n : init
+            The n-most common terms.
 
         Returns
         -------
@@ -152,8 +154,8 @@ class Clusterer:
             
             # Sort common words.
             if (len(common_words) > 0):
-                sorted_commond_words = sorted(common_words.items())
-                renamed_cluster_list[sorted_commond_words[-1][1]] = cluster_list[cluster]
+                sorted_commond_words = sorted(common_words.items(), reverse=True)[:n]
+                renamed_cluster_list[' '.join([str(elem) for elem in sorted_commond_words])] = cluster_list[cluster]
             else:
                 renamed_cluster_list[cluster] = cluster_list[cluster]
         return renamed_cluster_list
