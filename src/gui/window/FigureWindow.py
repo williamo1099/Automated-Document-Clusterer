@@ -28,12 +28,13 @@ class FigureWindow:
         """
         self.__gui = gui
         
-        # Initialize the figure window.
+        # Initialize the figure window in full screen.
         self.__window = tk.Toplevel(master=self.__gui.window)
         self.__window.title('Figure')
+        self.__window.geometry("{0}x{1}+0+0".format(self.__gui.window.winfo_screenwidth(), self.__gui.window.winfo_screenheight()))
         
         # Draw figure on canvas.
-        self.__figure_canvas = FigureCanvasTkAgg(figure, master=self.window)
+        self.__figure_canvas = FigureCanvasTkAgg(figure, master=self.__window)
         self.__figure_canvas.draw()
         self.__figure_canvas.callbacks.connect('button_press_event', canvas_on_click)
         

@@ -79,9 +79,8 @@ class ClusterFrame:
         if self.__gui.canvas_status is True:
             self.__figure = None
             
-            # Check the corpus size.
-            # If the size is more than 50, the figure is displayed in a separated window.
-            if len(self.__gui.corpus) <= 50:
+            # Check whether the figure is drawn on figure window or not.
+            if not self.__drawn_on_figure_window():
                 self.__figure_canvas.get_tk_widget().destroy()
                 self.__figure_toolbar.destroy()
             else:
@@ -139,7 +138,7 @@ class ClusterFrame:
         # Calculate proper figure size based on corpus size.
         figsize = [10, 5]
         orientation = 'right'
-        if len(self.__gui.corpus) > 50:
+        if self.__drawn_on_figure_window():
             figsize = [20, 20]
             orientation = 'top'
         self.__figure = self.__clusterer.plot_dendrogram(cut_off, figsize, orientation)
@@ -164,7 +163,10 @@ class ClusterFrame:
             def _canvas_on_click(event):
                 # Check whether cut status is True or not.
                 if event.inaxes is not None and self.__gui.cut_status is True:
-                    cut_off = event.xdata
+                    if not self.__drawn_on_figure_window():
+                        cut_off = event.xdata
+                    else:
+                        cut_off = event.ydata
                     self.__reset_canvas()
                     
                     # Start clustering.
@@ -174,9 +176,8 @@ class ClusterFrame:
                     # Draw figure on canvas.
                     self.__draw_on_canvas()
             
-            # Check the corpus size.
-            # If the size is more than 50, the figure will be displayed in a separated window.
-            if len(self.__gui.corpus) <= 50:
+            # Check whether the figure is drawn on figure window or not.
+            if not self.__drawn_on_figure_window():
                 # Draw figure on canvas.
                 self.__figure_canvas = FigureCanvasTkAgg(self.__figure, master=self.__gui.window)
                 self.__figure_canvas.draw()
@@ -196,3 +197,15 @@ class ClusterFrame:
                 self.__figure_window._start()
         else:
             self.__gui.window.after(500, self.__draw_on_canvas)
+        
+    def __drawn_on_figure_window(self):
+        """
+        The method to check whether the figure is drawn on figure window or not.
+
+        Returns
+        -------
+        Boolean
+            True if the figure is drawn on figure window.
+
+        """
+        return len(self.__gui.corpus) > 40

@@ -34,8 +34,11 @@ class Dendrogram:
                     labels=labels)
         
         # Cut the dendrogram at cut-off height.
-        # If the cut-off height equals to 0, there will be no cut-off line.
-        plt.axvline(x=cut_off, linestyle='dashed')
+        # Check whether the figure is shown horizontally or vertically.
+        if figsize == (10, 5):
+            plt.axvline(x=cut_off, linestyle='dashed')
+        else:
+            plt.axhline(y=cut_off, linestyle='dashed')
         return fig
     
     def _extract_clusters_by_color(self):
