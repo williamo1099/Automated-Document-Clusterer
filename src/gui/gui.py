@@ -294,6 +294,7 @@ class gui:
         # Restart all frames contained in window.
         self.__search_frame._restart()
         self.__cluster_frame._restart()
+        self.__progress_frame._restart()
         
         # Reinitialize all variables.
         self.__cluster_status = False
@@ -320,6 +321,22 @@ class gui:
 
         """
         self.__progress_frame._update_progress_bar(value)
+    
+    def _set_progress_label(self, second):
+        """
+        The method to set the progress label text.
+
+        Parameters
+        ----------
+        second : float
+            The time shown on progress label.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.__progress_frame._update_progress_label(second)
     
     def _update_inverted_index(self, extended_corpus):
         """

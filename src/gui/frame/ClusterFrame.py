@@ -6,6 +6,7 @@ from gui.window.WarningPopup import WarningPopup
 from gui.ToolTip import ToolTip
 
 import threading
+from datetime import datetime
 import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -125,6 +126,9 @@ class ClusterFrame:
         None.
 
         """
+        # Start the timer.
+        start_time = datetime.now()
+        
         # Start progress bar, with value equals to 0.
         self.__gui._set_progress_value(0)
         self.__clusterer = Clusterer(self.__gui.corpus)
@@ -136,13 +140,16 @@ class ClusterFrame:
         
         # Set the figure get from clustering process.
         # Calculate proper figure size based on corpus size.
-        figsize = [10, 5]
+        figsize = (10, 5)
         orientation = 'right'
         if self.__drawn_on_figure_window():
-            figsize = [20, 20]
+            figsize = (20, 20)
             orientation = 'top'
         self.__figure = self.__clusterer.plot_dendrogram(cut_off, figsize, orientation)
         self.__gui._set_progress_value(100)
+        
+        # Set progress label text.
+        self.__gui._set_progress_label((datetime.now() - start_time).total_seconds())
     
     def __draw_on_canvas(self):
         """
@@ -204,7 +211,7 @@ class ClusterFrame:
 
         Returns
         -------
-        Boolean
+        boolean
             True if the figure is drawn on figure window.
 
         """

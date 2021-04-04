@@ -32,13 +32,13 @@ class SearchFrame:
         frame.configure(background='white')
         
         # Initialize the folder entry in the frame.
-        self.__folder_entry = tk.Entry(master=self.__gui.window, width=int((750 * 0.8) / 6))
-        self.__folder_entry.pack(in_=frame, side='left', padx=2, pady=2)
+        self.__folder_entry = tk.Entry(master=self.__gui.window)
+        self.__folder_entry.pack(in_=frame, side='left', fill='x', expand='yes', padx=2, pady=2)
         self.__folder_entry.configure(state='disabled', background='white')
         
         # Initialize the select button in the frame.
-        self.__select_button = tk.Button(master=self.__gui.window, text='Select folder', command=self.__select_folder, width=int((750 * 0.2) / 6))
-        self.__select_button.pack(in_=frame, side='right', padx=2, pady=2)
+        self.__select_button = tk.Button(master=self.__gui.window, text='Select folder', command=self.__select_folder)
+        self.__select_button.pack(in_=frame, side='right', fill='x', padx=2, pady=2)
         self.__select_button.configure(background='white')
         ToolTip(self.__select_button, 'Select folder path containing the documents')
     
