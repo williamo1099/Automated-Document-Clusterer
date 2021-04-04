@@ -5,6 +5,7 @@ from gui.ToolTip import ToolTip
 
 import os
 import threading
+from datetime import datetime
 import tkinter as tk
 from tkinter import filedialog
 
@@ -141,6 +142,9 @@ class SearchFrame:
             The inverted index.
 
         """
+        # Start the timer.
+        start_time = datetime.now()
+        
         # Start progress bar, with value equals to 0.
         self.__gui._set_progress_value(0)
         
@@ -171,3 +175,6 @@ class SearchFrame:
         # Set the status to true, indicating that it is ready for clustering, and set progress bar value to 100, indicating the process has finished.
         self.__gui.cluster_status = True
         self.__gui._set_progress_value(100)
+        
+        # Set progress label text.
+        self.__gui._set_progress_label((datetime.now() - start_time).total_seconds())
