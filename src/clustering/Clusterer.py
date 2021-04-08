@@ -68,8 +68,7 @@ class Clusterer:
         # Set the linkage matrix as a result of the agglomerative hierarchical clustering process.
         if self.__linkage is None:
             self.__linkage = linkage(self.__distance_matrix,
-                             method=method,
-                             optimal_ordering=True)
+                             method=method)
         self.__dendrogram = Dendrogram()    
     
     def __build_distance_matrix(self):
