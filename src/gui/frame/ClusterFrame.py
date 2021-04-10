@@ -121,7 +121,7 @@ class ClusterFrame:
         cut_off : float, optional
             The height of a cut-off point. The default is 0.
         restart : boolean, optional
-            The status. The default is True.
+            The status indicating whether clustering process uses different method. The default is True.
 
         Returns
         -------
