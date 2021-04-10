@@ -102,7 +102,7 @@ class ClusterFrame:
         # It is true when it is ready to do clustering.
         if self.__gui.cluster_status is True:
             # Start clustering.
-            clustering_thread = threading.Thread(target=self.__do_clustering, args=(0,), name='clustering_thread')
+            clustering_thread = threading.Thread(target=self.__do_clustering, args=(0,True), name='clustering_thread')
             clustering_thread.start()
             
             # Draw figure on canvas.
@@ -112,7 +112,7 @@ class ClusterFrame:
                                  'There are no documents to be clustered.')
             popup._start()
     
-    def __do_clustering(self, cut_off=0):
+    def __do_clustering(self, cut_off=0, restart=True):
         """
         The method to do clustering process.
 
@@ -120,6 +120,8 @@ class ClusterFrame:
         ----------
         cut_off : float, optional
             The height of a cut-off point. The default is 0.
+        restart : boolean, optional
+            The status. The default is True.
 
         Returns
         -------
@@ -131,25 +133,29 @@ class ClusterFrame:
         
         # Start progress bar, with value equals to 0.
         self.__gui._set_progress_value(0)
-        self.__clusterer = Clusterer(self.__gui.corpus)
+        self.__clusterer = Clusterer(self.__gui.corpus) if restart is True else self.__clusterer
         self.__gui._set_progress_value(5)
         
         # Start the clustering process.
-        self.__clusterer.cluster(self.__method_list[self.__method_combobox.current()])
+        if restart is True:
+            self.__clusterer.cluster(self.__method_list[self.__method_combobox.current()])
         self.__gui._set_progress_value(90)
+        
+        # Finish the timer.
+        finish_time = datetime.now() - start_time
         
         # Set the figure get from clustering process.
         # Calculate proper figure size based on corpus size.
         figsize = (10, 5)
         orientation = 'right'
         if self.__drawn_on_figure_window():
-            figsize = (20, 20)
+            figsize = (20, 10)
             orientation = 'top'
         self.__figure = self.__clusterer.plot_dendrogram(cut_off, figsize, orientation)
         self.__gui._set_progress_value(100)
         
         # Set progress label text.
-        self.__gui._set_progress_label((datetime.now() - start_time).total_seconds())
+        self.__gui._set_progress_label(finish_time.total_seconds())
     
     def __draw_on_canvas(self):
         """
@@ -177,7 +183,7 @@ class ClusterFrame:
                     self.__reset_canvas()
                     
                     # Start clustering.
-                    clustering_thread = threading.Thread(target=self.__do_clustering, args=(cut_off,), name='clustering_thread')
+                    clustering_thread = threading.Thread(target=self.__do_clustering, args=(cut_off,False), name='clustering_thread')
                     clustering_thread.start()
                     
                     # Draw figure on canvas.

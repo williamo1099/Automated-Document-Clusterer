@@ -77,5 +77,5 @@ class ProgressFrame:
         None.
 
         """
-        time = round(second, 2)
+        time = round(second, 3)
         self.__progress_label.config(text=str(time) + (' seconds' if time > 0 else ' second'))
