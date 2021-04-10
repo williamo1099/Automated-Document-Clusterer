@@ -36,7 +36,7 @@ class Dendrogram:
         # Cut the dendrogram at cut-off height.
         # Check whether the figure is shown horizontally or vertically.
         if cut_off != 0:
-            if figsize == (10, 5):
+            if orientation == 'right':
                 plt.axvline(x=cut_off, linestyle='dashed')
             else:
                 plt.axhline(y=cut_off, linestyle='dashed')
