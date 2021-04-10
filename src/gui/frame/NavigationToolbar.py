@@ -33,7 +33,7 @@ class NavigationToolbar(NavigationToolbar2Tk):
         
         # Initialize the cut button.
         self.__cut_icon = tk.PhotoImage(file='resources/icon/cut.png', width=25, height=25)
-        self.__cut_button = tk.Button(master=self, image=self.__cut_icon, command=self.__cut_dendrogram)
+        self.__cut_button = tk.Button(master=self, image=self.__cut_icon, command=self.__cut_dendrogram, relief='sunken' if self.__gui.cut_status else 'raised')
         self.__cut_button.pack(side='left')
         ToolTip(self.__cut_button, 'Cut the dendrogram')
         
@@ -59,6 +59,12 @@ class NavigationToolbar(NavigationToolbar2Tk):
 
         """
         self.__gui.cut_status = (not self.__gui.cut_status)
+        
+        # Change the button appearance to indicate if cut status is on or off.
+        if self.__gui.cut_status:
+            self.__cut_button.config(relief='sunken')
+        else:
+            self.__cut_button.config(relief='raised')
         
     def __organize_documents(self):
         """
