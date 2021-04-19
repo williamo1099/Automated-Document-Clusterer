@@ -22,7 +22,7 @@ class AboutWindow:
         self.__gui = gui
         
         # Initialize the about window.
-        self.__window = tk.Toplevel(master=self.__gui.get_window())
+        self.__window = tk.Toplevel(master=self.__gui.window)
         self.__window.title('About')
         self.__window.tk.call('wm', 'iconphoto', self.__window._w, tk.PhotoImage(file='resources/logo25.png'))
         self.__window.geometry('300x300')
