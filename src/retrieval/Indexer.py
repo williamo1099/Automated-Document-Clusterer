@@ -229,21 +229,14 @@ class Indexer:
             dictionary = self.LinguisticPreprocessor._remove_stopwords(token_list)
         
         if stemming_option is True:
-            if dictionary == []:
-                dictionary = self.LinguisticPreprocessor._stem(token_list)
-            dictionary = self.LinguisticPreprocessor._stem(dictionary)
+            dictionary = self.LinguisticPreprocessor._stem(token_list if dictionary == [] else dictionary)
         
         if case_folding_option is True:
-            if dictionary == []:
-                dictionary = self.LinguisticPreprocessor._case_fold(token_list)
-            dictionary = self.LinguisticPreprocessor._case_fold(dictionary)
+            dictionary = self.LinguisticPreprocessor._case_fold(token_list if dictionary == [] else dictionary)
         
         if normalization_option is True:
-            if dictionary == []:
-                dictionary = self.LinguisticPreprocessor._normalize(token_list)
-            dictionary = self.LinguisticPreprocessor._normalize(dictionary)
+            dictionary = self.LinguisticPreprocessor._normalize(token_list if dictionary == [] else dictionary)
         
-        if dictionary != []:
-            return dictionary
-        else:
-            return token_list
+        # Check if dictionary is empty.
+        # If it is not empty, return the dictionary. If it is empty, return token_list instead.
+        return dictionary if dictionary != [] else token_list
