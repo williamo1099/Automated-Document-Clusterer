@@ -91,6 +91,7 @@ class MenuBar:
             metadata = {}
             metadata['folder_path'] = self.__gui.folder_path
             metadata['corpus'] = self.__gui.corpus
+            metadata['preprocessor_option'] = self.__gui.preprocessor_option
             
             # Store index and metadata.
             data = {}
@@ -124,6 +125,7 @@ class MenuBar:
                 metadata = data['metadata']
                 self.__gui.folder_path = metadata['folder_path']
                 self.__gui.corpus = metadata['corpus']
+                self.__gui.preprocessor_option = metadata['preprocessor_option']
                 
                 # Set the cluster status to True, indicating clustering process is ready to do.
                 self.__gui.cluster_status = True
