@@ -258,6 +258,23 @@ class gui:
         """
         return self.__preprocessor_option
     
+    @preprocessor_option.setter
+    def processor_option(self, preprocessor_option):
+        """
+        The method to set the preprocessor option.
+
+        Parameters
+        ----------
+        preprocessor_option : list
+            The preprocessor option.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.__preprocessor_option = preprocessor_option
+    
     @property
     def autorenaming_option(self):
         """
