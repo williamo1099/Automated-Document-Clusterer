@@ -1,6 +1,7 @@
 
 from retrieval.Document import Document
 from retrieval.Indexer import Indexer
+from gui.window.WarningPopup import WarningPopup
 from gui.ToolTip import ToolTip
 
 import os
@@ -83,7 +84,6 @@ class SearchFrame:
 
         """
         folder_path = filedialog.askdirectory()
-        self.__gui.folder_path = folder_path
         
         # Retrieve all .txt files in folder.
         doc_titles = []
@@ -91,23 +91,33 @@ class SearchFrame:
             for file in files:
                 if '.txt' in file:
                     doc_titles.append(os.path.join(root, file))
-        corpus = []
         
-        # Currently it is only compatible with Windows file system.
-        escaped_folder_path = str(folder_path) + '\\'
-        
-        # Retrieve information of each documents.
-        for i in range(0, len(doc_titles)):
-            doc_id = 'doc_' + str(i)
-            doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
-            doc_content = open(doc_titles[i], 'r', encoding='utf-8').read().replace('\n', '')
-            doc_i = Document(doc_id, doc_title, doc_content)
-            corpus.append(doc_i)
-        self.__gui.corpus = corpus
-        
-        # Build the inverted index.
-        indexing_thread = threading.Thread(target=self.__build_inverted_index, name='indexing_thread')
-        indexing_thread.start()
+        # Check whether the number of document files in folder is more than one.
+        # If there is just one file, the indexing process will not be done.
+        if len(doc_titles) > 1:
+            # Set the folder path.
+            self.__gui.folder_path = folder_path
+            corpus = []
+            
+            # Currently it is only compatible with Windows file system.
+            escaped_folder_path = str(folder_path) + '\\'
+            
+            # Retrieve information of each documents.
+            for i in range(0, len(doc_titles)):
+                doc_id = 'doc_' + str(i)
+                doc_title = os.path.splitext(doc_titles[i])[0].replace(escaped_folder_path, '')
+                doc_content = open(doc_titles[i], 'r', encoding='utf-8').read().replace('\n', '')
+                doc_i = Document(doc_id, doc_title, doc_content)
+                corpus.append(doc_i)
+            self.__gui.corpus = corpus
+            
+            # Build the inverted index.
+            indexing_thread = threading.Thread(target=self.__build_inverted_index, name='indexing_thread')
+            indexing_thread.start()
+        else:
+            popup = WarningPopup(self.__gui, 'Indexing process',
+                                 'There must be at least two documents to be indexed and clustered.')
+            popup._start()
     
     def _update_inverted_index(self, inverted_index, extended_corpus):
         """

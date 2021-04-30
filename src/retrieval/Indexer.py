@@ -107,7 +107,14 @@ class Indexer:
             result = []
             for token in token_list:
                 stemmed = stemmer.stem(token)
-                result.append(stemmed)
+                
+                # Return the stemmed token capitalized/uppered if the token is capitalized/uppered.
+                if token.isupper():    
+                    result.append(stemmed.upper())
+                elif token[0].isupper():
+                    result.append(stemmed.capitalize())
+                else:
+                    result.append(stemmed)
             return result
         
         @staticmethod
@@ -233,10 +240,10 @@ class Indexer:
         
         if case_folding_option is True:
             dictionary = self.LinguisticPreprocessor._case_fold(token_list if dictionary == [] else dictionary)
-        
+            
         if normalization_option is True:
             dictionary = self.LinguisticPreprocessor._normalize(token_list if dictionary == [] else dictionary)
-        
+            
         # Check if dictionary is empty.
         # If it is not empty, return the dictionary. If it is empty, return token_list instead.
         return dictionary if dictionary != [] else token_list

@@ -29,7 +29,7 @@ class Dendrogram:
             The figure of the dendrogram.
 
         """
-        fig = plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=figsize, dpi=100 if orientation == 'top' else None)
         self.__dend = dendrogram(linkage,
                     orientation=orientation,
                     color_threshold=cut_off,

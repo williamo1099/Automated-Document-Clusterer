@@ -83,14 +83,15 @@ class MenuBar:
         None.
 
         """
-        index_path = filedialog.asksaveasfilename(defaultextension='.pickle', filetypes=(('pickle file', '*.pickle'),))
-        
         # Check whether an index is built or not.
         if self.__gui.inverted_index is not None:
+            index_path = filedialog.asksaveasfilename(defaultextension='.pickle', filetypes=(('pickle file', '*.pickle'),))
+            
             # Store metadata.
             metadata = {}
             metadata['folder_path'] = self.__gui.folder_path
             metadata['corpus'] = self.__gui.corpus
+            metadata['preprocessor_option'] = self.__gui.preprocessor_option
             
             # Store index and metadata.
             data = {}
@@ -112,24 +113,31 @@ class MenuBar:
         None.
 
         """
-        index_path = filedialog.askopenfilename()
+        index_path = filedialog.askopenfilename(filetypes=(('pickle file', '*.pickle'),))
         try:
             with open(index_path, 'rb') as handle:
                 data = pickle.load(handle)
 
-                # Load the inverted index.
-                self.__gui.inverted_index = data['index']
-                
-                # Load the metadata.
-                metadata = data['metadata']
-                self.__gui.folder_path = metadata['folder_path']
-                self.__gui.corpus = metadata['corpus']
-                
-                # Set the cluster status to True, indicating clustering process is ready to do.
-                self.__gui.cluster_status = True
-                popup = WarningPopup(self.__gui, 'Loading an index',
-                                 'An index is successfully loaded!')
-                popup._start()
+                # Check whether the file loaded is the correct index file.
+                if isinstance(data, dict) and 'index' in data and 'metadata' in data and 'folder_path' in data['metadata'] and 'corpus' in data['metadata']:
+                    # Load the inverted index.
+                    self.__gui.inverted_index = data['index']
+                    
+                    # Load the metadata.
+                    metadata = data['metadata']
+                    self.__gui.folder_path = metadata['folder_path']
+                    self.__gui.corpus = metadata['corpus']
+                    self.__gui.preprocessor_option = metadata['preprocessor_option']
+                    
+                    # Set the cluster status to True, indicating clustering process is ready to do.
+                    self.__gui.cluster_status = True
+                    popup = WarningPopup(self.__gui, 'Loading an index',
+                                     'An index is successfully loaded!')
+                    popup._start()
+                else:
+                    popup = WarningPopup(self.__gui, 'Loading an index',
+                                     'File loaded does not match!')
+                    popup._start()
         except EnvironmentError:
             popup = WarningPopup(self.__gui, 'Loading an index',
                                  'There is no index to be loaded!')
@@ -144,39 +152,45 @@ class MenuBar:
         None
 
         """
-        folder_path = self.__gui.folder_path
-        try:
-            # Retrieve all .txt files in folder.
-            curr_doc_titles = []
-            for root, directories, files in os.walk(folder_path):
-                for file in files:
-                    if '.txt' in file:
-                        curr_doc_titles.append(file.replace('.txt', ''))
-            
-            # Compare between current document list and saved document list.
-            difference = list(set(curr_doc_titles) - set([doc.title for doc in self.__gui.corpus]))
-            
-            # Check if there is a difference between two document lists.
-            if len(difference) == 0:
-                popup = WarningPopup(self.__gui, 'Updating an index',
-                                     'The index is currently up to date!')
-                popup._start()
-            else:
-                extended_corpus = []
-                for i in range(len(self.__gui.corpus), len(self.__gui.corpus) + len(difference)):
-                    doc_id = 'doc_' + str(i)
-                    doc_title = difference[i]
-                    doc_content = open(folder_path + '\\' + difference[i] + '.txt', 'r', encoding='utf-8').read().replace('\n', '')
-                    doc_i = Document(doc_id, doc_title, doc_content)
-                    extended_corpus.append(doc_i)
+        # Check whether an index is built or not.
+        if self.__gui.inverted_index is not None:
+            folder_path = self.__gui.folder_path
+            try:
+                # Retrieve all .txt files in folder.
+                curr_doc_titles = []
+                for root, directories, files in os.walk(folder_path):
+                    for file in files:
+                        if '.txt' in file:
+                            curr_doc_titles.append(file.replace('.txt', ''))
                 
-                # Update the corpus and inverted index.
-                self.__gui.corpus = self.__gui.get_corpus() + extended_corpus
-                updating_thread = threading.Thread(target=self.__gui._update_inverted_index, args=(extended_corpus,), name='updating_thread')
-                updating_thread.start()
-        except EnvironmentError:
+                # Compare between current document list and saved document list.
+                difference = list(set(curr_doc_titles) - set([doc.title for doc in self.__gui.corpus]))
+                
+                # Check if there is a difference between two document lists.
+                if len(difference) == 0:
+                    popup = WarningPopup(self.__gui, 'Updating an index',
+                                         'The index is currently up to date!')
+                    popup._start()
+                else:
+                    extended_corpus = []
+                    for i in range(len(self.__gui.corpus), len(self.__gui.corpus) + len(difference)):
+                        doc_id = 'doc_' + str(i)
+                        doc_title = difference[i]
+                        doc_content = open(folder_path + '\\' + difference[i] + '.txt', 'r', encoding='utf-8').read().replace('\n', '')
+                        doc_i = Document(doc_id, doc_title, doc_content)
+                        extended_corpus.append(doc_i)
+                    
+                    # Update the corpus and inverted index.
+                    self.__gui.corpus = self.__gui.get_corpus() + extended_corpus
+                    updating_thread = threading.Thread(target=self.__gui._update_inverted_index, args=(extended_corpus,), name='updating_thread')
+                    updating_thread.start()
+            except EnvironmentError:
+                popup = WarningPopup(self.__gui, 'Updating an index',
+                                     'The file path of the saved index does not exist!')
+                popup._start()
+        else:
             popup = WarningPopup(self.__gui, 'Updating an index',
-                                 'The file path of the saved index does not exist!')
+                                 'There is no index to be updated!')
             popup._start()
     
     def __documentation(self):
