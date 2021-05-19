@@ -91,7 +91,14 @@ class MenuBar:
             metadata = {}
             metadata['folder_path'] = self.__gui.folder_path
             metadata['corpus'] = self.__gui.corpus
-            metadata['preprocessor_option'] = self.__gui.preprocessor_option
+            
+            # Store preprocessor options.
+            preprocessor_option = []
+            preprocessor_option.append(self.__gui.preprocessor_option[0].get())
+            preprocessor_option.append(self.__gui.preprocessor_option[1].get())
+            preprocessor_option.append(self.__gui.preprocessor_option[2].get())
+            preprocessor_option.append(self.__gui.preprocessor_option[3].get())
+            metadata['preprocessor_option'] = preprocessor_option
             
             # Store index and metadata.
             data = {}
