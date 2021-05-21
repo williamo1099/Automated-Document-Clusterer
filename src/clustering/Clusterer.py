@@ -155,7 +155,7 @@ class Clusterer:
             # Sort common words.
             if (len(common_words) > 0):
                 sorted_commond_words = sorted(common_words.items(), reverse=True)[:n]
-                renamed_cluster_list[' '.join([str(elem) for elem in sorted_commond_words])] = cluster_list[cluster]
+                renamed_cluster_list[' '.join([str(elem[1]) for elem in sorted_commond_words])] = cluster_list[cluster]
             else:
                 renamed_cluster_list[cluster] = cluster_list[cluster]
         return renamed_cluster_list
