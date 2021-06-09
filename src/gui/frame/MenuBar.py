@@ -182,13 +182,13 @@ class MenuBar:
                     extended_corpus = []
                     for i in range(len(self.__gui.corpus), len(self.__gui.corpus) + len(difference)):
                         doc_id = 'doc_' + str(i)
-                        doc_title = difference[i]
-                        doc_content = open(folder_path + '\\' + difference[i] + '.txt', 'r', encoding='utf-8').read().replace('\n', '')
+                        doc_title = difference[i - len(self.__gui.corpus)]
+                        doc_content = open(folder_path + '\\' + difference[i - len(self.__gui.corpus)] + '.txt', 'r', encoding='utf-8').read().replace('\n', '')
                         doc_i = Document(doc_id, doc_title, doc_content)
                         extended_corpus.append(doc_i)
                     
                     # Update the corpus and inverted index.
-                    self.__gui.corpus = self.__gui.get_corpus() + extended_corpus
+                    self.__gui.corpus = self.__gui.corpus + extended_corpus
                     updating_thread = threading.Thread(target=self.__gui._update_inverted_index, args=(extended_corpus,), name='updating_thread')
                     updating_thread.start()
             except EnvironmentError:
