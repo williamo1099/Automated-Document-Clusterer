@@ -174,8 +174,8 @@ class SearchFrame:
         self.__gui._set_progress_value(50)
         
         # Set progress value for each documents for vectorizing process.
+        index = sorted(list(inverted_index.keys()), key=str.lower)
         for doc in self.__gui.corpus:
-            index = sorted(list(inverted_index.keys()), key=str.lower)
             corpus_size = len(self.__gui.corpus)
             doc.build_vector(inverted_index, index, corpus_size)
         
