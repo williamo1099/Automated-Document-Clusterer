@@ -61,6 +61,7 @@ class Indexer:
         def _remove_stopwords(token_list):
             """
             The method to remove stop words from a list of tokens.
+            Extended stop list are taken from Rank NL (https://www.ranks.nl/stopwords).
             Language supported is English.
 
             Parameters
