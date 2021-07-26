@@ -126,7 +126,7 @@ class MenuBar:
                 data = pickle.load(handle)
 
                 # Check whether the file loaded is the correct index file.
-                if isinstance(data, dict) and 'index' in data and 'metadata' in data and 'folder_path' in data['metadata'] and 'corpus' in data['metadata']:
+                if isinstance(data, dict) and 'index' in data and 'metadata' in data and 'folder_path' in data['metadata'] and 'corpus' in data['metadata'] and 'preprocessor_option' in data['metadata']:
                     # Load the inverted index.
                     self.__gui.inverted_index = data['index']
                     
