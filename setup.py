@@ -1,7 +1,11 @@
+
 from setuptools import setup
 
 setup(
-    name='skripsi 2020',
+    name='Automated Document Clusterer',
+    version='0.0.0',
+    author='William Oktavianus',
+    description='A simple app to cluster text documents',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     install_requires=[
