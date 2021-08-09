@@ -32,19 +32,19 @@ class NavigationToolbar(NavigationToolbar2Tk):
         NavigationToolbar2Tk.__init__(self, figure_canvas, self.__gui.window)
         
         # Initialize the cut button.
-        self.__cut_icon = tk.PhotoImage(file='resources/icon/cut.png', width=25, height=25)
+        self.__cut_icon = tk.PhotoImage(file='resources/images/cut.png', width=25, height=25)
         self.__cut_button = tk.Button(master=self, image=self.__cut_icon, command=self.__cut_dendrogram, relief='sunken' if self.__gui.cut_status else 'raised')
         self.__cut_button.pack(side='left')
         ToolTip(self.__cut_button, 'Cut the dendrogram')
         
         # Initialize the organize button.
-        self.__organize_icon = tk.PhotoImage(file='resources/icon/organize.png', width=25, height=25)
+        self.__organize_icon = tk.PhotoImage(file='resources/images/organize.png', width=25, height=25)
         self.__organize_button = tk.Button(master=self, image=self.__organize_icon, command=self.__organize_documents)
         self.__organize_button.pack(side='left')
         ToolTip(self.__organize_button, 'Organize all documents')
         
         # Initialize the evaluate button.
-        self.__evaluate_icon = tk.PhotoImage(file='resources/icon/evaluate.png', width=25, height=25)
+        self.__evaluate_icon = tk.PhotoImage(file='resources/images/evaluate.png', width=25, height=25)
         self.__evaluate_button = tk.Button(master=self, image=self.__evaluate_icon, command=self.__evaluate_result)
         self.__evaluate_button.pack(side='left')
         ToolTip(self.__evaluate_button, 'Evaluate clustering result')
