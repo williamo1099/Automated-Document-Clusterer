@@ -1,6 +1,6 @@
 # Automated Document Clusterer
 
-<img src='images/logo.png' align='right' alt='Automated Document Clusterer logo' width='120' height='120'>
+<img src='images/Logo.png' align='right' alt='Automated Document Clusterer logo' width='120' height='120'>
 
 Automated Document Clusterer is a simple application built on Python to automatically cluster a bunch of documents. The application does have some features.
 * Automatically cluster your document files based on contents of each documents. Algorithm used is agglomerative hierarchical clustering and the output is a dendrogram that can be cut at a certain height.
